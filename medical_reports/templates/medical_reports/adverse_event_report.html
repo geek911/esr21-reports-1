@@ -1,0 +1,72 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Safety reports options</div>
+    <div class="panel-body">
+        <div class="pull-right">
+            <form method="POST">
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Adverse event report</h3>
+    </div>
+    <div class="panel-body">
+        <table id="adverse_event_report" class="table table-striped table-bordered" style="width:100%">
+
+            <thead>
+            <tr>
+                <th>Subject Identifier</th>
+                <th>Report Date</th>
+                <th>Resolved</th>
+                <th>Ongoing</th>
+                <th>Death</th>
+                <th>G1</th>
+                <th>G2</th>
+                <th>G3</th>
+                <th>G4</th>
+                <th>G5</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for statistic in statistics %}
+                <tr>
+                    <td> {{ statistic.subject_identifier }}</td>
+                    <td> {{ statistic.report_date | date }}</td>
+
+                    <td>{{ statistic.resolved }}</td>
+                    <td> {{ statistic.ongoing }}</td>
+                    <td> {{ statistic.death }}</td>
+                    <td> {{ statistic.grade_1 }}</td>
+                    <td> {{ statistic.grade_2 }}</td>
+                    <td> {{ statistic.grade_3 }}</td>
+                    <td> {{ statistic.grade_4 }}</td>
+                    <td> {{ statistic.grade_5 }}</td>
+
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Subject Identifier</th>
+                <th>Report Date</th>
+                <th>Resolved</th>
+                <th>Ongoing</th>
+                <th>Death</th>
+                <th>G1</th>
+                <th>G2</th>
+                <th>G3</th>
+                <th>G4</th>
+                <th>G5</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
