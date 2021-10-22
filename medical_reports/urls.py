@@ -1,9 +1,10 @@
-
-
 from django.urls import path
 from . import views
 
 
+app_name = 'medical_reports'
+
 urlpatterns = [
-    path('', views.adverse_event_report_page, name='medical'),
+    path('advent/', views.adverse_event_report_page, name='advent'),
+    path('vaccination/', views.vaccination_report_page, name='vaccination'),
 ]
