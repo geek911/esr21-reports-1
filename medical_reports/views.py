@@ -42,4 +42,26 @@ def adverse_event_report_page(request):
 
 
 def vaccination_report_page(request):
-    return render(request, 'medical_reports/vaccination_report.html')
+
+    visits = SubjectVisit.objects.all();
+    statistics = []
+
+    for visit in visits:
+
+        subject_identifier = visit.subject_identifier
+        contact_details = PersonalContactInfo.objects.filter(subject_identifier=subject_identifier)
+        first_dose = VaccinationDetails.objects.filter(subject_visit_id=visit.id, received_dose_before='first_dose')
+        second_dose = VaccinationDetails.objects.filter(subject_visit_id=visit.id, received_dose_before='second_dose')
+
+        statistics.append({
+            'subject_identifier': subject_identifier,
+            'first_dose': "YES" if first_dose.exists() else "NO",
+            'second_dose': "YES" if second_dose.exists() else "NO",
+            'contact_details': 'contact'
+        })
+
+    context = {
+        'statistics': statistics
+    }
+
+    return render(request, 'medical_reports/vaccination_report.html', context)

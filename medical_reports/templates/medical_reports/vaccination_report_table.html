@@ -1,0 +1,55 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Vaccination reports options</div>
+    <div class="panel-body">
+        <div class="pull-right">
+            <form method="POST">
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Vacciport</h3>
+    </div>
+    <div class="panel-body">
+        <table id="vaccination_report" class="table table-striped table-bordered" style="width:100%">
+
+            <thead>
+            <tr>
+                <th>Subject Identifier</th>
+                <th>Contact Details</th>
+                <th>Eligible</th>
+                <th>First Dose</th>
+                <th>Second Dose</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for statistic in statistics %}
+
+                <tr>
+                    <td>{{ statistic.subject_identifier }}</td>
+                    <td> ⚠️ Work in progress️</td>
+                    <td> ⚠️ Work in progress</td>
+                    <td>{{ statistic.first_dose }}</td>
+                    <td>{{ statistic.second_dose }}</td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Subject Identifier</th>
+                <th>Contact Details Completed?</th>
+                <th>Eligible</th>
+                <th>First Dose</th>
+                <th>Second Dose</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+

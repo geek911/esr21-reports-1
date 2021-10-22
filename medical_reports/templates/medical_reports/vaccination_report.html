@@ -1,1 +1,34 @@
 {% extends 'medical_reports/base.html' %}
+
+
+{% block title %}
+ Report | Vaccination Report
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h2>Vaccination reports</h2>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            {% include './vaccination_report_table.html' %}
+            <br>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#vaccination_report').DataTable();
+        });
+    </script>
+{% endblock %}
