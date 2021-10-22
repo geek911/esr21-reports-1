@@ -23,7 +23,7 @@ setup(
     description='esr21 reports.',
     long_description=README,
     zip_safe=False,
-    keywords='django flourish reports',
+    keywords='django esr21 reports',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
