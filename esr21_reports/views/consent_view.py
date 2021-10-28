@@ -40,6 +40,7 @@ class ConsentView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         eligible = consents.count()
 
         context.update(
+            consents=consents,
             page_obj=page_obj,
             object_list =self.object_list,
             gaborone=gaborone,
