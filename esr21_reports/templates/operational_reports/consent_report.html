@@ -88,14 +88,13 @@
 
 <div class="panel panel-info">
   <!-- Default panel contents -->
-  <div class="panel-heading">Consented Subjects <span class="badge">{{ eligible }} </span>  Not Consented Subjects <span class="badge">{{ not_eligible }}</span></div>
+  <div class="panel-heading">Consented Subjects <span class="badge">{{ eligible }} </span></div>
   <div class="panel-body">
    
 <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>Subject Identifier</th>
-                <th>Consented</th>
                 <th>Site</th>
                 <th>Recruiter</th>
                 <th>Created</th>
@@ -105,9 +104,6 @@
          {% for consent in consents %}
             <tr>
                 <td>{{ consent.subject_identifier }}</td>
-                <td>
-                {{ consent.consent_to_participate }}
-                </td>
                 <td>
                     {% if consent.site_id == 40 %}
                     {{ 'Gaborone' }}
@@ -128,7 +124,6 @@
         </tbody>
         <tfoot>
             <th>Subject Identifier</th>
-            <th>Consented</th>
             <th>Site</th>
             <th>Recruiter</th>
             <th>Created</th>

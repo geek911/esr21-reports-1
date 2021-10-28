@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.views.generic import TemplateView
+from django.apps import apps as django_apps
 from django.views.generic.list import ListView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
@@ -14,10 +14,17 @@ class VaccinationView(EdcBaseViewMixin, NavbarViewMixin,ListView):
     navbar_selected_item = 'Vaccination Reports'
     model = VaccinationDetails
 
+    vaccine_model = 'esr21_subject.vaccinationdetails'
+
+    
+    @property
+    def vaccine_model_cls(self):
+        return django_apps.get_model(self.vaccine_model)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        vaccines = VaccinationDetails.objects.all()
+        vaccines = self.vaccine_model_cls.objects.all()
         paginator = Paginator(vaccines, 6) # Show 6 contacts per page.
         self.object_list = self.get_queryset()
         page_number = self.request.GET.get('page')

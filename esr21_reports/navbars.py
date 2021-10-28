@@ -31,9 +31,9 @@ esr21_reports.append_item(
                url_name='esr21_reports:esr21_vaccine_reports_url'))
 
 esr21_reports.append_item(
-    NavbarItem(name='AE Reports',
+    NavbarItem(name='Adverse Events Reports',
                label='Adverse Events Reports',
                fa_icon='fa-cogs',
-               url_name='esr21_reports:esr21_reports_home_url'))
+               url_name='esr21_reports:esr21_ae_reports_url'))
 
 site_navbars.register(esr21_reports)
