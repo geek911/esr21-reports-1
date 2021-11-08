@@ -145,41 +145,43 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>PID</th>
                                     <th>Site</th>
                                     <th>Study Related</th>
                                     <th>Non Study Related</th>
                                     <th>Grading</th>
                                     <th>Outcome</th>
                                     <th>Hospitalization</th>
-                                    <th>Continue/Discountinue</th>
                                     <th>Covid 19 Related</th>
                                     <th>Caused by IP</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for vaccine in vaccines %}
+                            {% for ae in aes %}
                                 <tr>
-                                    <td>{{ vaccine.subject_identifier }}</td>
-                                    <td>{% if vaccine and vaccine.received_dose_before == first_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
-                                    <td>{% if vaccine and vaccine.received_dose_before == second_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
-                                    <td>{{ vaccine.received_dose }} </td>
+                                    <td>{{ ae.subject_identifier }}</td>
                                     <td>
-                                        {% if vaccine.site_id == 40 %}
+                                        {% if ae.site_id == 40 %}
                                         {{ 'Gaborone' }}
-                                        {% elif vaccine.site_id == 41 %}
+                                        {% elif ae.site_id == 41 %}
                                         {{ 'Maun' }}
-                                        {% elif vaccine.site_id == 42 %}
+                                        {% elif ae.site_id == 42 %}
                                         {{ 'Serowe' }}
-                                        {% elif vaccine.site_id == 43 %}
+                                        {% elif ae.site_id == 43 %}
                                         {{ 'F/town' }}
-                                        {% elif vaccine.site_id == 44 %}
+                                        {% elif ae.site_id == 44 %}
                                         {{ 'Phikwe' }}
                                         {% endif %}
                                     </td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
+                                    
+                                    <td>{{ ae.study_treatmnt_rel }}</td>
+                                    <td>{{ ae.nonstudy_treatmnt_rel}}</td>
+                                    <td>{{ ae.ae_grade }} </td>
+                                   
+                                    <td>{{ ae.outcome }}</td>
+                                    <td>{{ ae.hospitalized }}</td>
+                                    <td>{{ ae.covid_related_ae }}</td>
+                                    <td>{{ ae.ae_rel }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -248,27 +250,31 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                     <tr>
                                         <th>Site</th>
                                         <th>Intensity</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
                                         <th>Created</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for vaccine in vaccines %}
+                                {% for sae in saes %}
                                     <tr>
                                         <td>
-                                            {% if vaccine.site_id == 40 %}
+                                        {% if sae.site_id == 40 %}
                                             {{ 'Gaborone' }}
-                                            {% elif vaccine.site_id == 41 %}
+                                        {% elif sae.site_id == 41 %}
                                             {{ 'Maun' }}
-                                            {% elif vaccine.site_id == 42 %}
+                                        {% elif sae.site_id == 42 %}
                                             {{ 'Serowe' }}
-                                            {% elif vaccine.site_id == 43 %}
+                                        {% elif sae.site_id == 43 %}
                                             {{ 'F/town' }}
-                                            {% elif vaccine.site_id == 44 %}
+                                        {% elif sae.site_id == 44 %}
                                             {{ 'Phikwe' }}
-                                            {% endif %}
+                                        {% endif %}
                                         </td>
-                                        <td>{{ vaccine.created }}</td>
-                                        <td>{{ vaccine.created }}</td>
+                                        <td>{{ sae.sae_intensity }}</td>
+                                        <td>{{ sae.start_date }}</td>
+                                        <td>{{ sae.resolution_date }}</td>
+                                        <td>{{ sae.created }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
