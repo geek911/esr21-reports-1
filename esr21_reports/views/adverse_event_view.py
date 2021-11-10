@@ -63,6 +63,24 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         f_town_siae = siaes.filter(site_id=43).count()
         phikwe_siae = siaes.filter(site_id=44).count()
 
+        ae_medDRA_stats = []
+        value_list = aes.values_list(
+        'ae_number', flat=True).distinct()
+
+        for ae_number in value_list:
+            mild = aes.filter(ae_number=ae_number).filter(ae_grade='mild').count()
+            moderate = aes.filter(ae_number=ae_number).filter(ae_grade='moderate').count()
+            severe = aes.filter(ae_number=ae_number).filter(ae_grade='severe').count()
+            temp = {
+                'ae_number':ae_number,
+                'mild':mild,
+                'moderate':moderate,
+                'severe':severe
+            }
+            ae_medDRA_stats.append(temp)
+
+        #import pdb; pdb.set_trace()
+
         context.update(
             page_obj=page_obj,
             object_list =self.object_list,
@@ -88,6 +106,8 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
             serowe_siae=serowe_siae,
             phikwe_siae=phikwe_siae,
             f_town_siae=f_town_siae,
+
+            ae_medDRA_stats=ae_medDRA_stats,
             
         )
         return context
