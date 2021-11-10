@@ -15,15 +15,22 @@ class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
 
     subject_screening_model = 'esr21_subject.eligibilityconfirmation'
 
+    second_screening_model = 'esr21_subject.screeningeligibility'
+
 
     @property
     def subject_screening_cls(self):
         return django_apps.get_model(self.subject_screening_model)
 
+    @property
+    def second_screening_cls(self):
+        return django_apps.get_model(self.second_screening_model)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
         screenings = self.subject_screening_cls.objects.all()
+        enrollments = self.second_screening_cls.objects.all()
         paginator = Paginator(screenings, 6)
         self.object_list = self.get_queryset()
         page_number = self.request.GET.get('page')
@@ -35,8 +42,11 @@ class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         f_town = screenings.filter(site_id=43).count()
         phikwe = screenings.filter(site_id=44).count()
 
-        eligible = len([ screening for screening in screenings if screening.is_eligible])
-        not_eligible = len([ screening for screening in screenings if not screening.is_eligible])
+        eligible = screenings.filter(is_eligible=True).count()
+        not_eligible = screenings.filter(is_eligible=False).count()
+        enrolled = enrollments.filter(is_eligible=True).count()
+        not_enrolled = enrollments.filter(is_eligible=False).count()
+        total_not_enrolled = not_eligible+not_enrolled
 
         context.update(
             screenings=screenings,
@@ -48,6 +58,9 @@ class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
             phikwe=phikwe,
             f_town=f_town,
             eligible=eligible,
-            not_eligible=not_eligible
+            not_eligible=not_eligible,
+            enrolled=enrolled,
+            not_enrolled=not_enrolled,
+            total_not_enrolled=total_not_enrolled,
         )
         return context

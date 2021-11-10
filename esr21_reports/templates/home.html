@@ -98,7 +98,7 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                 <div class="card border-success mx-sm-1 p-3">
                                     <div class="card border-success shadow text-success p-3 my-card"><span  aria-hidden="true"></span></div>
                                     <div class="text-success text-center mt-3"><h4><a href=''>Adverse Events</a></h4></div>
-                                    <div class="text-success text-center mt-2"><h1>0</h1></div>
+                                    <div class="text-success text-center mt-2"><h1>{{ aes }}</h1></div>
                                 </div>
                             </div>
 
@@ -106,7 +106,7 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                 <div class="card border-info mx-sm-1 p-3">
                                     <div class="card border-info shadow text-info p-3 my-card" ><span  aria-hidden="true"></span></div>
                                     <div class="text-info text-center mt-3"><h4><a href=''>Serious Adverse Events</a></h4></div>
-                                    <div class="text-info text-center mt-2"><h1>0</h1></div>
+                                    <div class="text-info text-center mt-2"><h1>{{ saes }}</h1></div>
                                 </div>
                             </div>
                         
@@ -114,7 +114,7 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                 <div class="card border-info mx-sm-1 p-3">
                                     <div class="card border-info shadow text-info p-3 my-card" ><span  aria-hidden="true"></span></div>
                                     <div class="text-info text-center mt-3"><h4><a href='#'>Special Interest of Adverse Events</a></h4></div>
-                                    <div class="text-info text-center mt-2"><h1>0</h1></div>
+                                    <div class="text-info text-center mt-2"><h1>{{ siaes }}</h1></div>
                                 </div>
                             </div>
                         </div>
