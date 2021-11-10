@@ -13,9 +13,9 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
     navbar_selected_item = 'Adverse Events Reports'
     model = EligibilityConfirmation
 
-    ae_model = 'esr21_subject.adverseevent'
-    sae_model = 'esr21_subject.seriousadverseevent'
-    siae_model = 'esr21_subject.specialinterestadverseevent'
+    ae_model = 'esr21_subject.adverseeventrecord'
+    sae_model = 'esr21_subject.seriousadverseeventrecord'
+    siae_model = 'esr21_subject.specialinterestadverseeventrecord'
 
 
     @property
@@ -62,7 +62,6 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         serowe_siae = siaes.filter(site_id=42).count()
         f_town_siae = siaes.filter(site_id=43).count()
         phikwe_siae = siaes.filter(site_id=44).count()
-
 
         context.update(
             page_obj=page_obj,
