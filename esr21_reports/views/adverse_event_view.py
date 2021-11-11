@@ -65,7 +65,7 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
 
         ae_medDRA_stats = []
         value_list = aes.values_list(
-        'ae_number', flat=True).distinct()
+        'pt_code', flat=True).distinct()
 
         for ae_number in value_list:
             mild = aes.filter(ae_number=ae_number).filter(ae_grade='mild').count()
