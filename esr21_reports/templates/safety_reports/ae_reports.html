@@ -300,7 +300,7 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                 <tbody>
                                 {% for sae in saes %}
                                     <tr>
-                                        <td>{{ sae.ae_number }}</td>
+                                        <td>{{ sae.pt_code }}</td>
                                         <td>
                                         {% if sae.site_id == 40 %}
                                             {{ 'Gaborone' }}
