@@ -13,41 +13,101 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
     navbar_selected_item = 'Adverse Events Reports'
     model = EligibilityConfirmation
 
-    subject_screening_model = 'esr21_subject.eligibilityconfirmation'
+    ae_model = 'esr21_subject.adverseeventrecord'
+    sae_model = 'esr21_subject.seriousadverseeventrecord'
+    siae_model = 'esr21_subject.specialinterestadverseeventrecord'
 
 
     @property
-    def subject_screening_cls(self):
-        return django_apps.get_model(self.subject_screening_model)
+    def ae_cls(self):
+        return django_apps.get_model(self.ae_model)
+    
+    @property
+    def sae_cls(self):
+        return django_apps.get_model(self.sae_model)
+
+    @property
+    def siae_cls(self):
+        return django_apps.get_model(self.siae_model)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        screenings = self.subject_screening_cls.objects.all()
-        paginator = Paginator(screenings, 6)
+        aes = self.ae_cls.objects.all()
+        saes = self.sae_cls.objects.all()
+        siaes = self.siae_cls.objects.all()
+
+
+        paginator = Paginator(aes, 6)
         self.object_list = self.get_queryset()
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        gaborone = screenings.filter(site_id=40).count()
-        maun = screenings.filter(site_id=41).count()
-        serowe = screenings.filter(site_id=42).count()
-        f_town = screenings.filter(site_id=43).count()
-        phikwe = screenings.filter(site_id=44).count()
+        gaborone_ae = aes.filter(site_id=40).count()
+        maun_ae = aes.filter(site_id=41).count()
+        serowe_ae = aes.filter(site_id=42).count()
+        f_town_ae = aes.filter(site_id=43).count()
+        phikwe_ae = aes.filter(site_id=44).count()
 
-        eligible = len([ screening for screening in screenings if screening.is_eligible])
-        not_eligible = len([ screening for screening in screenings if not screening.is_eligible])
+
+        gaborone_sae = saes.filter(site_id=40).count()
+        maun_sae = saes.filter(site_id=41).count()
+        serowe_sae = saes.filter(site_id=42).count()
+        f_town_sae = saes.filter(site_id=43).count()
+        phikwe_sae = saes.filter(site_id=44).count()
+
+
+        gaborone_siae = siaes.filter(site_id=40).count()
+        maun_siae = siaes.filter(site_id=41).count()
+        serowe_siae = siaes.filter(site_id=42).count()
+        f_town_siae = siaes.filter(site_id=43).count()
+        phikwe_siae = siaes.filter(site_id=44).count()
+
+        ae_medDRA_stats = []
+        value_list = aes.values_list(
+        'pt_code', flat=True).distinct()
+
+        for ae_number in value_list:
+            mild = aes.filter(ae_number=ae_number).filter(ae_grade='mild').count()
+            moderate = aes.filter(ae_number=ae_number).filter(ae_grade='moderate').count()
+            severe = aes.filter(ae_number=ae_number).filter(ae_grade='severe').count()
+            temp = {
+                'ae_number':ae_number,
+                'mild':mild,
+                'moderate':moderate,
+                'severe':severe
+            }
+            ae_medDRA_stats.append(temp)
+
+        #import pdb; pdb.set_trace()
 
         context.update(
-            screenings=screenings,
             page_obj=page_obj,
             object_list =self.object_list,
-            gaborone=gaborone,
-            maun=maun,
-            serowe=serowe,
-            phikwe=phikwe,
-            f_town=f_town,
-            eligible=eligible,
-            not_eligible=not_eligible
+
+            aes=aes,
+            saes=saes,
+            siaes=siaes,
+
+            gaborone_ae=gaborone_ae,
+            maun_ae=maun_ae,
+            serowe_ae=serowe_ae,
+            phikwe_ae=phikwe_ae,
+            f_town_ae=f_town_ae,
+
+            gaborone_sae=gaborone_sae,
+            maun_sae=maun_sae,
+            serowe_sae=serowe_sae,
+            phikwe_sae=phikwe_sae,
+            f_town_sae=f_town_sae,
+
+            gaborone_siae=gaborone_siae,
+            maun_siae=maun_siae,
+            serowe_siae=serowe_siae,
+            phikwe_siae=phikwe_siae,
+            f_town_siae=f_town_siae,
+
+            ae_medDRA_stats=ae_medDRA_stats,
+            
         )
         return context

@@ -63,6 +63,18 @@
         .appendTo( '#example1 .col-sm-6:eq(0)' );
     } );
 
+    $(document).ready(function() {
+        $('#example3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+
+    table.buttons().container()
+        .appendTo( '#example3 .col-sm-6:eq(0)' );
+    } );
+
 </script>
 
 <script>
@@ -95,7 +107,6 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                     
 				</div>
                 <div class="panel-body">
-
                     <div class="well well-lg">
                         <div class="row w-100">
                             <div class="col-md-2">
@@ -139,47 +150,77 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                             </div>
                         </div>
                     </div>
-                    
 
                     <div class="row w-100">
+                        
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>PID</th>
                                     <th>Site</th>
                                     <th>Study Related</th>
                                     <th>Non Study Related</th>
                                     <th>Grading</th>
                                     <th>Outcome</th>
                                     <th>Hospitalization</th>
-                                    <th>Continue/Discountinue</th>
                                     <th>Covid 19 Related</th>
                                     <th>Caused by IP</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for vaccine in vaccines %}
+                            {% for ae in aes %}
                                 <tr>
-                                    <td>{{ vaccine.subject_identifier }}</td>
-                                    <td>{% if vaccine and vaccine.received_dose_before == first_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
-                                    <td>{% if vaccine and vaccine.received_dose_before == second_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
-                                    <td>{{ vaccine.received_dose }} </td>
+                                    <td>{{ ae.adverse_event.subject_identifier }}</td>
                                     <td>
-                                        {% if vaccine.site_id == 40 %}
+                                        {% if ae.site_id == 40 %}
                                         {{ 'Gaborone' }}
-                                        {% elif vaccine.site_id == 41 %}
+                                        {% elif ae.site_id == 41 %}
                                         {{ 'Maun' }}
-                                        {% elif vaccine.site_id == 42 %}
+                                        {% elif ae.site_id == 42 %}
                                         {{ 'Serowe' }}
-                                        {% elif vaccine.site_id == 43 %}
+                                        {% elif ae.site_id == 43 %}
                                         {{ 'F/town' }}
-                                        {% elif vaccine.site_id == 44 %}
+                                        {% elif ae.site_id == 44 %}
                                         {{ 'Phikwe' }}
                                         {% endif %}
                                     </td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
-                                    <td>{{ vaccine.created }}</td>
+                                    
+                                    <td>
+                                        {{ ae.study_treatmnt_rel }}
+                                    </td>
+                                    <td>{{ ae.nonstudy_treatmnt_rel}}</td>
+                                    <td>{{ ae.ae_grade }} </td>
+                                   
+                                    <td>{{ ae.outcome }}</td>
+                                    <td>{{ ae.hospitalized }}</td>
+                                    <td>{{ ae.covid_related_ae }}</td>
+                                    <td>{{ ae.ae_rel }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                    <div class="row w-100">
+                    <h4>AE MedDRA reporting</h4>
+                        <table id="example3" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>MedDRA code</th>
+                                    <th>Mild</th>
+                                    <th>Moderate</th>
+                                    <th>Severe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ae_medDRA_stat in ae_medDRA_stats %}
+                                <tr>
+                                    <td>{{ ae_medDRA_stat.ae_number }}</td>
+                                    <td>
+                                        {{ ae_medDRA_stat.mild}}
+                                    </td>
+                                    <td>{{ ae_medDRA_stat.moderate}}</td>
+                                    <td>{{ ae_medDRA_stat.severe }} </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -246,29 +287,39 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                             <table id="example1" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
+                                        <td>MedDRA Code</td>
                                         <th>Site</th>
-                                        <th>Intensity</th>
-                                        <th>Created</th>
+                                        <th>Important Medical Event</th>
+                                        <th>Congenital Anomaly</th>
+                                        <th>Life Threatening</th>
+                                        <th>Disability</th>
+                                        <th>Hospitalization</th>
+                                        <th>Death</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for vaccine in vaccines %}
+                                {% for sae in saes %}
                                     <tr>
+                                        <td>{{ sae.pt_code }}</td>
                                         <td>
-                                            {% if vaccine.site_id == 40 %}
+                                        {% if sae.site_id == 40 %}
                                             {{ 'Gaborone' }}
-                                            {% elif vaccine.site_id == 41 %}
+                                        {% elif sae.site_id == 41 %}
                                             {{ 'Maun' }}
-                                            {% elif vaccine.site_id == 42 %}
+                                        {% elif sae.site_id == 42 %}
                                             {{ 'Serowe' }}
-                                            {% elif vaccine.site_id == 43 %}
+                                        {% elif sae.site_id == 43 %}
                                             {{ 'F/town' }}
-                                            {% elif vaccine.site_id == 44 %}
+                                        {% elif sae.site_id == 44 %}
                                             {{ 'Phikwe' }}
-                                            {% endif %}
+                                        {% endif %}
                                         </td>
-                                        <td>{{ vaccine.created }}</td>
-                                        <td>{{ vaccine.created }}</td>
+                                        <td>{{ sae.ae_smie }} </td>
+                                        <td>{{ sae.ae_scong }}</td>
+                                        <td>{{ sae.ae_slife }}</td>
+                                        <td>{{ sae.ae_sdisab }}</td>
+                                        <td>{{ sae.ae_shosp }}</td>
+                                        <td>{{ sae.ae_sdth }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
