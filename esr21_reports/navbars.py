@@ -36,4 +36,10 @@ esr21_reports.append_item(
                fa_icon='fa-cogs',
                url_name='esr21_reports:esr21_ae_reports_url'))
 
+esr21_reports.append_item(
+    NavbarItem(name='dm_reports',
+               label='Data Management Reports',
+               fa_icon='fa-cogs',
+               url_name='esr21_reports:esr21_dm_reports_url'))
+
 site_navbars.register(esr21_reports)
