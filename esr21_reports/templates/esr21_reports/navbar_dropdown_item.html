@@ -1,0 +1,21 @@
+{% load static %}
+<!-- begin rendered navbar item -->
+<li id="li-topbar-{{ html_id }}" class="{% if dropdown %} dropdown {% endif %}{% if active %} active {% endif %}">
+    <a title="{{ title }}" name="{{ name }}" id="{{ name }}" alt="{{ alt }}" href="{{ reversed_url }}" {% if dropdown %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}>
+        {% if glyphicon %}<i class="glyphicon {{ glyphicon }}"></i>{% endif %}
+        {% if fa_icon %}<i class="{{ fa_icon }} fa-fw"></i>&nbsp{% endif %}
+        {% if icon %}<img src='{% static icon %}' height="{{ icon_height }}" width="{{ icon_width }}"></img>{% endif %}
+        {{ label|default:''|title }}
+        {% if dropdown %}<span class="caret"></span>{% endif %}
+    </a>
+    {% if dropdown %}
+    	<ul class="dropdown-menu" id="operational">
+    		{% for dropdown_title, dropdown_url in dropdown_items.items %}
+    			<li>
+    				<a class='dropdown-item' href="{{ dropdown_url }}">{{dropdown_title}}</a>
+    			</li>
+    		{% endfor %}
+    	</ul>
+    {% endif %}
+</li>
+<!-- end rendered navbar item -->
