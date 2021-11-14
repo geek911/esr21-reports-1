@@ -7,7 +7,7 @@ from esr21_subject.models import EligibilityConfirmation
 
 
 class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
-    template_name = 'safety_reports/ae_reports.html'
+    template_name = 'esr21_reports/safety_reports/ae_reports.html'
     navbar_name = 'esr21_reports'
     navbar_selected_item = 'Adverse Events Reports'
     model = EligibilityConfirmation

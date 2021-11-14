@@ -11,7 +11,7 @@ from .missed_appointments import MissedAppointmentsMixin
 class ManagementReportsView(MissedAppointmentsMixin, EdcBaseViewMixin,
                             NavbarViewMixin, TemplateView):
 
-    template_name = 'management_reports/management_reports.html'
+    template_name = 'esr21_reports/management_reports/management_reports.html'
     navbar_name = 'esr21_reports'
     navbar_selected_item = 'dm_reports'
 

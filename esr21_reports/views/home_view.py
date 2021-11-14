@@ -1,15 +1,12 @@
-from django.conf import settings
 from django.apps import apps as django_apps
 from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
-from esr21_subject.models import EligibilityConfirmation,InformedConsent,VaccinationDetails
+from esr21_subject.models import EligibilityConfirmation, InformedConsent,VaccinationDetails
 
 
-
-
-class HomeView(NavbarViewMixin,EdcBaseViewMixin,TemplateView):
-    template_name = 'home.html'
+class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
+    template_name = 'esr21_reports/home.html'
     navbar_selected_item = 'Reports'
     navbar_name = 'esr21_reports'
 
@@ -35,7 +32,7 @@ class HomeView(NavbarViewMixin,EdcBaseViewMixin,TemplateView):
     @property
     def ae_cls(self):
         return django_apps.get_model(self.ae_model)
-    
+
     @property
     def sae_cls(self):
         return django_apps.get_model(self.sae_model)
@@ -43,7 +40,6 @@ class HomeView(NavbarViewMixin,EdcBaseViewMixin,TemplateView):
     @property
     def siae_cls(self):
         return django_apps.get_model(self.siae_model)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

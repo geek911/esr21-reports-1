@@ -6,17 +6,15 @@ from edc_navbar import NavbarViewMixin
 from esr21_subject.models import EligibilityConfirmation
 
 
-
-class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
-    template_name = 'operational_reports/screening_report.html'
+class ScreeningView(EdcBaseViewMixin, NavbarViewMixin, ListView):
+    template_name = 'esr21_reports/operational_reports/screening_report.html'
     navbar_name = 'esr21_reports'
-    navbar_selected_item = 'Screening Reports'
+    navbar_selected_item = 'operational_reports'
     model = EligibilityConfirmation
 
     subject_screening_model = 'esr21_subject.eligibilityconfirmation'
 
     second_screening_model = 'esr21_subject.screeningeligibility'
-
 
     @property
     def subject_screening_cls(self):
@@ -28,7 +26,7 @@ class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         screenings = self.subject_screening_cls.objects.all()
         enrollments = self.second_screening_cls.objects.all()
         paginator = Paginator(screenings, 6)
@@ -51,7 +49,7 @@ class ScreeningView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         context.update(
             screenings=screenings,
             page_obj=page_obj,
-            object_list =self.object_list,
+            object_list=self.object_list,
             gaborone=gaborone,
             maun=maun,
             serowe=serowe,

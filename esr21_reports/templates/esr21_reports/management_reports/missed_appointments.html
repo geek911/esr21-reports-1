@@ -3,6 +3,7 @@
        	<th>Subject</th>
         <th>Timepoint</th>
         <th>Scheduled Date & Time</th>
+        <th>Reasons Missed</th>
     </tr>
 </thead>
 <tbody>
@@ -11,18 +12,20 @@
         <td>
         	{{appointment.subject_identifier}}
         	<span style="">
-        		{% include 'buttons/dashboard.html' %}
+        		{% include 'esr21_reports/buttons/dashboard.html' %}
         	</span>
         	
         </td>
         <td>{{appointment.title}}</td>
         <td>{{appointment.timepoint_datetime}}</td>
+        <td></td>
     </tr>
  {% endfor %}
 </tbody>
 <tfoot>
    	<th>Subject</th>
     <th>Timepoint</th>
-    <th>Appointment Date & Time</th>
+    <th>Scheduled Date & Time</th>
+    <th>Reasons Missed</th>
 </tfoot>
 
