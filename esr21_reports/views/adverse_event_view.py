@@ -5,10 +5,11 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from esr21_subject.models import EligibilityConfirmation
 
+from ..model_wrappers import AeModelWrapper
 
 
-class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
-    template_name = 'safety_reports/ae_reports.html'
+class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
+    template_name = 'esr21_reports/safety_reports/ae_reports.html'
     navbar_name = 'esr21_reports'
     navbar_selected_item = 'Adverse Events Reports'
     model = EligibilityConfirmation
@@ -17,11 +18,10 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
     sae_model = 'esr21_subject.seriousadverseeventrecord'
     siae_model = 'esr21_subject.specialinterestadverseeventrecord'
 
-
     @property
     def ae_cls(self):
         return django_apps.get_model(self.ae_model)
-    
+
     @property
     def sae_cls(self):
         return django_apps.get_model(self.sae_model)
@@ -30,13 +30,20 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
     def siae_cls(self):
         return django_apps.get_model(self.siae_model)
 
+    def get_wrapped_queryset(self, queryset):
+        """Returns a list of wrapped model instances.
+        """
+        object_list = []
+        for obj in queryset:
+            object_list.append(AeModelWrapper(obj))
+        return object_list
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         aes = self.ae_cls.objects.all()
         saes = self.sae_cls.objects.all()
         siaes = self.siae_cls.objects.all()
-
 
         paginator = Paginator(aes, 6)
         self.object_list = self.get_queryset()
@@ -49,13 +56,11 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         f_town_ae = aes.filter(site_id=43).count()
         phikwe_ae = aes.filter(site_id=44).count()
 
-
         gaborone_sae = saes.filter(site_id=40).count()
         maun_sae = saes.filter(site_id=41).count()
         serowe_sae = saes.filter(site_id=42).count()
         f_town_sae = saes.filter(site_id=43).count()
         phikwe_sae = saes.filter(site_id=44).count()
-
 
         gaborone_siae = siaes.filter(site_id=40).count()
         maun_siae = siaes.filter(site_id=41).count()
@@ -64,26 +69,23 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
         phikwe_siae = siaes.filter(site_id=44).count()
 
         ae_medDRA_stats = []
-        value_list = aes.values_list(
-        'pt_code', flat=True).distinct()
+        value_list = aes.values_list('pt_code', flat=True).distinct()
 
         for ae_number in value_list:
-            mild = aes.filter(ae_number=ae_number).filter(ae_grade='mild').count()
-            moderate = aes.filter(ae_number=ae_number).filter(ae_grade='moderate').count()
-            severe = aes.filter(ae_number=ae_number).filter(ae_grade='severe').count()
+            mild = aes.filter(ae_number=ae_number).filter(ctcae_grade='mild').count()
+            moderate = aes.filter(ae_number=ae_number).filter(ctcae_grade='moderate').count()
+            severe = aes.filter(ae_number=ae_number).filter(ctcae_grade='severe').count()
             temp = {
-                'ae_number':ae_number,
-                'mild':mild,
-                'moderate':moderate,
-                'severe':severe
+                'ae_number': ae_number,
+                'mild': mild,
+                'moderate': moderate,
+                'severe': severe
             }
             ae_medDRA_stats.append(temp)
-
-        #import pdb; pdb.set_trace()
-
+        # aes = self.get_wrapped_queryset(aes)
         context.update(
             page_obj=page_obj,
-            object_list =self.object_list,
+            object_list=self.object_list,
 
             aes=aes,
             saes=saes,
@@ -108,6 +110,5 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin,ListView):
             f_town_siae=f_town_siae,
 
             ae_medDRA_stats=ae_medDRA_stats,
-            
         )
         return context

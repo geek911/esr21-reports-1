@@ -1,0 +1,31 @@
+<thead>
+    <tr>
+       	<th>Subject</th>
+        <th>Timepoint</th>
+        <th>Scheduled Date & Time</th>
+        <th>Reasons Missed</th>
+    </tr>
+</thead>
+<tbody>
+{% for appointment in missed_appointments %}
+    <tr>
+        <td>
+        	{{appointment.subject_identifier}}
+        	<span style="">
+        		{% include 'esr21_reports/buttons/dashboard.html' %}
+        	</span>
+        	
+        </td>
+        <td>{{appointment.title}}</td>
+        <td>{{appointment.timepoint_datetime}}</td>
+        <td></td>
+    </tr>
+ {% endfor %}
+</tbody>
+<tfoot>
+   	<th>Subject</th>
+    <th>Timepoint</th>
+    <th>Scheduled Date & Time</th>
+    <th>Reasons Missed</th>
+</tfoot>
+
