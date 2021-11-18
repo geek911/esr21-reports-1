@@ -73,18 +73,87 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
         total_screenings = self.subject_screening_cls.objects.all().count()
         total_vaccinations = 0
         total_not_erolled = 0
+        
+
+        first_dose_site = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+    
+        second_dose_site = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+        
+        total_first_dose = 0
+        total_second_dose = 0
+        
+        
+        #Withdrawals stats
+        withdrawals_site = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+    
+        after_first_dose_withdrawals_site = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+    
+        after_second_dose_withdrawals_site = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+        
+        reason_withdrawals_site = [
+            ['Gaborone', 'Failed eligibility'],
+            ['F/Town', 'sfsadf'],
+            ['S/Phikwe', 'sss'],
+            ['Maun', 'aaaa'],
+            ['Serowe', 'qqqq']]
+
+        total_withdrawals = 0
+        total_first_dose_withdrawals = 0
+        total_second_dose_withdrawals = 0
 
 
         context.update(
+            #Totals
             total_screenings=total_screenings,
             total_vaccinations=total_vaccinations,
             total_not_erolled=total_not_erolled,
+            #AEs
             aes=aes,
             saes=saes,
             siaes=siaes,
+            # Screenigs
             site_screenings=site_screenings,
             site_vaccinations=site_vaccinations,
             not_erolled=not_erolled,
+            
+            #Vaccinations
+            first_dose_site=first_dose_site,
+            second_dose_site=second_dose_site,
+            total_first_dose=total_first_dose,
+            total_second_dose=total_second_dose,
+            # Withdrawals
+            withdrawals_site=withdrawals_site,
+            after_first_dose_withdrawals_site=after_first_dose_withdrawals_site,
+            after_second_dose_withdrawals_site=after_second_dose_withdrawals_site,
+            reason_withdrawals_site=reason_withdrawals_site,
+            total_withdrawals=total_withdrawals,
+            total_first_dose_withdrawals=total_first_dose_withdrawals,
+            total_second_dose_withdrawals=total_second_dose_withdrawals
         )
 
         return context
