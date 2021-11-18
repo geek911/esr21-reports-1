@@ -43,20 +43,48 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        screenings = self.subject_screening_cls.objects.all().count()
         consents = self.subject_consent_cls.objects.all().count()
         vaccines = self.vaccine_model_cls.objects.all().count()
         aes = self.ae_cls.objects.all().count()
         saes = self.sae_cls.objects.all().count()
         siaes = self.siae_cls.objects.all().count()
+    
+        site_screenings = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+
+        site_vaccinations = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+    
+        not_erolled = [
+            ['Gaborone', 2],
+            ['F/Town', 3],
+            ['S/Phikwe', 5],
+            ['Maun', 2],
+            ['Serowe', 4]]
+    
+        total_screenings = self.subject_screening_cls.objects.all().count()
+        total_vaccinations = 0
+        total_not_erolled = 0
+
 
         context.update(
-            screenings=screenings,
-            consents=consents,
-            vaccines=vaccines,
+            total_screenings=total_screenings,
+            total_vaccinations=total_vaccinations,
+            total_not_erolled=total_not_erolled,
             aes=aes,
             saes=saes,
             siaes=siaes,
+            site_screenings=site_screenings,
+            site_vaccinations=site_vaccinations,
+            not_erolled=not_erolled,
         )
 
         return context
