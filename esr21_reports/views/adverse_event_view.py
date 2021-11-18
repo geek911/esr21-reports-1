@@ -5,6 +5,8 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from esr21_subject.models import EligibilityConfirmation
 
+from ..model_wrappers import AeModelWrapper
+
 
 class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
     template_name = 'esr21_reports/safety_reports/ae_reports.html'
@@ -27,6 +29,14 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
     @property
     def siae_cls(self):
         return django_apps.get_model(self.siae_model)
+
+    def get_wrapped_queryset(self, queryset):
+        """Returns a list of wrapped model instances.
+        """
+        object_list = []
+        for obj in queryset:
+            object_list.append(AeModelWrapper(obj))
+        return object_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,7 +82,7 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
                 'severe': severe
             }
             ae_medDRA_stats.append(temp)
-
+        # aes = self.get_wrapped_queryset(aes)
         context.update(
             page_obj=page_obj,
             object_list=self.object_list,
