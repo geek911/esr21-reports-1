@@ -54,48 +54,57 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
         return django_apps.get_model(self.offstudy_model)
 
     def get_site_id(self, site_name_postfix):
-        return Site.objects.get(name__endswith=site_name_postfix).id
+        try:
+            return Site.objects.get(name__endswith=site_name_postfix).id
+        except Site.DoesNotExist:
+            pass
 
     def get_screened_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        return self.subject_screening_cls.objects.filter(site_id=site_id).count()
+        if site_id:
+            return self.subject_screening_cls.objects.filter(site_id=site_id).count()
 
     def get_vaccinated_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        return self.vaccine_model_cls.objects.filter(received_dose_before='first_dose',
-                                                     site_id=site_id).count()
+        if site_id:
+            return self.vaccine_model_cls.objects.filter(received_dose_before='first_dose',
+                                                         site_id=site_id).count()
 
     def get_second_dose_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        return self.vaccine_model_cls.objects.filter(received_dose_before='second_dose',
-                                                     site_id=site_id).count()
+        if site_id:
+            return self.vaccine_model_cls.objects.filter(received_dose_before='second_dose',
+                                                         site_id=site_id).count()
 
     def get_offstudy_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        return self.offstudy_cls.objects.filter(site_id=site_id).count()
+        if site_id:
+            return self.offstudy_cls.objects.filter(site_id=site_id).count()
 
     def get_offstudy_reasons_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        return tuple(set.union(set(self.offstudy_cls.objects.filter(
-            site_id=site_id).values_list('reason', flat=True)),
-            set(self.offstudy_cls.objects.filter(
-                site_id=site_id).values_list('reason_other', flat=True))))
+        if site_id:
+            return tuple(set.union(set(self.offstudy_cls.objects.filter(
+                site_id=site_id).values_list('reason', flat=True)),
+                set(self.offstudy_cls.objects.filter(
+                    site_id=site_id).values_list('reason_other', flat=True))))
 
     def get_offstudy_after_first_dose_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        offstudy_ids = self.offstudy_cls.objects.filter(
-            site_id=site_id).values_list('subject_identifier')
+        if site_id:
+            offstudy_ids = self.offstudy_cls.objects.filter(
+                site_id=site_id).values_list('subject_identifier')
 
-        return self.vaccine_model_cls.objects.filter(
-            received_dose_before='first_dose',
-            subject_visit__subject_identifier__in=offstudy_ids,
-            site_id=site_id).count()
+            return self.vaccine_model_cls.objects.filter(
+                received_dose_before='first_dose',
+                subject_visit__subject_identifier__in=offstudy_ids,
+                site_id=site_id).count()
 
     def get_offstudy_by_dose(self, dose):
 
@@ -108,25 +117,29 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     def get_offstudy_after_second_dose_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
-        offstudy_ids = self.offstudy_cls.objects.filter(
-            site_id=site_id).values_list('subject_identifier')
 
-        return self.vaccine_model_cls.objects.filter(
-            received_dose_before='second_dose',
-            subject_visit__subject_identifier__in=offstudy_ids,
-            site_id=site_id).count()
+        if site_id:
+            offstudy_ids = self.offstudy_cls.objects.filter(
+                site_id=site_id).values_list('subject_identifier')
+
+            return self.vaccine_model_cls.objects.filter(
+                received_dose_before='second_dose',
+                subject_visit__subject_identifier__in=offstudy_ids,
+                site_id=site_id).count()
 
     def get_not_enrolled_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
 
-        eligibility_confirmation_failures = self.subject_screening_cls.objects.filter(
-            is_eligible=False, site_id=site_id).count()
+        if site_id:
 
-        screening_eligibility_failures = self.screening_eligibility_cls.objects.filter(
-            is_eligible=False, site_id=site_id).count()
+            eligibility_confirmation_failures = self.subject_screening_cls.objects.filter(
+                is_eligible=False, site_id=site_id).count()
 
-        return eligibility_confirmation_failures + screening_eligibility_failures
+            screening_eligibility_failures = self.screening_eligibility_cls.objects.filter(
+                is_eligible=False, site_id=site_id).count()
+
+            return eligibility_confirmation_failures + screening_eligibility_failures
 
     def get_total_not_enrolled(self):
 
