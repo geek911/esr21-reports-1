@@ -158,13 +158,14 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                 <tr>
                                     <th>PID</th>
                                     <th>Site</th>
+                                    <th>Gender</th>
+                                    <th>Age</th>
+                                    <th>Vax date 1</th>
+                                    <th>Vax date 2</th>
+                                    <th>AE Term</th>
+                                    <th>Start Date</th>
+                                    <th>Stop Date</th>
                                     <th>Study Related</th>
-                                    <th>Non Study Related</th>
-                                    <th>Grading</th>
-                                    <th>Outcome</th>
-                                    <th>Hospitalization</th>
-                                    <th>Covid 19 Related</th>
-                                    <th>Caused by IP</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,17 +185,16 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                                         {{ 'Phikwe' }}
                                         {% endif %}
                                     </td>
-                                    
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ ae.ae_term }}</td>
+                                    <td>{{ ae.start_date }}</td>
+                                    <td>{{ ae.stop_date }}</td>
                                     <td>
                                         {{ ae.study_treatmnt_rel }}
                                     </td>
-                                    <td>{{ ae.nonstudy_treatmnt_rel}}</td>
-                                    <td>{{ ae.ae_grade }} </td>
-                                   
-                                    <td>{{ ae.outcome }}</td>
-                                    <td>{{ ae.hospitalized }}</td>
-                                    <td>{{ ae.covid_related_ae }}</td>
-                                    <td>{{ ae.ae_rel }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
