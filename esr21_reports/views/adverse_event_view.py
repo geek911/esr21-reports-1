@@ -82,7 +82,7 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
                 'severe': severe
             }
             ae_medDRA_stats.append(temp)
-        aes = self.get_wrapped_queryset(aes)
+        # aes = self.get_wrapped_queryset(aes)
         context.update(
             page_obj=page_obj,
             object_list=self.object_list,
