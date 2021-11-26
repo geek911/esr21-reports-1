@@ -82,7 +82,28 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
                 'severe': severe
             }
             ae_medDRA_stats.append(temp)
-        # aes = self.get_wrapped_queryset(aes)
+        
+        site_screenings = [
+            ['Gaborone', self.get_screened_by_site('esr21')],
+            ['F/Town', self.get_screened_by_site('Francistown')],
+            ['S/Phikwe', self.get_screened_by_site('Phikwe')],
+            ['Maun', self.get_screened_by_site('Maun')],
+            ['Serowe', self.get_screened_by_site('Serowe')]]
+
+        site_vaccinations = [
+            ['Gaborone', self.get_vaccinated_by_site('esr21')],
+            ['F/Town', self.get_vaccinated_by_site('Francistown')],
+            ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
+            ['Maun', self.get_vaccinated_by_site('Maun')],
+            ['Serowe', self.get_vaccinated_by_site('Serowe')]]
+
+        not_erolled = [
+            ['Gaborone', self.get_not_enrolled_by_site('esr21')],
+            ['F/Town', self.get_not_enrolled_by_site('Francistown')],
+            ['S/Phikwe', self.get_not_enrolled_by_site('Phikwe')],
+            ['Maun', self.get_not_enrolled_by_site('Maun')],
+            ['Serowe', self.get_not_enrolled_by_site('Serowe')]]
+
         context.update(
             page_obj=page_obj,
             object_list=self.object_list,
