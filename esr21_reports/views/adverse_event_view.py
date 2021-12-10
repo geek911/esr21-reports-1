@@ -70,18 +70,26 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
         serowe_ae = aes.filter(site_id=42).count()
         f_town_ae = aes.filter(site_id=43).count()
         phikwe_ae = aes.filter(site_id=44).count()
+        
+        ae_total = gaborone_ae+maun_ae+serowe_ae+f_town_ae+phikwe_ae
+        
 
         gaborone_sae = saes.filter(site_id=40).count()
         maun_sae = saes.filter(site_id=41).count()
         serowe_sae = saes.filter(site_id=42).count()
         f_town_sae = saes.filter(site_id=43).count()
         phikwe_sae = saes.filter(site_id=44).count()
+        
+        sae_total = gaborone_sae+maun_sae+serowe_sae+f_town_sae+phikwe_sae
 
         gaborone_siae = siaes.filter(site_id=40).count()
         maun_siae = siaes.filter(site_id=41).count()
         serowe_siae = siaes.filter(site_id=42).count()
         f_town_siae = siaes.filter(site_id=43).count()
         phikwe_siae = siaes.filter(site_id=44).count()
+        
+        aesi_total = gaborone_siae+maun_siae+serowe_siae+phikwe_siae+f_town_siae
+        
 
         ae_medDRA_stats = []
         value_list = aes.values_list('pt_code', flat=True).distinct()
@@ -126,6 +134,10 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             aes=aes,
             saes=saes,
             siaes=siaes,
+            
+            ae_total=ae_total,
+            sae_total=sae_total,
+            aesi_total=aesi_total,
 
             gaborone_ae=gaborone_ae,
             maun_ae=maun_ae,
