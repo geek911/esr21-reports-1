@@ -1,6 +1,8 @@
-from django.core.paginator import Paginator
 from django.apps import apps as django_apps
+from django.contrib.sites.models import Site
+from django.core.paginator import Paginator
 from django.views.generic.list import ListView
+
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from esr21_subject.models import EligibilityConfirmation
@@ -38,12 +40,25 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             object_list.append(AeModelWrapper(obj))
         return object_list
 
+    def get_site_id(self, site_name_postfix):
+        try:
+            return Site.objects.get(name__endswith=site_name_postfix).id
+        except Site.DoesNotExist:
+            pass
+
+    def get_screened_by_site(self, site_name_postfix):
+
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            return self.subject_screening_cls.objects.filter(site_id=site_id).count()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         aes = self.ae_cls.objects.all()
         saes = self.sae_cls.objects.all()
         siaes = self.siae_cls.objects.all()
+        print(siaes, '*********')
 
         paginator = Paginator(aes, 6)
         self.object_list = self.get_queryset()
@@ -83,26 +98,26 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             }
             ae_medDRA_stats.append(temp)
         
-        site_screenings = [
-            ['Gaborone', self.get_screened_by_site('esr21')],
-            ['F/Town', self.get_screened_by_site('Francistown')],
-            ['S/Phikwe', self.get_screened_by_site('Phikwe')],
-            ['Maun', self.get_screened_by_site('Maun')],
-            ['Serowe', self.get_screened_by_site('Serowe')]]
-
-        site_vaccinations = [
-            ['Gaborone', self.get_vaccinated_by_site('esr21')],
-            ['F/Town', self.get_vaccinated_by_site('Francistown')],
-            ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
-            ['Maun', self.get_vaccinated_by_site('Maun')],
-            ['Serowe', self.get_vaccinated_by_site('Serowe')]]
-
-        not_erolled = [
-            ['Gaborone', self.get_not_enrolled_by_site('esr21')],
-            ['F/Town', self.get_not_enrolled_by_site('Francistown')],
-            ['S/Phikwe', self.get_not_enrolled_by_site('Phikwe')],
-            ['Maun', self.get_not_enrolled_by_site('Maun')],
-            ['Serowe', self.get_not_enrolled_by_site('Serowe')]]
+        # site_screenings = [
+            # ['Gaborone', self.get_screened_by_site('Gaborone')],
+            # ['F/Town', self.get_screened_by_site('Francistown')],
+            # ['S/Phikwe', self.get_screened_by_site('Phikwe')],
+            # ['Maun', self.get_screened_by_site('Maun')],
+            # ['Serowe', self.get_screened_by_site('Serowe')]]
+            #
+        # site_vaccinations = [
+            # ['Gaborone', self.get_vaccinated_by_site('Gaborone')],
+            # ['F/Town', self.get_vaccinated_by_site('Francistown')],
+            # ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
+            # ['Maun', self.get_vaccinated_by_site('Maun')],
+            # ['Serowe', self.get_vaccinated_by_site('Serowe')]]
+            #
+        # not_erolled = [
+            # ['Gaborone', self.get_not_enrolled_by_site('Gaborone')],
+            # ['F/Town', self.get_not_enrolled_by_site('Francistown')],
+            # ['S/Phikwe', self.get_not_enrolled_by_site('Phikwe')],
+            # ['Maun', self.get_not_enrolled_by_site('Maun')],
+            # ['Serowe', self.get_not_enrolled_by_site('Serowe')]]
 
         context.update(
             page_obj=page_obj,

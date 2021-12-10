@@ -156,21 +156,21 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
         siaes = self.siae_cls.objects.all().count()
 
         site_screenings = [
-            ['Gaborone', self.get_screened_by_site('esr21')],
+            ['Gaborone', self.get_screened_by_site('Gaborone')],
             ['F/Town', self.get_screened_by_site('Francistown')],
             ['S/Phikwe', self.get_screened_by_site('Phikwe')],
             ['Maun', self.get_screened_by_site('Maun')],
             ['Serowe', self.get_screened_by_site('Serowe')]]
 
         site_vaccinations = [
-            ['Gaborone', self.get_vaccinated_by_site('esr21')],
+            ['Gaborone', self.get_vaccinated_by_site('Gaborone')],
             ['F/Town', self.get_vaccinated_by_site('Francistown')],
             ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
             ['Maun', self.get_vaccinated_by_site('Maun')],
             ['Serowe', self.get_vaccinated_by_site('Serowe')]]
 
         not_erolled = [
-            ['Gaborone', self.get_not_enrolled_by_site('esr21')],
+            ['Gaborone', self.get_not_enrolled_by_site('Gaborone')],
             ['F/Town', self.get_not_enrolled_by_site('Francistown')],
             ['S/Phikwe', self.get_not_enrolled_by_site('Phikwe')],
             ['Maun', self.get_not_enrolled_by_site('Maun')],
@@ -182,14 +182,14 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
         total_not_erolled = self.get_total_not_enrolled()
 
         first_dose_site = [
-            ['Gaborone', self.get_vaccinated_by_site('esr21')],
+            ['Gaborone', self.get_vaccinated_by_site('Gaborone')],
             ['F/Town', self.get_vaccinated_by_site('Francistown')],
             ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
             ['Maun', self.get_vaccinated_by_site('Maun')],
             ['Serowe', self.get_vaccinated_by_site('Serowe')]]
 
         second_dose_site = [
-            ['Gaborone', self.get_second_dose_by_site('esr21')],
+            ['Gaborone', self.get_second_dose_by_site('Gaborone')],
             ['F/Town', self.get_second_dose_by_site('Francistown')],
             ['S/Phikwe', self.get_second_dose_by_site('Phikwe')],
             ['Maun', self.get_second_dose_by_site('Maun')],
@@ -202,28 +202,28 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
 
         # Withdrawals stats
         withdrawals_site = [
-            ['Gaborone', self.get_offstudy_by_site('esr21')],
+            ['Gaborone', self.get_offstudy_by_site('Gaborone')],
             ['F/Town', self.get_offstudy_by_site('Francistown')],
             ['S/Phikwe', self.get_offstudy_by_site('Phikwe')],
             ['Maun', self.get_offstudy_by_site('Maun')],
             ['Serowe', self.get_offstudy_by_site('Serowe')]]
 
         after_first_dose_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_after_first_dose_by_site('esr21')],
+            ['Gaborone', self.get_offstudy_after_first_dose_by_site('Gaborone')],
             ['F/Town', self.get_offstudy_after_first_dose_by_site('Francistown')],
             ['S/Phikwe', self.get_offstudy_after_first_dose_by_site('Phikwe')],
             ['Maun', self.get_offstudy_after_first_dose_by_site('Maun')],
             ['Serowe', self.get_offstudy_after_first_dose_by_site('Serowe')]]
 
         after_second_dose_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_after_second_dose_by_site('esr21')],
+            ['Gaborone', self.get_offstudy_after_second_dose_by_site('Gaborone')],
             ['F/Town', self.get_offstudy_after_second_dose_by_site('Francistown')],
             ['S/Phikwe', self.get_offstudy_after_second_dose_by_site('Phikwe')],
             ['Maun', self.get_offstudy_after_second_dose_by_site('Maun')],
             ['Serowe', self.get_offstudy_after_second_dose_by_site('Serowe')]]
 
         reason_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_reasons_by_site('esr21')],
+            ['Gaborone', self.get_offstudy_reasons_by_site('Gaborone')],
             ['F/Town', self.get_offstudy_reasons_by_site('Francistown')],
             ['S/Phikwe', self.get_offstudy_reasons_by_site('Phikwe')],
             ['Maun', self.get_offstudy_reasons_by_site('Maun')],
