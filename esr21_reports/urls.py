@@ -9,6 +9,9 @@ from .views import (HomeView,
                     )
 from .views import ManagementReportsView
 
+from .views import line_chart, line_chart_json
+
+
 app_name = 'esr21_reports'
 
 urlpatterns = [
@@ -20,6 +23,9 @@ urlpatterns = [
     path('ae_reports', AdverseEventView.as_view(), name='esr21_ae_reports_url'),
     path('ae_detailed_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
     path('dm_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
+    
+    path('chart', line_chart, name='line_chart_url'),
+    path('chartJSON', line_chart_json, name='line_chart_json_url'),
 ]
 
 
