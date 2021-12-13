@@ -1,5 +1,5 @@
 {% extends 'edc_base/base.html' %}
-
+{% load static %}
 {% block extra-styles %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 <style>
@@ -25,15 +25,18 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
 	<script src="https://code.highcharts.com/highcharts.src.js"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script>
-	  $.ajax({
-	    url: $("#container").attr("data-url"),
-	    dataType: 'json',
-	    success: function (data) {
-	      Highcharts.chart("container", data);
-	    }
-	  });
-	</script>
+
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+        <script type="text/javascript">
+            $.get('{% url "esr21_reports:line_chart_json_url" %}', function(data) {
+                var ctx = $("#myChart33").get(0).getContext("2d");
+                new Chart(ctx, {
+                    type: 'line', data: data
+                });
+            });
+        </script>
 
 {% endblock extra-scripts %}
 
@@ -41,6 +44,7 @@
 {% block main %}
 
 <div class="container">
+
 	<div class="row">
 		
 			<div class="col-md-6">
@@ -135,95 +139,14 @@
 		    </div>
 
 	</div>
-	
+
 	<div class="row">
-		<div class="col-md-6">
-			    <canvas id="screeningChart" width="250" height="150"></canvas>
-			        <script>
-			        var ctx = document.getElementById('screeningChart').getContext('2d');
-			        var myChart = new Chart(ctx, {
-			            type: 'bar',
-			            data: {
-			                labels: [{% for screening in site_screenings %}  '{{ screening.0 }}',  {% endfor %}],
-			                datasets: [{
-			                    label: 'Screenings per Sites',
-			                    data: [{% for screening in site_screenings %}  {{ screening.1 }},  {% endfor %}],
-			                    backgroundColor: [
-			                        'rgba(255, 99, 132, 0.8)',
-			                        'rgba(54, 162, 235, 0.8)',
-			                        'rgba(255, 206, 86, 0.8)',
-			                        'rgba(75, 192, 192, 0.8)',
-			                        'rgba(153, 102, 255, 0.8)',
-			                        'rgba(255, 159, 64, 0.8)',
-			                        'rgba(240, 120, 50, 0.8)',
-			                    ],
-			                    borderColor: [
-			                        'rgba(255, 99, 132, 1)',
-			                        'rgba(54, 162, 235, 1)',
-			                        'rgba(255, 206, 86, 1)',
-			                        'rgba(75, 192, 192, 1)',
-			                        'rgba(153, 102, 255, 1)',
-			                        'rgba(255, 159, 64, 1)',
-			                        'rgba(240, 120, 50, 1)',
-			
-			                    ],
-			                    borderWidth: 2
-			                }]
-			            },
-			            options: {
-			                scales: {
-			                    y: {
-			                        beginAtZero: true
-			                    }
-			                }
-			            }
-			        });
-			        </script>
-			    </div>
-		<div class="col-md-6">
-			    <canvas id="myChart" width="250" height="150"></canvas>
-			        <script>
-			        var ctx = document.getElementById('myChart').getContext('2d');
-			        var myChart = new Chart(ctx, {
-			            type: 'bar',
-			            data: {
-			                labels: [{% for vaccine in site_vaccinations %}  '{{ vaccine.0 }}',  {% endfor %}],
-			                datasets: [{
-			                    label: 'Erolments per Sites',
-			                    data: [{% for vaccine in site_vaccinations %}  {{ vaccine.1 }},  {% endfor %}],
-			                    backgroundColor: [
-			                        'rgba(255, 99, 132, 0.8)',
-			                        'rgba(54, 162, 235, 0.8)',
-			                        'rgba(255, 206, 86, 0.8)',
-			                        'rgba(75, 192, 192, 0.8)',
-			                        'rgba(153, 102, 255, 0.8)',
-			                        'rgba(255, 159, 64, 0.8)',
-			                        'rgba(240, 120, 50, 0.8)',
-			                    ],
-			                    borderColor: [
-			                        'rgba(255, 99, 132, 1)',
-			                        'rgba(54, 162, 235, 1)',
-			                        'rgba(255, 206, 86, 1)',
-			                        'rgba(75, 192, 192, 1)',
-			                        'rgba(153, 102, 255, 1)',
-			                        'rgba(255, 159, 64, 1)',
-			                        'rgba(240, 120, 50, 1)',
-			
-			                    ],
-			                    borderWidth: 2
-			                }]
-			            },
-			            options: {
-			                scales: {
-			                    y: {
-			                        beginAtZero: true
-			                    }
-			                }
-			            }
-			        });
-			        </script>
-			    </div>
+		<div class="col-md-12">
+			<b>Enrolment Per Site Per Month:</b> All number are for first dose received only
+			<canvas id="myChart33" width="200" height="50"></canvas>
+		</div>
 	</div>
+
 
     <div class='row'>
 		<div class="col-md-12">

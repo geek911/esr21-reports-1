@@ -234,6 +234,12 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
         total_second_dose_withdrawals = self.get_offstudy_by_dose('second_dose')
 
         context.update(
+            
+            # Charts
+            # get_data=self.get_data(),
+            # get_providers=self.get_providers(),
+            # get_labels=self.get_labels(),
+            
             # Totals
             total_screenings=total_screenings,
             total_vaccinations=total_vaccinations,
