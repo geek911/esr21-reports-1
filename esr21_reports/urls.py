@@ -8,6 +8,7 @@ from .views import (HomeView,
                     AdverseEventView,
                     ManagementReportsView,
                     DetailedAdverseEventView,
+                    adverse_event_chart_json,
                     )
 
 from .views import line_chart, line_chart_json
@@ -30,6 +31,7 @@ urlpatterns = [
     
     path('chart', line_chart, name='line_chart_url'),
     path('chartJSON', line_chart_json, name='line_chart_json_url'),
+    path('adverse_event_graph', adverse_event_chart_json,name='adverse_event_chart_json_url' )
 ]
 
 

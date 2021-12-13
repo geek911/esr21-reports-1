@@ -6,3 +6,4 @@ from .screening_view import ScreeningView
 from .vaccination_view import VaccinationView
 from .adverse_events import DetailedAdverseEventView
 from .graphs import line_chart, line_chart_json
+from .adverse_events import adverse_event_chart_json
