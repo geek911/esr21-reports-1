@@ -8,17 +8,22 @@ from edc_navbar import NavbarViewMixin
 from esr21_subject.models import EligibilityConfirmation
 
 from ..model_wrappers import AeModelWrapper
+from django.views.generic.detail import DetailView
 
 
 class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
     template_name = 'esr21_reports/safety_reports/ae_reports.html'
     navbar_name = 'esr21_reports'
-    navbar_selected_item = 'Adverse Events Reports'
+    navbar_selected_item = 'Safety Reports'
     model = EligibilityConfirmation
 
-    ae_model = 'esr21_subject.adverseeventrecord'
-    sae_model = 'esr21_subject.seriousadverseeventrecord'
-    siae_model = 'esr21_subject.specialinterestadverseeventrecord'
+    ae_model = 'esr21_subject.adverseevent'
+    sae_model = 'esr21_subject.seriousadverseevent'
+    siae_model = 'esr21_subject.specialinterestadverseevent'
+    
+    ae_record_model = 'esr21_subject.adverseeventrecord'
+    sae_record_model = 'esr21_subject.seriousadverseeventrecord'
+    siae_record_model = 'esr21_subject.specialinterestadverseeventrecord'
 
     @property
     def ae_cls(self):
@@ -31,6 +36,18 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
     @property
     def siae_cls(self):
         return django_apps.get_model(self.siae_model)
+    
+    @property
+    def siae_record_cls(self):
+        return django_apps.get_model(self.siae_record_model)
+    
+    @property
+    def ae_record_cls(self):
+        return django_apps.get_model(self.ae_record_model)
+
+    @property
+    def sae_record_cls(self):
+        return django_apps.get_model(self.sae_record_model)
 
     def get_wrapped_queryset(self, queryset):
         """Returns a list of wrapped model instances.
@@ -45,50 +62,73 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             return Site.objects.get(name__endswith=site_name_postfix).id
         except Site.DoesNotExist:
             pass
+    
+    def get_adverse_event_by_site(self,site_name_postfix=None):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            return self.ae_cls.objects.filter(site_id=site_id).count()
+    
+    def get_adverse_event_special_interest_by_site(self,site_name_postfix=None):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            return self.siae_cls.objects.filter(site_id=site_id).count()
+    
+    def get_serious_adverse_event_by_site(self,site_name_postfix=None):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            return self.sae_cls.objects.filter(site_id=site_id).count()
 
     def get_screened_by_site(self, site_name_postfix):
 
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             return self.subject_screening_cls.objects.filter(site_id=site_id).count()
+    
+    def get_total_aesi(self):
+        return self.siae_cls.objects.all().count()
+    
+    def get_total_ae(self):
+        return self.ae_cls.objects.all().count()
+    
+    def get_total_sae(self):
+        return self.sae_cls.objects.all().count()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        aes = self.ae_cls.objects.all()
-        saes = self.sae_cls.objects.all()
-        siaes = self.siae_cls.objects.all()
-        print(siaes, '*********')
-
-        paginator = Paginator(aes, 6)
-        self.object_list = self.get_queryset()
-        page_number = self.request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        gaborone_ae = aes.filter(site_id=40).count()
-        maun_ae = aes.filter(site_id=41).count()
-        serowe_ae = aes.filter(site_id=42).count()
-        f_town_ae = aes.filter(site_id=43).count()
-        phikwe_ae = aes.filter(site_id=44).count()
         
-        ae_total = gaborone_ae+maun_ae+serowe_ae+f_town_ae+phikwe_ae
+        aes = self.ae_record_cls.objects.all()
+        saes = self.sae_record_cls.objects.all()
+        siaes = self.siae_record_cls.objects.all()
+
+        adverse_events_stats = [
+           ['Gaborone',self.get_adverse_event_by_site('Gaborone')],
+           ['Maun',self.get_adverse_event_by_site('Maun')],
+           ['Serowe',self.get_adverse_event_by_site('Serowe')],
+           ['S/Phikwe',self.get_adverse_event_by_site('Phikwe')],
+           ['F/Town',self.get_adverse_event_by_site('Francistown')],
+           ['All Sites', self.get_total_ae()]
+        ]
+        
+        serious_adverse_events_stats = [
+           ['Gaborone',self.get_serious_adverse_event_by_site('Gaborone')],
+           ['Maun',self.get_serious_adverse_event_by_site('Maun')],
+           ['Serowe',self.get_serious_adverse_event_by_site('Serowe')],
+           ['S/Phikwe',self.get_serious_adverse_event_by_site('Phikwe')],
+           ['F/Town',self.get_serious_adverse_event_by_site('Francistown')],
+           ['All Sites', self.get_total_sae()]
+        ]
+        
+        adverse_events_special_interest_stats = [
+           ['Gaborone',self.get_adverse_event_special_interest_by_site('Gaborone')],
+           ['Maun',self.get_adverse_event_special_interest_by_site('Maun')],
+           ['Serowe',self.get_adverse_event_special_interest_by_site('Serowe')],
+           ['S/Phikwe',self.get_adverse_event_special_interest_by_site('Phikwe')],
+           ['F/Town',self.get_adverse_event_special_interest_by_site('Francistown')],
+           ['All Sites', self.get_total_aesi()]
+        ]
+        
         
 
-        gaborone_sae = saes.filter(site_id=40).count()
-        maun_sae = saes.filter(site_id=41).count()
-        serowe_sae = saes.filter(site_id=42).count()
-        f_town_sae = saes.filter(site_id=43).count()
-        phikwe_sae = saes.filter(site_id=44).count()
-        
-        sae_total = gaborone_sae+maun_sae+serowe_sae+f_town_sae+phikwe_sae
-
-        gaborone_siae = siaes.filter(site_id=40).count()
-        maun_siae = siaes.filter(site_id=41).count()
-        serowe_siae = siaes.filter(site_id=42).count()
-        f_town_siae = siaes.filter(site_id=43).count()
-        phikwe_siae = siaes.filter(site_id=44).count()
-        
-        aesi_total = gaborone_siae+maun_siae+serowe_siae+phikwe_siae+f_town_siae
         
 
         ae_medDRA_stats = []
@@ -128,35 +168,18 @@ class AdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             # ['Serowe', self.get_not_enrolled_by_site('Serowe')]]
 
         context.update(
-            page_obj=page_obj,
             object_list=self.object_list,
 
             aes=aes,
             saes=saes,
             siaes=siaes,
             
-            ae_total=ae_total,
-            sae_total=sae_total,
-            aesi_total=aesi_total,
-
-            gaborone_ae=gaborone_ae,
-            maun_ae=maun_ae,
-            serowe_ae=serowe_ae,
-            phikwe_ae=phikwe_ae,
-            f_town_ae=f_town_ae,
-
-            gaborone_sae=gaborone_sae,
-            maun_sae=maun_sae,
-            serowe_sae=serowe_sae,
-            phikwe_sae=phikwe_sae,
-            f_town_sae=f_town_sae,
-
-            gaborone_siae=gaborone_siae,
-            maun_siae=maun_siae,
-            serowe_siae=serowe_siae,
-            phikwe_siae=phikwe_siae,
-            f_town_siae=f_town_siae,
+            adverse_events_stats=adverse_events_stats,
+            serious_adverse_events_stats=serious_adverse_events_stats,
+            adverse_events_special_interest_stats=adverse_events_special_interest_stats,
 
             ae_medDRA_stats=ae_medDRA_stats,
         )
         return context
+    
+    

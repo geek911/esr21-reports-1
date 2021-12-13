@@ -1,0 +1,1 @@
+from .detailed_adverse_event_view import DetailedAdverseEventView

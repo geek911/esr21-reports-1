@@ -1,0 +1,148 @@
+{% extends 'edc_base/base.html' %}
+
+
+{% block main %}
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="panel-heading"><b>Adverse Events Stats</b></div>
+				<div class="panel-body">
+					<table class="table table-hover">
+					  <thead>
+					    <tr>
+					      <th></th>
+					      <th colspan="5" class="text-center">Sites</th>
+					      <th>Overall</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	<tr>
+					        <td ></td>
+					        <td>Gaborone</td>
+					        <td>Maun</td>
+					        <td>S/Phikwe</td>
+					        <td>F/Town</td>
+					        <td>Serowe</td>
+					        <td>All Sites</td>
+					    </tr>
+					     <tr>
+					      <td>AE Experienced</td>
+					      {% for ae in experienced_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					     <tr>
+					      <td>AE Not Experienced</td>
+					      {% for ae in not_experienced_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					    
+					     <tr>
+					      <td>Total</td>
+					      {% for ae in total_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					    
+					  </tbody>
+					</table>
+				   </div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading"><b>Experienced Adverse Event Records </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	<tr>
+							        {% for ae in expected_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							    </tr>
+							     <tr>
+							      {% for ae in expected_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							    
+							  </tbody>
+							</table>
+					   </div>
+					</div>
+				</div>
+			<div class="col-md-6">	
+				<div class="panel panel-danger">
+					<div class="panel-heading"><b>Unexpected Adverse Event Records </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	<tr>
+							        <td>Gaborone</td>
+							        <td>Maun</td>
+							        <td>S/Phikwe</td>
+							        <td>F/Town</td>
+							        <td>Serowe</td>
+							        <td>All Sites</td>
+							    </tr>
+							     <tr>
+							      {% for ae in unexpected_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							  </tbody>
+							</table>
+					   </div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-warning">
+					<div class="panel-heading"><b>Missing Adverse Event Records for Experienced AE </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	<tr>
+							        {% for ae in missing_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							    </tr>
+							     <tr>
+							      {% for ae in missing_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							    
+							  </tbody>
+							</table>
+					   </div>
+					</div>
+				</div>
+			</div>
+		
+	</div>
+{% endblock main %}

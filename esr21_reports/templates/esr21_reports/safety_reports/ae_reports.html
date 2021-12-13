@@ -71,6 +71,7 @@
 <script type="application/javascript">
     $(document).ready(function() {
         $('#example').DataTable({
+        "pageLength": 5,
         scrollX:        300,
 	    deferRender:    true,
 	    scroller:       true,
@@ -87,10 +88,14 @@
 
      $(document).ready(function() {
         $('#example1').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
+        "pageLength": 5,
+         scrollX:        300,
+	     deferRender:    true,
+	     scroller:       true,
+         dom: 'Bfrtip',
+         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+         ]
     } );
 
     table.buttons().container()
@@ -99,6 +104,26 @@
 
     $(document).ready(function() {
         $('#example3').DataTable({
+        "pageLength": 5,
+         scrollX:        300,
+	     deferRender:    true,
+	     scroller:       true,
+         dom: 'Bfrtip',
+         buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+         ]
+    } );
+
+    table.buttons().container()
+        .appendTo( '#example3 .col-sm-6:eq(0)' );
+    } );
+    
+    $(document).ready(function() {
+        $('#example5').DataTable({
+        "pageLength": 5,
+         scrollX:        300,
+	    deferRender:    true,
+	    scroller:       true,
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
@@ -106,8 +131,26 @@
     } );
 
     table.buttons().container()
-        .appendTo( '#example3 .col-sm-6:eq(0)' );
+        .appendTo( '#example5 .col-sm-6:eq(0)' );
     } );
+    
+    
+    $(document).ready(function() {
+        $('#example4').DataTable({
+        "pageLength": 5,
+         scrollX:        300,
+	    deferRender:    true,
+	    scroller:       true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+
+    table.buttons().container()
+        .appendTo( '#example4 .col-sm-6:eq(0)' );
+    } );
+    
 
 </script>
 
@@ -157,30 +200,21 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 						    </tr>
 						     <tr>
 						      <td>AE</td>
-						      <td>{{ gaborone_ae }} </td>
-						      <td>{{ maun_ae }} </td>
-						      <td>{{ phikwe_ae }} </td>
-						      <td>{{ f_town_ae }} </td>
-						      <td>{{ serowe_ae }} </td>
-						      <td>{{ ae_total }}</td>
+						      {% for ae in adverse_events_stats %}
+						      <td>{{ ae.1 }} </td>
+						      {% endfor %}
 						    </tr>
 						    <tr>
 						      <td>SAE</td>
-						      <td>{{ gaborone_sae }} </td>
-						      <td>{{ maun_sae }} </td>
-						      <td>{{ phikwe_sae }} </td>
-						      <td>{{ f_town_sae }} </td>
-						      <td>{{ serowe_sae }} </td>
-						      <td>{{ sae_total }}</td>
+						      {% for ae in serious_adverse_events_stats %}
+						      <td>{{ ae.1 }} </td>
+						      {% endfor %}
 						    </tr>
 						    <tr>
 						      <td>AESI</td>
-						      <td>{{ gaborone_siae }} </td>
-						      <td>{{ maun_siae }} </td>
-						      <td>{{ phikwe_siae }} </td>
-						      <td>{{ f_town_siae }} </td>
-						      <td>{{ serowe_siae }} </td>
-						      <td>{{ aesi_total }}</td>
+						      {% for ae in adverse_events_special_interest_stats %}
+						      <td>{{ ae.1 }} </td>
+						      {% endfor %}
 						    </tr>
 						    
 						  </tbody>
@@ -190,7 +224,9 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 					  </div>
 					</div>
 					
-					
+					<div class="panel panel-info">
+					<div class="panel-heading"><b>Adverse Event Reporting</b></div>
+					<div class="panel-body">
 					 <div class="row">
                         <table id="example" class="table table-striped table-bordered" style="width:100%;">
                             <thead>
@@ -249,13 +285,155 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
                             </tbody>
                             
                         </table>
-                    </div>
+                    	</div>
+                   	</div>
+                   </div>
                     
+                    <div class="panel panel-info">
+					<div class="panel-heading"><b>Serious Adverse Event Reporting</b></div>
+					<div class="panel-body">
+                    
+                    <div class="row">
+                        <table id="example5" class="table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                               <tr>
+                                    <th>PID</th>
+                                    <th>Site</th>
+                                    <th>AE number</th>
+                                    <th>Gender</th>
+                                    <th>DOB</th>
+                                    <th>Vax date 1</th>
+                                    <th>Vax date 2</th>
+                                    <th>AE reported term</th>
+                                    <th>Intensity of SAE</th>
+                                    <th>Date AE Met Criteria for Serious AE </th>
+                                    <th>SAE Stop Date</th>
+                                    <th>Results in death</th>
+                                    <th>Was it a congenital anomaly or birth defect</th>
+                                    <th>Was it life threatening</th>
+                                    <th>Did it result in significant disability/incapacity? </th>
+                                    <th>Other medically important serious event?</th>
+                                    <th>Primary cause of death</th>
+                                    <th>Secondary cause of death</th>
+                                    <th>SAE caused by study procedure</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ae in saes %}
+                                <tr>
+                                    <td>{{ ae.serious_adverse_event.subject_identifier }}</td>
+                                    <td>
+                                        {% if ae.site_id == 40 %}
+                                        {{ 'Gaborone' }}
+                                        {% elif ae.site_id == 41 %}
+                                        {{ 'Maun' }}
+                                        {% elif ae.site_id == 42 %}
+                                        {{ 'Serowe' }}
+                                        {% elif ae.site_id == 43 %}
+                                        {{ 'F/town' }}
+                                        {% elif ae.site_id == 44 %}
+                                        {{ 'Phikwe' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ae.ae_number}}</td>
+                                    <td>{{ae.gender}}</td>
+                                    <td>{{ae.dob}}</td>
+                                    <td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+                                    <td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+                                    <td>{{ ae.sae_name }}</td>
+                                    <td>{{ae.sae_intensity}}</td>
+                                    <td>{{ae.start_date}}</td>
+                                    <td>{{ae.resolution_date}}</td>
+                                    <td>{{ae.ae_sdth}}</td>
+                                    <td>{{ ae.ae_scong }}</td>
+                                    <td>{{ ae.ae_slife }}</td>
+                                    <td>{{ ae.ae_sdisab }}</td>
+                                    <td>{{ ae.ae_smie }}</td>
+                                    <td>{{ ae.dthcaus_1 }}</td>
+                                    <td>{{ ae.dthcaus_2 }}</td>
+                                    <td>{{ ae.ae_caussp }}</td>
+                                    
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            
+                        </table>
+	                    </div>
+	                   </div>
+	                  </div>
+	                  
+	                  
+	                  <div class="panel panel-info">
+					<div class="panel-heading"><b>Adverse Events of Special Interest Reporting</b></div>
+					<div class="panel-body">
+                    
+                    <div class="row">
+                        <table id="example3" class="table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                               <tr>
+                                    <th>PID</th>
+                                    <th>Site</th>
+                                    <th>Gender</th>
+                                    <th>DOB</th>
+                                    <th>Vax date 1</th>
+                                    <th>Vax date 2</th>
+                                    <th>AE reported term</th>
+                                    <th>MedDRA system organ class name</th>
+                                    <th>MedDRA high level group term name</th>
+                                    <th>Maximum CTCAE Grade</th>
+                                    <th>Was this considered to be a serious adverse event?</th>
+                                    <th>Was the event an AE of special interest?</th>
+                                    <th>Start Date</th>
+                                    <th>Stop Date</th>
+                                    <th>Study Related</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ae in siaes %}
+                                <tr>
+                                    <td>{{ ae.special_interest_adverse_event.subject_identifier }}</td>
+                                    <td>
+                                        {% if ae.site_id == 40 %}
+                                        {{ 'Gaborone' }}
+                                        {% elif ae.site_id == 41 %}
+                                        {{ 'Maun' }}
+                                        {% elif ae.site_id == 42 %}
+                                        {{ 'Serowe' }}
+                                        {% elif ae.site_id == 43 %}
+                                        {{ 'F/town' }}
+                                        {% elif ae.site_id == 44 %}
+                                        {{ 'Phikwe' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ae.gender}}</td>
+                                    <td>{{ae.dob}}</td>
+                                    <td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+                                    <td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+                                    <td>{{ ae.ae_term }}</td>
+                                    <td>{{ae.soc_name}}</td>
+                                    <td>{{ae.hlgt_name}}</td>
+                                    <td>{{ae.max_ctcae_grade}}</td>
+                                    <td>{{ae.serious_event}}</td>
+                                    <td>{{ae.special_interest_ae}}</td>
+                                    <td>{{ ae.start_date }}</td>
+                                    <td>{{ ae.stop_date }}</td>
+                                    <td>
+                                        {{ ae.study_treatmnt_rel }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            
+                        </table>
+	                    </div>
+	                   </div>
+	                  </div>
                      <div class="panel panel-info">
+                     <div class="panel-heading"><b>AE MedDRA reporting</b></div>
 					 	<div class="panel-body">
 					 		<div class="row w-100">
-		                    <h4>AE MedDRA reporting</h4>
-		                        <table id="example3" class="table table-striped table-bordered" style="width:100%">
+		                    
+		                        <table id="example4" class="table table-striped table-bordered" style="width:100%">
 		                            <thead>
 		                                <tr>
 		                                    <th>MedDRA code</th>
@@ -281,61 +459,6 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 		                    </div>
 					 	</div>
 					 </div>
-                   
-    		<div class='row'>
-        		<div class="col-md-12">
-                	<div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Serious Adverse Events Reports</h3>
-                        <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row w-100">
-                            <table id="example1" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <td>MedDRA Code</td>
-                                        <th>Site</th>
-                                        <th>Important Medical Event</th>
-                                        <th>Congenital Anomaly</th>
-                                        <th>Life Threatening</th>
-                                        <th>Disability</th>
-                                        <th>Hospitalization</th>
-                                        <th>Death</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for sae in saes %}
-                                    <tr>
-                                        <td>{{ sae.pt_code }}</td>
-                                        <td>
-                                        {% if sae.site_id == 40 %}
-                                            {{ 'Gaborone' }}
-                                        {% elif sae.site_id == 41 %}
-                                            {{ 'Maun' }}
-                                        {% elif sae.site_id == 42 %}
-                                            {{ 'Serowe' }}
-                                        {% elif sae.site_id == 43 %}
-                                            {{ 'F/town' }}
-                                        {% elif sae.site_id == 44 %}
-                                            {{ 'Phikwe' }}
-                                        {% endif %}
-                                        </td>
-                                        <td>{{ sae.ae_smie }} </td>
-                                        <td>{{ sae.ae_scong }}</td>
-                                        <td>{{ sae.ae_slife }}</td>
-                                        <td>{{ sae.ae_sdisab }}</td>
-                                        <td>{{ sae.ae_shosp }}</td>
-                                        <td>{{ sae.ae_sdth }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-            </div>
-        </div>
-	</div>
-</div>
+				</div>
 
 {% endblock main %}
