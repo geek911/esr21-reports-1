@@ -8,11 +8,11 @@
 <link href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap.min.css" rel='stylesheet'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
- <style>
- 	html{
- 	scrollY: 300
- 	}
- </style>
+<style>
+	html{
+		scrollY: 300
+	}
+</style>
 
 {% endblock extra-styles %}
 
@@ -45,13 +45,13 @@
 	$(document).ready(function() {
         $('#example').DataTable({
         "pageLength": 5,
-         scrollX:        300,
-	     deferRender:    true,
-	     scroller:       true,
-         dom: 'Bfrtip',
-         buttons: [
+		scrollX:        300,
+		deferRender:    true,
+		scroller:       true,
+		dom: 'Bfrtip',
+		buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-         ]
+		]
     } );
 
     table.buttons().container()
@@ -61,115 +61,108 @@
     $(document).ready(function() {
         $('#example1').DataTable({
         "pageLength": 5,
-         scrollX:        300,
-	     deferRender:    true,
-	     scroller:       true,
-         dom: 'Bfrtip',
-         buttons: [
+        scrollX:        300,
+		deferRender:    true,
+		scroller:       true,
+        dom: 'Bfrtip',
+        buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-         ]
+        ]
     } );
 
     table.buttons().container()
         .appendTo( '#example1 .col-sm-6:eq(0)' );
     } );
-	  
-	  var areaOptions = {
-	    plugins: {
-	      filler: {
-	        propagate: true
-	      }
-	    }
-	  }
-	  
-	  $(function() {
-	  	if ($("#areaChart").length) {
-	  		$.get('{% url "esr21_reports:adverse_event_chart_json_url" %}', function(data) {
-                var ctx = $("#areaChart").get(0).getContext("2d");
-                new Chart(ctx, {
-                    type: 'line', 
-                    data: data,
-                    options: areaOptions
-                });
-           }); 
-		  }
-		  
-		if ($("#barChart1").length) {
-			 var barChartCanvas = $("#barChart1").get(0).getContext("2d");
-			    var labels = {{ sites| safe }}
-			    var data = {{ experienced_ae_events_data| safe }}
-			    var barChart = new Chart(barChartCanvas, {
-			      type: 'bar',
-			      data: {
-					    labels:labels ,
-					    datasets: [{
-					      label: '# Experienced AE Records',
-					      data: data,
-					      backgroundColor: [
-					        'rgba(255, 99, 132, 0.2)',
-					        'rgba(54, 162, 235, 0.2)',
-					        'rgba(255, 206, 86, 0.2)',
-					        'rgba(75, 192, 192, 0.2)',
-					        'rgba(153, 102, 255, 0.2)',
-					        'rgba(255, 159, 64, 0.2)'
-					      ],
-					      borderColor: [
-					        'rgba(255,99,132,1)',
-					        'rgba(54, 162, 235, 1)',
-					        'rgba(255, 206, 86, 1)',
-					        'rgba(75, 192, 192, 1)',
-					        'rgba(153, 102, 255, 1)',
-					        'rgba(255, 159, 64, 1)'
-					      ],
-					      borderWidth: 1,
-					      fill: false
-					    }]
-					  },
-			    });
-		 }
-		 
-		 if ($("#barChart2").length) {
-			 var barChartCanvas = $("#barChart2").get(0).getContext("2d");
-			    var labels = {{ sites| safe }}
-			    var data = {{ not_experienced_ae_events_data| safe }}
-			    var barChart = new Chart(barChartCanvas, {
-			      type: 'bar',
-			      data: {
-					    labels:labels ,
-					    datasets: [{
-					      label: '# Not Experienced AE Records',
-					      data: data,
-					      backgroundColor: [
-					        'rgba(255, 99, 132, 0.2)',
-					        'rgba(54, 162, 235, 0.2)',
-					        'rgba(255, 206, 86, 0.2)',
-					        'rgba(75, 192, 192, 0.2)',
-					        'rgba(153, 102, 255, 0.2)',
-					        'rgba(255, 159, 64, 0.2)'
-					      ],
-					      borderColor: [
-					        'rgba(255,99,132,1)',
-					        'rgba(54, 162, 235, 1)',
-					        'rgba(255, 206, 86, 1)',
-					        'rgba(75, 192, 192, 1)',
-					        'rgba(153, 102, 255, 1)',
-					        'rgba(255, 159, 64, 1)'
-					      ],
-					      borderWidth: 1,
-					      fill: false
-					    }]
-					  },
-			    });
-		 }
-		 
-	   
-		
-	  });
-    
-	   
-    
-    
-  </script>
+
+	var areaOptions = {
+		plugins: {
+			filler: {
+			propagate: true
+			}
+		}
+	}
+
+	$(function() {
+	if ($("#areaChart").length) {
+		$.get('{% url "esr21_reports:adverse_event_chart_json_url" %}', function(data) {
+			var ctx = $("#areaChart").get(0).getContext("2d");
+			new Chart(ctx, {
+				type: 'line', 
+				data: data,
+				options: areaOptions
+			});
+		}); 
+	}
+
+	if ($("#barChart1").length) {
+			var barChartCanvas = $("#barChart1").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ experienced_ae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Experienced AE Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+		}
+
+		if ($("#barChart2").length) {
+			var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ not_experienced_ae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Not Experienced AE Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+		}
+	});
+</script>
     
 {% endblock extra-scripts %}
 

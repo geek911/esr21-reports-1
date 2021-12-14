@@ -49,7 +49,7 @@ class AdverseEventChartJSONView(BaseLineChartView):
 
         for month_num in self.months_numbers:
             temp_experienced_aes = [x for x in experienced_ae_details if x.created.month == month_num]
-            temp_not_experienced_ae = [x for x in not_experienced_ae_details if x.created.month == month_num ]
+            temp_not_experienced_ae = [x for x in not_experienced_ae_details if x.created.month == month_num]
 
             experienced_ae.append(len(temp_experienced_aes))
             not_experienced_ae.append(len(temp_not_experienced_ae))
