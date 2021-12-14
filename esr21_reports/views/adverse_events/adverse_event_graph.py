@@ -2,7 +2,7 @@ from chartjs.views.lines import BaseLineChartView
 from calendar import month_name
 
 from django.apps import apps as django_apps
-from django.contrib.sites.models import Site
+
 
 class AdverseEventChartJSONView(BaseLineChartView):
     adverse_event_model = 'esr21_subject.adverseevent'
@@ -27,38 +27,37 @@ class AdverseEventChartJSONView(BaseLineChartView):
         months = [vd.month for vd in adverse_events_details]
         months = list(set(months))
         return sorted(months)
-        
+
     def get_labels(self):
         """Return 7 labels for the x-axis."""
         return self.months
 
     def get_providers(self):
         """Return names of datasets."""
-        return ['# Experienced AE','# Not Experienced AE']
+        return ['# Experienced AE', '# Not Experienced AE']
 
     def get_data(self):
         data = []
         experienced_ae = []
         not_experienced_ae = []
-        
+
         experienced_ae_details = self.adverse_events_cls.objects.filter(
                 experienced_ae='Yes')
-        
+
         not_experienced_ae_details = self.adverse_events_cls.objects.filter(
                 experienced_ae='No')
-        
+
         for month_num in self.months_numbers:
             temp_experienced_aes = [x for x in experienced_ae_details if x.created.month == month_num]
             temp_not_experienced_ae = [x for x in not_experienced_ae_details if x.created.month == month_num ]
-            
+
             experienced_ae.append(len(temp_experienced_aes))
             not_experienced_ae.append(len(temp_not_experienced_ae))
 
         data.append(experienced_ae)
         data.append(not_experienced_ae)
-                
-        return data
 
+        return data
 
 
 adverse_event_chart_json = AdverseEventChartJSONView.as_view()

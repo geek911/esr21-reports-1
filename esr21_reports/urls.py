@@ -28,10 +28,11 @@ urlpatterns = [
     path('siae_detailed_reports', AdverseEventView.as_view(), name='esr21_siae_detailed_reports_url'),
     path('ae_dm_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
     path('dm_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
-    
+
     path('chart', line_chart, name='line_chart_url'),
     path('chartJSON', line_chart_json, name='line_chart_json_url'),
-    path('adverse_event_graph', adverse_event_chart_json,name='adverse_event_chart_json_url' )
+    path('adverse_event_graph', adverse_event_chart_json,
+         name='adverse_event_chart_json_url'),
 ]
 
 
