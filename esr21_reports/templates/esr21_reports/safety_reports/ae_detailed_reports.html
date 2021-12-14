@@ -230,11 +230,9 @@
 				  <label for="sel1">Filter Sites</label>
 				  <select class="form-control" id="sel1">
 				    <option>All Sites</option>
-				    <option>Gaborone</option>
-				    <option>Maun</option>
-				    <option>Serowe</option>
-				    <option>S/Phikwe</option>
-				    <option>Francistown</option>
+				     {% for site in sites %}
+						<option>{{ site }}</option>
+					  {% endfor %}
 				  </select>
 				</div>
 			 </div>
@@ -284,13 +282,12 @@
 							    </tr>
 							  </thead>
 							  <tbody>
+							  
 							  	<tr>
-							        <td>Gaborone</td>
-							        <td>Maun</td>
-							        <td>S/Phikwe</td>
-							        <td>F/Town</td>
-							        <td>Serowe</td>
-							        <td>All Sites</td>
+							  	 {% for ae in unexpected_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							   
 							    </tr>
 							     <tr>
 							      {% for ae in unexpected_ae_records %}
