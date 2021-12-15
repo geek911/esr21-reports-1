@@ -37,32 +37,26 @@ class LineChartJSONView(BaseLineChartView):
 
     def get_providers(self):
         """Return names of datasets."""
-        sites =  Site.objects.all().order_by('id')
+        sites = Site.objects.all().order_by('id')
         return [site.name for site in sites]
 
     def get_data(self):
-        sites =  Site.objects.all().values_list(
+        sites = Site.objects.all().values_list(
             'id', flat=True)
         sites = list(set(sites))
         sites = sorted(sites)
         data = []
         for site_id in sites:
             row_data = []
-            for month_num in self.months_numbers:
-                vaccinations_details = self.vaccine_model_cls.objects.filter(
+            vaccinations_details = self.vaccine_model_cls.objects.filter(
                     site__id=site_id,
-                    received_dose_before='first_dose',
-                    created__month=month_num)
-                row_data.append(vaccinations_details.count())
+                    received_dose_before='first_dose')
+            for month_num in self.months_numbers:
+                temp_vaccinations_details = [vaccine for vaccine in vaccinations_details if vaccine.created.month == month_num]
+                row_data.append(len(temp_vaccinations_details))
             data.append(row_data)
         return data
-        
-    # def get_data(self):
-        # """Return 3 datasets to plot."""
-        #
-        # return [[75, 44, 92, 11, 44, 95, 35, 20, 40, 30, 12, 50],
-                # [41, 92, 18, 3, 73, 87, 92, 45, 67, 78, 45, 90],
-                # [87, 21, 94, 3, 90, 13, 65, 56, 78, 89, 34, 12]]
+
 
 line_chart = TemplateView.as_view(template_name='esr21_reports/line_chart.html')
 line_chart_json = LineChartJSONView.as_view()
