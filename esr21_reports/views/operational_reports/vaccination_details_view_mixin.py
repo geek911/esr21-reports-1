@@ -1,6 +1,6 @@
 from django_pandas.io import read_frame
 from django.apps import apps as django_apps
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.views.generic.base import ContextMixin
 
 from edc_constants.constants import YES, NO, NOT_APPLICABLE
@@ -23,33 +23,29 @@ class VaccinationDetailsViewMixin(ContextMixin):
         return context
 
     def overall_vaccination_stats(self):
-        qs_list = []
         qs = self.vaccination_model_cls.objects.values('site__domain').annotate(
             vaccination_details_recorded=Count('site__domain'),
             adverse_events_triggered=Count('site__domain', filter=Q(adverse_event=YES)),
             adverse_events_not_triggered=Count('site__domain', filter=Q(adverse_event=NO)),
             adverse_events_na=Count('site__domain', filter=Q(adverse_event=NOT_APPLICABLE)),
             adverse_events_missing=Count('site__domain', filter=Q(adverse_event='')))
-        for item in qs:
-            qs_list.append({key: self.sites_mapping.get(value, item[key]) for key, value in item.items()})
-        return qs_list
+        return self.replace_site_id_name(qs=qs)
 
     def ae_by_reponse(self):
         ae_responses_dict = {}
         for response in self.ae_choice_responses:
-            ae_by_site = {}
-            for site_id, site_name in self.sites_mapping.items():
-                ae_response = self.get_ae_per_response(response=response, site=site_id)
-                ae_by_site.update({site_name: ae_response})
-            ae_responses_dict[response] = ae_by_site
+            ae_response = self.get_ae_per_response(response=response)
+            ae_response = self.replace_site_id_name(qs=ae_response)
+            ae_responses_dict.update({response: ae_response})
         return ae_responses_dict
 
-    def get_ae_per_response(self, response=None, site=None):
-        ae_by_response = self.vaccination_model_objs.filter(
-            adverse_event=response, site__domain=site).values_list('subject_visit__id')
-        adverse_event = self.ae_model_cls.objects.filter(
-            subject_visit__id__in=ae_by_response)
-        return [ae_by_response, adverse_event]
+    def get_ae_per_response(self, response=None):
+        adverse_event = self.ae_model_cls.objects.values_list('subject_visit_id')
+        ae_by_response = self.vaccination_model_cls.objects.values('site__domain').annotate(
+            adverse_events_expected=Count('site__domain', filter=Q(adverse_event=response)),
+            actual_adverse_events=Count('site__domain', filter=(Q(adverse_event=response) & Q(subject_visit_id__in=adverse_event))),
+            missing_adverse_events=(F('adverse_events_expected') - F('actual_adverse_events')))
+        return ae_by_response
 
     @property
     def vaccination_model_cls(self):
@@ -74,6 +70,12 @@ class VaccinationDetailsViewMixin(ContextMixin):
                         'esr21_43': 'Fracistown',
                         'esr21_44': 'Selibe Phikwe'}
         return site_id_dict
+
+    def replace_site_id_name(self, qs=None):
+        qs_list = []
+        for item in qs:
+            qs_list.append({key: self.sites_mapping.get(value, item[key]) for key, value in item.items()})
+        return qs_list
 
     @property
     def ae_choice_responses(self):
