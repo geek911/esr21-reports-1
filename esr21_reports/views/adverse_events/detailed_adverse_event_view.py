@@ -92,7 +92,9 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             not_experienced_ae_events_data=self.get_not_experienced_ae_events_data(),
             sites=self.sites,
             all_ae_experienced=self.get_all_adverse_event_experienced(),
-            all_ae_not_experienced=self.get_all_adverse_event_not_experienced()
+            all_ae_not_experienced=self.get_all_adverse_event_not_experienced(),
+            all_ae_record=self.get_all_adverse_event_record_experienced(),
+            all_missing_ae_record=self.get_all_adverse_event_record_missed()
         )
         return context
 
@@ -141,6 +143,12 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
 
     def get_all_adverse_event_not_experienced(self,):
         return self.ae_cls.objects.filter(experienced_ae='No')
+
+    def get_all_adverse_event_record_experienced(self,):
+        return self.ae_record_cls.objects.filter(adverse_event__experienced_ae='Yes')
+
+    def get_all_adverse_event_record_missed(self,):
+        return self.ae_record_cls.objects.filter(adverse_event__experienced_ae='No')
 
     def get_adverse_event_experienced(self,
                                       site_name_postfix=None):

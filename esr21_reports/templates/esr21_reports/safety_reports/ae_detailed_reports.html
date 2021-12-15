@@ -18,6 +18,17 @@
 
 
 {% block extra-scripts %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
+
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -32,48 +43,37 @@
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
 
  <script type="application/javascript">
-	$(document).ready(function() {
-        $('#example').DataTable({
-        "pageLength": 5,
-		scrollX:        300,
-		deferRender:    true,
-		scroller:       true,
-		dom: 'Bfrtip',
-		buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-		]
-    } );
-
-    table.buttons().container()
-        .appendTo( '#example .col-sm-6:eq(0)' );
-    } );
-    
     $(document).ready(function() {
-        $('#example1').DataTable({
-        "pageLength": 5,
-        scrollX:        300,
-		deferRender:    true,
-		scroller:       true,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+		$('#example2').DataTable({
+			"pageLength": 5,
+			scrollX:        300,
+			deferRender:    true,
+			scroller:       true,
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		});
+		table.buttons().container().appendTo( '#example2 .col-sm-6:eq(0)' );
+
     } );
 
-    table.buttons().container()
-        .appendTo( '#example1 .col-sm-6:eq(0)' );
-    } );
+	$(document).ready(function() {
+		$('#example3').DataTable({
+			"pageLength": 5,
+			scrollX:        300,
+			deferRender:    true,
+			scroller:       true,
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		} );
 
+		table.buttons().container().appendTo( '#example3 .col-sm-6:eq(0)' );
+	} );
 	var areaOptions = {
 		plugins: {
 			filler: {
@@ -304,7 +304,9 @@
 		</div>
 		<br>
 		<br>
-		<div class="row" style="margin-bottom: 100px; ">
+
+
+		<div class="row" style="margin-bottom: 50px; ">
 			<div class="col-md-6">
 				<div class="panel panel-warning">
 					<div class="panel-heading"><b>Missing Adverse Event Records for Experienced AE </b></div>
@@ -336,10 +338,136 @@
 				<div class="col-md-6">
 					<canvas id="barChart3"></canvas>
 				</div>
-				
-				
-				
 			</div>
+
+			<div class="panel panel-info">
+				<div class="panel-heading"><b>Adverse Event Records for Experienced Adverse Events</b></div>
+				<div class="panel-body">
+					<div class="row">
+						<table id="example2" class="table table-striped table-bordered" style="width:100%; margin-bottom: 50px;">
+							<thead>
+								<tr>
+									<th>PID</th>
+									<th>Site</th>
+									<th>Gender</th>
+									<th>DOB</th>
+									<th>Vax date 1</th>
+									<th>Vax date 2</th>
+									<th>AE reported term</th>
+									<th>MedDRA system organ class name</th>
+									<th>MedDRA high level group term name</th>
+									<th>Maximum CTCAE Grade</th>
+									<th>Was this considered to be a serious adverse event?</th>
+									<th>Was the event an AE of special interest?</th>
+									<th>Start Date</th>
+									<th>Stop Date</th>
+									<th>Study Related</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for ae in all_ae_record %}
+								<tr>
+									<td>{{ ae.adverse_event.subject_identifier }}</td>
+									<td>
+										{% if ae.site_id == 40 %}
+										{{ 'Gaborone' }}
+										{% elif ae.site_id == 41 %}
+										{{ 'Maun' }}
+										{% elif ae.site_id == 42 %}
+										{{ 'Serowe' }}
+										{% elif ae.site_id == 43 %}
+										{{ 'F/town' }}
+										{% elif ae.site_id == 44 %}
+										{{ 'Phikwe' }}
+										{% endif %}
+									</td>
+									<td>{{ae.gender}}</td>
+									<td>{{ae.dob}}</td>
+									<td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+									<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+									<td>{{ ae.ae_term }}</td>
+									<td>{{ae.soc_name}}</td>
+									<td>{{ae.hlgt_name}}</td>
+									<td>{{ae.max_ctcae_grade}}</td>
+									<td>{{ae.serious_event}}</td>
+									<td>{{ae.special_interest_ae}}</td>
+									<td>{{ ae.start_date }}</td>
+									<td>{{ ae.stop_date }}</td>
+									<td>
+										{{ ae.study_treatmnt_rel }}
+									</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+		   </div>
+
+		   <div class="panel panel-info">
+			<div class="panel-heading"><b>Adverse Event Records for Experienced Adverse Events</b></div>
+			<div class="panel-body">
+				<div class="row">
+					<table id="example3" class="table table-striped table-bordered" style="width:100%; margin-bottom: 50px;">
+						<thead>
+						<tr>
+								<th>PID</th>
+								<th>Site</th>
+								<th>Gender</th>
+								<th>DOB</th>
+								<th>Vax date 1</th>
+								<th>Vax date 2</th>
+								<th>AE reported term</th>
+								<th>MedDRA system organ class name</th>
+								<th>MedDRA high level group term name</th>
+								<th>Maximum CTCAE Grade</th>
+								<th>Was this considered to be a serious adverse event?</th>
+								<th>Was the event an AE of special interest?</th>
+								<th>Start Date</th>
+								<th>Stop Date</th>
+								<th>Study Related</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for ae in all_missed_ae_record %}
+							<tr>
+								<td>{{ ae.adverse_event.subject_identifier }}</td>
+								<td>
+									{% if ae.site_id == 40 %}
+									{{ 'Gaborone' }}
+									{% elif ae.site_id == 41 %}
+									{{ 'Maun' }}
+									{% elif ae.site_id == 42 %}
+									{{ 'Serowe' }}
+									{% elif ae.site_id == 43 %}
+									{{ 'F/town' }}
+									{% elif ae.site_id == 44 %}
+									{{ 'Phikwe' }}
+									{% endif %}
+								</td>
+								<td>{{ae.gender}}</td>
+								<td>{{ae.dob}}</td>
+								<td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+								<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+								<td>{{ ae.ae_term }}</td>
+								<td>{{ae.soc_name}}</td>
+								<td>{{ae.hlgt_name}}</td>
+								<td>{{ae.max_ctcae_grade}}</td>
+								<td>{{ae.serious_event}}</td>
+								<td>{{ae.special_interest_ae}}</td>
+								<td>{{ ae.start_date }}</td>
+								<td>{{ ae.stop_date }}</td>
+								<td>
+									{{ ae.study_treatmnt_rel }}
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+						
+					</table>
+				</div>
+			</div>
+	   </div>
 		
 	</div>
 {% endblock main %}
