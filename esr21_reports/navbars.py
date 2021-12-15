@@ -21,7 +21,8 @@ operational_reports = NavBarDropdownItem(
     url_name='#',
     dropdown_items={'Screening Reports': 'esr21_reports:esr21_screening_reports_url',
                     'Consent Reports': 'esr21_reports:esr21_consent_reports_url',
-                    'Vaccination Reports': 'esr21_reports:esr21_vaccine_reports_url'})
+                    'Vaccination Reports': 'esr21_reports:esr21_vaccine_reports_url',
+                    'Vaccination Details': 'esr21_reports:esr21_vaccinations_url'})
 
 esr21_reports.append_item(operational_reports)
 

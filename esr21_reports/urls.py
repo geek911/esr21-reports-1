@@ -1,8 +1,9 @@
 
 from django.contrib import admin
 from django.urls import path
-from .views import (HomeView, 
-                    ScreeningView, 
+
+from .views import (HomeView,
+                    ScreeningView,
                     ConsentView,
                     VaccinationView,
                     AdverseEventView,
@@ -11,8 +12,8 @@ from .views import (HomeView,
                     adverse_event_chart_json,
                     )
 
-from .views import line_chart, line_chart_json
-
+from .views import line_chart, line_chart_json, vaccination_details_chart_json
+from .views import VaccinationDetailsStatsView
 
 app_name = 'esr21_reports'
 
@@ -28,10 +29,9 @@ urlpatterns = [
     path('siae_detailed_reports', AdverseEventView.as_view(), name='esr21_siae_detailed_reports_url'),
     path('ae_dm_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
     path('dm_reports', ManagementReportsView.as_view(), name='esr21_dm_reports_url'),
-    
     path('chart', line_chart, name='line_chart_url'),
     path('chartJSON', line_chart_json, name='line_chart_json_url'),
-    path('adverse_event_graph', adverse_event_chart_json,name='adverse_event_chart_json_url' )
+    path('adverse_event_graph', adverse_event_chart_json, name='adverse_event_chart_json_url' ),
+    path('vaccination_details_chart_json', vaccination_details_chart_json, name='vaccination_details_chart_json_url'),
+    path('vaccinations', VaccinationDetailsStatsView.as_view(), name='esr21_vaccinations_url'),
 ]
-
-

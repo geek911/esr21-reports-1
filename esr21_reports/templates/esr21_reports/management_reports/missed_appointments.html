@@ -1,3 +1,5 @@
+{% load esr21_reports_extras %}
+
 <thead>
     <tr>
        	<th>Subject</th>
@@ -12,7 +14,7 @@
         <td>
         	{{appointment.subject_identifier}}
         	<span style="">
-        		{% include 'esr21_reports/buttons/dashboard.html' %}
+        		{% dashboard_button appointment.subject_identifier %}
         	</span>
         	
         </td>
