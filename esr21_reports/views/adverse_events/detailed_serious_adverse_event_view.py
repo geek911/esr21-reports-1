@@ -81,6 +81,7 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             experienced_sae_events_data=self.get_experienced_sae_events_data(),
             existing_saer_data=self.get_existing_saer_data(),
             sites=self.sites
+            # test_mis_saer=self.test_get_no_sae_records()
         )
         return context
 
@@ -107,15 +108,14 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             return self.sae_cls_record.objects.filter(site_id=site_id).count()
 
     def missing_saer_events_by_site(self, site_name_postfix=None):
-        site_id = self.get_site_id(site_name_postfix)
-        if site_id:
-            total_saer_by_site = self.get_sae_record_by_site(
-                site_name_postfix)
-            dist_sae = self.get_total_sae_records()
-            total = total_saer_by_site - dist_sae
-            if total > 0:
-                return total
-            return 0
+            site_id = self.get_site_id(site_name_postfix)
+            if site_id:
+                sae = self.sae_cls.objects.filter(site_id=site_id).count()
+                saer = self.sae_cls_record.objects.filter(site_id=site_id).count()
+                total = sae -saer
+                if total > 0:
+                    return total
+                return 0
 
     def get_total_missing_sae_records(self):
         total_sae = self.get_total_sae()
@@ -138,3 +138,16 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             saer = self.get_sae_record_by_site(site)
             data.append(saer)
         return data
+
+    # get participant without sae_records
+    # def test_get_no_sae_records(self, site_name_postfix=None):
+    #     site_id = self.get_site_id(site_name_postfix)
+    #     if site_id:
+    #         records = []
+    #         for x in self.sae_cls.objects.all():
+    #             if x not in self.sae_cls_record.objects.all():
+    #                  records.append(x)
+    #     return records  
+            
+              
+
