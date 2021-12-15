@@ -403,6 +403,77 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="panel panel-info">
+			<div class="panel-heading"><b>Missing Serious Adverse Event Record Reporting</b></div>
+			<div class="panel-body">
+				<table id="example" class="table table-striped table-bordered" style="width:100%;">
+					<thead>
+					<tr>
+						<th>PID</th>
+						<th>Site</th>
+						<th>AE number</th>
+						<th>Gender</th>
+						<th>DOB</th>
+						<!-- <th>Vax date 1</th>
+						<th>Vax date 2</th>
+						<th>AE reported term</th>
+						<th>Intensity of SAE</th>
+						<th>Date AE Met Criteria for Serious AE </th>
+						<th>SAE Stop Date</th>
+						<th>Results in death</th>
+						<th>Was it a congenital anomaly or birth defect</th>
+						<th>Was it life threatening</th>
+						<th>Did it result in significant disability/incapacity? </th>
+						<th>Other medically important serious event?</th>
+						<th>Primary cause of death</th>
+						<th>Secondary cause of death</th>
+						<th>SAE caused by study procedure</th> -->
+					</tr>
+					</thead>
+					<tbody>
+					{% for ae in test_mis_saer %}
+						<tr>
+							<td>{{ ae.serious_adverse_event.subject_identifier }}</td>
+							<td>
+								{% if ae.site_id == 40 %}
+								{{ 'Gaborone' }}
+								{% elif ae.site_id == 41 %}
+								{{ 'Maun' }}
+								{% elif ae.site_id == 42 %}
+								{{ 'Serowe' }}
+								{% elif ae.site_id == 43 %}
+								{{ 'F/town' }}
+								{% elif ae.site_id == 44 %}
+								{{ 'Phikwe' }}
+								{% endif %}
+							</td>
+							<td>{{ae.ae_number}}</td>
+							<td>{{ae.gender}}</td>
+							<td>{{ae.dob}}</td>
+							<!-- <td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+							<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+							<td>{{ ae.sae_name }}</td>
+							<td>{{ae.sae_intensity}}</td>
+							<td>{{ae.start_date}}</td>
+							<td>{{ae.resolution_date}}</td>
+							<td>{{ae.ae_sdth}}</td>
+							<td>{{ ae.ae_scong }}</td>
+							<td>{{ ae.ae_slife }}</td>
+							<td>{{ ae.ae_sdisab }}</td>
+							<td>{{ ae.ae_smie }}</td>
+							<td>{{ ae.dthcaus_1 }}</td>
+							<td>{{ ae.dthcaus_2 }}</td>
+							<td>{{ ae.ae_caussp }}</td> -->
+							
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 <br>
 <br>

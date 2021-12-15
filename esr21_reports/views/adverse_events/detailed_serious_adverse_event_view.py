@@ -1,3 +1,4 @@
+from pdb import set_trace
 from django.apps import apps as django_apps
 from django.contrib.sites.models import Site
 from django.core.paginator import Paginator
@@ -71,6 +72,15 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             ['All Sites', self.get_total_missing_sae_records()]
 
         ]
+        # test_get_no_sae_records = [
+        #     ['Gaborone', self.test_get_no_sae_records('Gaborone')],
+        #     ['Maun', self.test_get_no_sae_records('Maun')],
+        #     ['Serowe', self.test_get_no_sae_records('Serowe')],
+        #     ['S/Phikwe', self.test_get_no_sae_records('Phikwe')],
+        #     ['F/Town', self.test_get_no_sae_records('Francistown')],
+        #     ['All Sites', self.get_total_missing_sae_records()]
+
+        # ]
 
         context.update(
             total_sae=total_sae,
@@ -81,8 +91,8 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             experienced_sae_events_data=self.get_experienced_sae_events_data(),
             existing_saer_data=self.get_existing_saer_data(),
             missing_saer_data=self.get_missing_saer_data(),
-            sites=self.sites
-            # test_mis_saer=self.test_get_no_sae_records()
+            sites=self.sites,
+            test_mis_saer=self.get_no_sae_records(),
         )
         return context
 
@@ -113,7 +123,7 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             if site_id:
                 sae = self.sae_cls.objects.filter(site_id=site_id).count()
                 saer = self.sae_cls_record.objects.filter(site_id=site_id).count()
-                total = sae -saer
+                total = sae - saer
                 if total > 0:
                     return total
                 return 0
@@ -147,15 +157,13 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             data.append(missing_saer)
         return data    
 
-    # get participant without sae_records
-    # def test_get_no_sae_records(self, site_name_postfix=None):
-    #     site_id = self.get_site_id(site_name_postfix)
-    #     if site_id:
-    #         records = []
-    #         for x in self.sae_cls.objects.all():
-    #             if x not in self.sae_cls_record.objects.all():
-    #                  records.append(x)
-    #     return records  
+    def get_no_sae_records(self):
+        saes = self.sae_cls_record.objects.all().values_list('serious_adverse_event_id')
+        res = self.sae_cls.objects.exclude(id__in = saes)
+        return res
+
+
+        
             
               
 
