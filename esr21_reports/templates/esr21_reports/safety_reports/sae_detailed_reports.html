@@ -132,6 +132,40 @@ $(document).ready(function() {
 					},
 			});
 
+			$(document).ready(function() {
+		var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ existing_saer_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Existing SAE Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+   });	
+
 	$('#example').DataTable({
 		"pageLength": 5,
 		scrollX:        300,
@@ -155,7 +189,7 @@ $(document).ready(function() {
 
 <div class="container">
 	
-	<div class="row">
+	<!-- <div class="row">
 		<div class="panel panel-primary">
 			<div class="panel-heading"><b>Serious Adverse Events Stats</b></div>
 			<table class="table table-hover">
@@ -183,15 +217,78 @@ $(document).ready(function() {
 				  </tbody>
 			</table>
 		</div>
+	</div> -->
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading"><b>Serious Adverse Event </b></div>
+					<div class="panel-body">
+						<table class="table table-hover">
+						  <thead>
+							<tr>
+							  <th colspan="5" class="text-center">Sites</th>
+							  <th>Overall</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							  <tr>
+								{% for ae in total_sae %}
+								  <td>{{ ae.0 }}</td>
+							  {% endfor %}
+							</tr>
+							 <tr>
+							  {% for ae in total_sae %}
+								  <td>{{ ae.1 }}</td>
+							  {% endfor %}
+							</tr>
+							
+						  </tbody>
+						</table>
+				   </div>
+				</div>
+			</div>
+		<div class="col-md-6">	
+			<div class="panel panel-danger">
+				<div class="panel-heading"><b>Existing Serious Adverse Events </b></div>
+					<div class="panel-body">
+						<table class="table table-hover">
+						  <thead>
+							<tr>
+							  <th colspan="5" class="text-center">Sites</th>
+							  <th>Overall</th>
+							</tr>
+						  </thead>
+						  <tbody>
+						  
+							  <tr>
+							   {% for ae in existing_sae_records %}
+								  <td>{{ ae.0 }}</td>
+							  {% endfor %}
+						   
+							</tr>
+							 <tr>
+							  {% for ae in existing_sae_records %}
+								  <td>{{ ae.1 }}</td>
+							  {% endfor %}
+							</tr>
+						  </tbody>
+						</table>
+				   </div>
+			</div>
+		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-md-6">
 			<canvas id="barChart1"></canvas>
 		</div>
+		<div class="col-md-6">
+			<canvas id="barChart2"></canvas>
+		</div>
 	</div>
 
-	<div class="row">
+	<!-- <div class="row">
 		<div class="panel panel-info">
 			<div class="panel-heading"><b>Existing Serious Adverse Events Records Stats</b></div>
 			<table class="table table-hover">
@@ -219,7 +316,7 @@ $(document).ready(function() {
 				  </tbody>
 			</table>
 		</div>
-	</div>
+	</div> -->
 
 	<div class="row">
 		<div class="panel panel-info">
