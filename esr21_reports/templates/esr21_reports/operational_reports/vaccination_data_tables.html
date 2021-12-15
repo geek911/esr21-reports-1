@@ -1,0 +1,48 @@
+{% load esr21_reports_extras %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+    	$('#vaccination-details').DataTable({
+    		dom: 'Bfrtip',
+    		buttons: [
+    			{
+   			      "extend": 'excel',
+   			      "text": '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+   			      'className': 'btn btn-success btn-sm'
+   			    },
+   			    {
+   			    	"extend": 'pdf',
+     			    "text": '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+     			    'className': 'btn btn-info btn-sm'
+     		}],
+    		initComplete: function () {
+                var btns = $('.dt-button');
+                btns.removeClass('dt-button');
+    		}
+    	});
+    	
+	});
+</script>
+
+<div class="table table-responsive" style="padding:10px">
+	<table class="table table-hover small" cellspacing="0" width="100%" id="vaccination-details">
+		<thead>
+			<tr>
+				<th>Subject Identifier</th>
+				<th>Site Name</th>
+				<th>Visit Code</th>
+				<th>Report Datetime</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in items_dict %}
+				<tr>
+					<td>{{item.subject_identifier}}</td>
+					<td>{{item.site_id|map_site_id}}</td>
+					<td>{{item.subject_visit.visit_code}}</td>
+					<td>{{item.report_datetime}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

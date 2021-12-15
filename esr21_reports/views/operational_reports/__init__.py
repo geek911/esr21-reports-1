@@ -1,2 +1,2 @@
-from .vaccination_details_stats_view import VaccinationDetailsStatsView
+from .vaccination_details_view import VaccinationDetailsView
 from .vaccination_details_charts_view import vaccination_details_chart_json

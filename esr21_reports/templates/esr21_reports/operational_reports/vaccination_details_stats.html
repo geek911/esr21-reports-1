@@ -2,6 +2,10 @@
 {% load esr21_reports_extras %}
 {% load static %}
 
+{% block extra-styles %}
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+{% endblock %}
+
 {% block extra-scripts %}
 	{{ block.super }}
 	<script type="application/javascript" charset="utf8">
@@ -18,6 +22,8 @@
 	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/exporting.js' %}"></script>
 	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/export-data.js' %}"></script>
 	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/accessibility.js' %}"></script>
+	<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
 {% endblock extra-scripts %}
 
 {% block main %}
@@ -102,6 +108,20 @@
 				</div>
 			</div>
 			{% endfor %}
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Actual Adverse Event for Triggered Adverse Event
+				    	</h6>
+				    	<p class="card-text">
+							{% with actual_aes_triggered as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<!-- Graphs -->
