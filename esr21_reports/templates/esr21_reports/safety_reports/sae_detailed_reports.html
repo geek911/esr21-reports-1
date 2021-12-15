@@ -96,7 +96,42 @@
 		$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 		
 	}
-})
+});
+
+$(document).ready(function() {
+        var barChartCanvas = $("#barChart3").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ experienced_sae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Experienced SAE',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+
+		});
 
 // graph
 $(document).ready(function() {
@@ -132,8 +167,9 @@ $(document).ready(function() {
 					},
 			});
 
+			
 			$(document).ready(function() {
-		var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+		    var barChartCanvas = $("#barChart2").get(0).getContext("2d");
 			var labels = {{ sites| safe }}
 			var data = {{ existing_saer_data| safe }}
 			var barChart = new Chart(barChartCanvas, {
@@ -165,6 +201,7 @@ $(document).ready(function() {
 					},
 			});
    });	
+   
 
 	$('#example').DataTable({
 		"pageLength": 5,
@@ -188,37 +225,6 @@ $(document).ready(function() {
 {% block main %}
 
 <div class="container">
-	
-	<!-- <div class="row">
-		<div class="panel panel-primary">
-			<div class="panel-heading"><b>Serious Adverse Events Stats</b></div>
-			<table class="table table-hover">
-				  <thead>
-					<tr>
-					  <th></th>
-					  <th colspan="5" class="text-center">Sites</th>
-					  <th>Overall</th>
-					</tr>
-				  </thead>
-				  <tbody>
-					  <tr>
-						<td ></td>
-						{% for tsae in total_sae %}
-							  <td>{{ tsae.0 }}</td>
-						{% endfor %}
-					</tr>
-					 <tr>
-					  <td>SAE </td>
-					  {% for tsae in total_sae %}
-						  <td>{{ tsae.1 }}</td>
-					  {% endfor %}
-					</tr>
-
-				  </tbody>
-			</table>
-		</div>
-	</div> -->
-
 	<div class="row">
 		<div class="col-md-6">
 			<div class="panel panel-info">
@@ -288,35 +294,6 @@ $(document).ready(function() {
 		</div>
 	</div>
 
-	<!-- <div class="row">
-		<div class="panel panel-info">
-			<div class="panel-heading"><b>Existing Serious Adverse Events Records Stats</b></div>
-			<table class="table table-hover">
-				  <thead>
-					<tr>
-					  <th></th>
-					  <th colspan="5" class="text-center">Sites</th>
-					  <th>Overall</th>
-					</tr>
-				  </thead>
-				  <tbody>
-					  <tr>
-						<td ></td>
-						{% for esae in existing_sae_records %}
-							  <td>{{ esae.0 }}</td>
-						{% endfor %}
-					</tr>
-				   <tr>
-					  <td>Existing SAE Records</td>
-					  {% for esae in existing_sae_records %}
-						  <td>{{ esae.1 }}</td>
-					  {% endfor %}
-					</tr>
-
-				  </tbody>
-			</table>
-		</div>
-	</div> -->
 
 	<div class="row">
 		<div class="panel panel-info">
@@ -346,6 +323,14 @@ $(document).ready(function() {
 					</tbody>
 			</table>
 		</div>
+
+		<div class="row">
+		<div class="col-md-6">
+			<canvas id="barChart3"></canvas>
+		</div>
+	</div>
+		
+	
 	</div>
 
 	<div class="row">

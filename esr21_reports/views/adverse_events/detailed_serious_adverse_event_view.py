@@ -80,6 +80,7 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             saes=saes,
             experienced_sae_events_data=self.get_experienced_sae_events_data(),
             existing_saer_data=self.get_existing_saer_data(),
+            missing_saer_data=self.get_missing_saer_data(),
             sites=self.sites
             # test_mis_saer=self.test_get_no_sae_records()
         )
@@ -138,6 +139,13 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             saer = self.get_sae_record_by_site(site)
             data.append(saer)
         return data
+
+    def get_missing_saer_data(self):
+        data = []
+        for site in self.sites:
+            missing_saer = self.get_total_missing_sae_records()    
+            data.append(missing_saer)
+        return data    
 
     # get participant without sae_records
     # def test_get_no_sae_records(self, site_name_postfix=None):
