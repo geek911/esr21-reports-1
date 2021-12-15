@@ -1,0 +1,102 @@
+{% extends 'edc_base/base.html' %}
+{% load esr21_reports_extras %}
+
+{% block extra-scripts %}
+	{{ block.super }}
+	<script type="application/javascript" charset="utf8">
+		$(function(){
+			$('#graphs, .graphs').hide();
+			$('.tables, .graphs').on('click',
+				  function() {
+				    $('.tables, .graphs, #tables, #graphs').toggle();
+				  }
+			);
+		});
+	</script>
+{% endblock extra-scripts %}
+
+{% block main %}
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-default col-md-11" style="padding:10px">
+				<div class="btn btn-info btn-md tables">Tables <span class="glyphicon glyphicon-transfer"></span></div>
+				<div class="btn btn-info btn-md graphs">Graphs <span class="glyphicon glyphicon-transfer"></span></div>
+			</div>
+		</div>
+		<div class="row" id="tables">
+			<div class="panel panel-default col-md-5">
+			  <div class="card-body">
+			    <h6 class="card-subtitle text-muted" style='text-transform:uppercase;text-align:center'>
+			    	Vaccination details by site <br/> (As Per Adverse Event response)
+			    </h6>
+			    <p class="card-text">
+			    	<table class="table table-hover small" cellspacing="0" width="100%">
+			    		<thead>
+			    			<tr>
+				    			<th></th>
+				    			<th>Vaccination Details Recorded</th>
+				    			<th>AEs Triggered</th>
+				    			<th>AEs Not Triggered</th>
+				    			<th>N/A</th>
+				    			<th>Missing</th>
+				    		</tr>
+			    		</thead>
+			    		<tbody>
+			    			{% for site_items in overall_vaccination_table %}
+			    			<tr>
+			    				{% for value in site_items.values %}
+			    				<td>{{value}}</td>
+			    				{% endfor %}
+			    			</tr>
+			    			{% endfor %}
+			    		</tbody>
+			    	</table>
+			    </p>
+			  </div>
+			</div>
+			{% for response, data_items in ae_per_response.items %}
+			<div class="panel panel-default col-md-5  {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+			  <div class="card-body">
+			    <h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+			    	Adverse Events Triggered from Vaccination Details <br/> RESPONSE **({{response}})
+			    </h6>
+			    <p class="card-text">
+			    	<table class="table table-hover small" cellspacing="0" width="100%">
+			    		<thead>
+			    			<tr>
+				    			<th></th>
+				    			{% if response == 'Yes' %}
+					    			<th>Adverse Events Expected</th>
+					    			<th>Actual Adverse Event</th>
+					    			<th>Missing Adverse Events</th>
+					    		{% elif response == 'No' %}
+					    			<th>Adverse Events <br/> not triggered</th>
+					    			<th>Unexpected Adverse Event</th>
+					    			<th>Adverse Event accurately No</th>
+					    		{% endif %}
+				    		</tr>
+			    		</thead>
+			    		<tbody>
+			    			{% for site, items in data_items.items %}
+			    			<tr>
+			    				<td>{{site}}</td>
+			    				<td>{{items.0.count}}</td>
+			    				<td>{{items.1.count}}</td>
+			    				<td>{{items.0.count|subtract:items.1.count}}</td>
+			    			</tr>
+			    			{% endfor %}
+			    		</tbody>
+			    	</table>
+			    </p>
+			  </div>
+			</div>
+			{% endfor %}
+		</div>
+		
+		<!-- Graphs -->
+		<div class="row" id="graphs">
+			{% include 'esr21_reports/operational_reports/vaccination_details_charts.html' %}
+		</div>
+	</div>
+
+{% endblock main %}
