@@ -41,19 +41,17 @@ class LineChartJSONView(BaseLineChartView):
         return [site.name for site in sites]
 
     def get_data(self):
-        sites = Site.objects.all().values_list(
-            'id', flat=True)
-        sites = list(set(sites))
-        sites = sorted(sites)
+        sites = Site.objects.all().order_by('id').values_list(
+            'id', flat=True).distinct()
         data = []
         for site_id in sites:
             row_data = []
-            vaccinations_details = self.vaccine_model_cls.objects.filter(
+            vaccination_details = self.vaccine_model_cls.objects.filter(
                     site__id=site_id,
                     received_dose_before='first_dose')
             for month_num in self.months_numbers:
-                temp_vaccinations_details = [vaccine for vaccine in vaccinations_details if vaccine.created.month == month_num]
-                row_data.append(len(temp_vaccinations_details))
+                temp_vaccination_details = [vaccine for vaccine in vaccination_details if vaccine.created.month == month_num]
+                row_data.append(len(temp_vaccination_details))
             data.append(row_data)
         return data
 

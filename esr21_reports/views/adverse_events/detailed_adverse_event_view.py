@@ -26,60 +26,27 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        experienced_ae = []
+        not_experienced_ae = []
+        total_ae = []
+        expected_ae_records = []
+        unexpected_ae_records = []
+        missing_ae_records = []
 
-        experienced_ae = [
-           ['Gaborone', self.get_adverse_event_experienced('Gaborone')],
-           ['Maun', self.get_adverse_event_experienced('Maun')],
-           ['Serowe', self.get_adverse_event_experienced('Serowe')],
-           ['S/Phikwe', self.get_adverse_event_experienced('Phikwe')],
-           ['F/Town', self.get_adverse_event_experienced('Francistown')],
-           ['All Sites', self.get_total_ae_experienced()]
-        ]
+        for site in self.sites:
+            experienced_ae.append([site, self.get_adverse_event_experienced(site)])
+            not_experienced_ae.append([site, self.get_adverse_event_not_experienced(site)])
+            total_ae.append([site, self.get_adverse_event_by_site(site)])
+            expected_ae_records.append( [site, self.get_expected_adverse_event_record(site)])
+            unexpected_ae_records.append([site, self.get_unexpected_adverse_event_record(site)])
+            missing_ae_records.append([site, self.get_missing_adverse_event_record(site)],)
 
-        not_experienced_ae = [
-           ['Gaborone', self.get_adverse_event_not_experienced('Gaborone')],
-           ['Maun', self.get_adverse_event_not_experienced('Maun')],
-           ['Serowe', self.get_adverse_event_not_experienced('Serowe')],
-           ['S/Phikwe', self.get_adverse_event_not_experienced('Phikwe')],
-           ['F/Town', self.get_adverse_event_not_experienced('Francistown')],
-           ['All Sites', self.get_total_ae_not_experienced()]
-        ]
-
-        total_ae = [
-           ['Gaborone', self.get_adverse_event_by_site('Gaborone')],
-           ['Maun', self.get_adverse_event_by_site('Maun')],
-           ['Serowe', self.get_adverse_event_by_site('Serowe')],
-           ['S/Phikwe', self.get_adverse_event_by_site('Phikwe')],
-           ['F/Town', self.get_adverse_event_by_site('Francistown')],
-           ['All Sites', self.get_total_ae()]
-        ]
-
-        expected_ae_records = [
-           ['Gaborone', self.get_expected_adverse_event_record('Gaborone')],
-           ['Maun', self.get_expected_adverse_event_record('Maun')],
-           ['Serowe', self.get_expected_adverse_event_record('Serowe')],
-           ['S/Phikwe', self.get_expected_adverse_event_record('Phikwe')],
-           ['F/Town', self.get_expected_adverse_event_record('Francistown')],
-           ['All Sites', self.get_total_expected_ae_records()]
-        ]
-
-        unexpected_ae_records = [
-           ['Gaborone', self.get_unexpected_adverse_event_record('Gaborone')],
-           ['Maun', self.get_unexpected_adverse_event_record('Maun')],
-           ['Serowe', self.get_unexpected_adverse_event_record('Serowe')],
-           ['S/Phikwe', self.get_unexpected_adverse_event_record('Phikwe')],
-           ['F/Town', self.get_unexpected_adverse_event_record('Francistown')],
-           ['All Sites', self.get_total_unexpected_ae_records()]
-        ]
-
-        missing_ae_records = [
-           ['Gaborone', self.get_missing_adverse_event_record('Gaborone')],
-           ['Maun', self.get_missing_adverse_event_record('Maun')],
-           ['Serowe', self.get_missing_adverse_event_record('Serowe')],
-           ['S/Phikwe', self.get_missing_adverse_event_record('Phikwe')],
-           ['F/Town', self.get_missing_adverse_event_record('Francistown')],
-           ['All Sites', self.get_total_missing_ae_records()]
-        ]
+        experienced_ae.append(['All Sites', self.get_total_ae_experienced])
+        not_experienced_ae.append(['All Sites', self.get_total_ae_not_experienced()])
+        total_ae.append(['All Sites', self.get_total_ae()])
+        expected_ae_records.append(['All Sites', self.get_total_expected_ae_records()])
+        unexpected_ae_records.append(['All Sites', self.get_total_unexpected_ae_records()])
+        missing_ae_records.append(['All Sites', self.get_total_missing_ae_records()],)
 
         context.update(
             experienced_ae=experienced_ae,
@@ -151,21 +118,21 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
         return self.ae_record_cls.objects.filter(adverse_event__experienced_ae='No')
 
     def get_adverse_event_experienced(self,
-                                      site_name_postfix=None):
+                                    site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             return self.ae_cls.objects.filter(site_id=site_id).filter(
                 experienced_ae='Yes').count()
 
     def get_adverse_event_not_experienced(self,
-                                          site_name_postfix=None):
+                                        site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             return self.ae_cls.objects.filter(site_id=site_id).filter(
                 experienced_ae='No').count()
 
     def get_expected_adverse_event_record(self,
-                                          site_name_postfix=None):
+                                        site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             return self.ae_record_cls.objects.filter(site_id=site_id).filter(
@@ -179,14 +146,14 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
                 adverse_event__experienced_ae='No').count()
 
     def get_missing_adverse_event_record(self,
-                                         site_name_postfix=None):
+                                        site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             total_site_aes = self.get_adverse_event_experienced(
                 site_name_postfix)
             dist_ae_records = self.ae_record_cls.objects.filter(
                 site_id=site_id).values_list('adverse_event',
-                                             flat=True).distinct().count()
+                                            flat=True).distinct().count()
             total = total_site_aes - dist_ae_records
             if total > 0:
                 return total
