@@ -1,10 +1,13 @@
 {% extends 'edc_base/base.html' %}
+{% load static %}
+
 
 {% block extra-styles %}
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" >
 <link href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap.min.css" rel='stylesheet'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 <style>
     html{
 
@@ -68,6 +71,15 @@
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
+
 <script type="application/javascript">
     $(document).ready(function() {
         $('#example').DataTable({
@@ -86,75 +98,12 @@
         .appendTo( '#example .col-sm-6:eq(0)' );
     } );
 
-     $(document).ready(function() {
-        $('#example1').DataTable({
-        "pageLength": 5,
-         scrollX:        300,
-	     deferRender:    true,
-	     scroller:       true,
-         dom: 'Bfrtip',
-         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-         ]
-    } );
-
-    table.buttons().container()
-        .appendTo( '#example1 .col-sm-6:eq(0)' );
-    } );
-
-    $(document).ready(function() {
-        $('#example3').DataTable({
-        "pageLength": 5,
-         scrollX:        300,
-	     deferRender:    true,
-	     scroller:       true,
-         dom: 'Bfrtip',
-         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-         ]
-    } );
-
-    table.buttons().container()
-        .appendTo( '#example3 .col-sm-6:eq(0)' );
-    } );
-
-    $(document).ready(function() {
-        $('#example5').DataTable({
-        "pageLength": 5,
-         scrollX:        300,
-	    deferRender:    true,
-	    scroller:       true,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
-
-    table.buttons().container()
-        .appendTo( '#example5 .col-sm-6:eq(0)' );
-    } );
-
-
-    $(document).ready(function() {
-        $('#example4').DataTable({
-        "pageLength": 5,
-         scrollX:        300,
-	    deferRender:    true,
-	    scroller:       true,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
-
-    table.buttons().container()
-        .appendTo( '#example4 .col-sm-6:eq(0)' );
-    } );
-
 
 </script>
 
 <script>
+  
+
 $(document).on('click', '.panel-heading span.clickable', function(e){
     var $this = $(this);
 	if(!$this.hasClass('panel-collapsed')) {
@@ -168,7 +117,99 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 		$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 
 	}
-})
+});
+
+
+$(document).ready(function() {
+        var barChartCanvas = $("#barChart1").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ experienced_siae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Experienced AESI',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+
+		});
+        $(document).ready(function() {
+        var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ existing_siaer_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Existing AESI Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+
+		});        
+        
+        $(document).ready(function(){
+            var areaOptions = {
+		        plugins: {
+			    filler: {
+			    propagate: true
+                    }
+                }
+            };
+            if ($("#areaChart").length) {
+                $.get('{% url "esr21_reports:aesi_chart_json_url" %}', function(data) {
+                    console.log(data);
+                    var ctx = $("#areaChart").get(0).getContext("2d");
+                    new Chart(ctx, { 
+                        type: 'line', 
+                        data: data,
+                        options: areaOptions
+                    });
+                }); 
+            }    
+        })
+	  
 </script>
 {% endblock extra-scripts %}
 
@@ -176,46 +217,78 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 
 	<div class="container">
 		<div class="row">
-			<div class="panel panel-primary">
-				<div class="panel-heading"><b>Adverse Events of Special Interests Stats</b></div>
-				<table class="table table-hover">
-					  <thead>
-					    <tr>
-					      <th></th>
-					      <th colspan="5" class="text-center">Sites</th>
-					      <th>Overall</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-					  	<tr>
-					        <td ></td>
-					        <td>Gaborone</td>
-					        <td>Maun</td>
-					        <td>S/Phikwe</td>
-					        <td>F/Town</td>
-					        <td>Serowe</td>
-					        <td>All Sites</td>
-					    </tr>
-					     <tr>
-					      <td>SAE Experienced</td>
-					      {% for sae in existing_sae_records %}
-					      	<td>{{ sae.1 }}</td>
-					      {% endfor %}
-					    </tr>
-					     <tr>-->
-					      <td>Total</td>
-					      {% for tsae in total_sae %}
-					      	<td>{{ tsae.1 }}</td>
-					      {% endfor %}
-					    </tr>
+			<div class="col-md-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><b>Adverse Events of Special Interest </b></div>
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th colspan="5" class="text-center">Sites</th>
+                                  <th>Overall</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                    {% for ae in total_siae %}
+                                      <td>{{ ae.0 }}</td>
+                                  {% endfor %}
+                                </tr>
+                                 <tr>
+                                  {% for ae in total_siae %}
+                                      <td>{{ ae.1 }}</td>
+                                  {% endfor %}
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                       </div>
+                    </div>
+            </div>
+            <div class="col-md-6">	
+                <div class="panel panel-danger">
+                    <div class="panel-heading"><b>Existing Adverse Events of Special Interest </b></div>
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th colspan="5" class="text-center">Sites</th>
+                                  <th>Overall</th>
+                                </tr>
+                              </thead>
+                              <tbody>                            
+                                  <tr>
+                                   {% for ae in existing_siae_records %}
+                                      <td>{{ ae.0 }}</td>
+                                  {% endfor %}
+                               
+                                </tr>
+                                 <tr>
+                                  {% for ae in existing_siae_records %}
+                                      <td>{{ ae.1 }}</td>
+                                  {% endfor %}
+                                </tr>
+                              </tbody>
+                            </table>
+                       </div>
+                </div>
+            </div>
 
-					  </tbody>
-					</table>
-				   </div>
-
-			</div>
 		</div>
 
+        <div class="row">
+            <div class="col-md-12">
+				 <canvas id="areaChart" style="display: block; height: 125px; width: 470px;"></canvas>
+			</div>
+        </div>
 
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="barChart2"></canvas>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
     </div>
 {% endblock main %}

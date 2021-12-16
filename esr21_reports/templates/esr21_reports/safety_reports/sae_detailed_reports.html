@@ -416,24 +416,11 @@ $(document).ready(function() {
 						<th>AE number</th>
 						<th>Gender</th>
 						<th>DOB</th>
-						<!-- <th>Vax date 1</th>
-						<th>Vax date 2</th>
-						<th>AE reported term</th>
-						<th>Intensity of SAE</th>
-						<th>Date AE Met Criteria for Serious AE </th>
-						<th>SAE Stop Date</th>
-						<th>Results in death</th>
-						<th>Was it a congenital anomaly or birth defect</th>
-						<th>Was it life threatening</th>
-						<th>Did it result in significant disability/incapacity? </th>
-						<th>Other medically important serious event?</th>
-						<th>Primary cause of death</th>
-						<th>Secondary cause of death</th>
-						<th>SAE caused by study procedure</th> -->
+					
 					</tr>
 					</thead>
 					<tbody>
-					{% for ae in test_mis_saer %}
+					{% for ae in saer %}
 						<tr>
 							<td>{{ ae.serious_adverse_event.subject_identifier }}</td>
 							<td>

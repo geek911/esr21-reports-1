@@ -85,6 +85,7 @@
 	$(function() {
 	if ($("#areaChart").length) {
 		$.get('{% url "esr21_reports:adverse_event_chart_json_url" %}', function(data) {
+			console.log(data)
 			var ctx = $("#areaChart").get(0).getContext("2d");
 			new Chart(ctx, {
 				type: 'line', 
