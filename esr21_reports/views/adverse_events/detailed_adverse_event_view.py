@@ -32,6 +32,7 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
         expected_ae_records = []
         unexpected_ae_records = []
         missing_ae_records = []
+        all_sites = 'All Sites'
 
         for site in self.sites:
             experienced_ae.append([site, self.get_adverse_event_experienced(site)])
@@ -41,12 +42,12 @@ class DetailedAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             unexpected_ae_records.append([site, self.get_unexpected_adverse_event_record(site)])
             missing_ae_records.append([site, self.get_missing_adverse_event_record(site)],)
 
-        experienced_ae.append(['All Sites', self.get_total_ae_experienced])
-        not_experienced_ae.append(['All Sites', self.get_total_ae_not_experienced()])
-        total_ae.append(['All Sites', self.get_total_ae()])
-        expected_ae_records.append(['All Sites', self.get_total_expected_ae_records()])
-        unexpected_ae_records.append(['All Sites', self.get_total_unexpected_ae_records()])
-        missing_ae_records.append(['All Sites', self.get_total_missing_ae_records()],)
+        experienced_ae.append([all_sites, self.get_total_ae_experienced])
+        not_experienced_ae.append([all_sites, self.get_total_ae_not_experienced()])
+        total_ae.append([all_sites, self.get_total_ae()])
+        expected_ae_records.append([all_sites, self.get_total_expected_ae_records()])
+        unexpected_ae_records.append([all_sites, self.get_total_unexpected_ae_records()])
+        missing_ae_records.append([all_sites, self.get_total_missing_ae_records()],)
 
         context.update(
             experienced_ae=experienced_ae,
