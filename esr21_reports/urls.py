@@ -13,7 +13,7 @@ from .views import (HomeView,
                     )
 
 from .views import line_chart, line_chart_json, vaccination_details_chart_json
-from .views import VaccinationDetailsStatsView
+from .views import VaccinationDetailsView
 
 app_name = 'esr21_reports'
 
@@ -33,5 +33,5 @@ urlpatterns = [
     path('chartJSON', line_chart_json, name='line_chart_json_url'),
     path('adverse_event_graph', adverse_event_chart_json, name='adverse_event_chart_json_url' ),
     path('vaccination_details_chart_json', vaccination_details_chart_json, name='vaccination_details_chart_json_url'),
-    path('vaccinations', VaccinationDetailsStatsView.as_view(), name='esr21_vaccinations_url'),
+    path('vaccinations', VaccinationDetailsView.as_view(), name='esr21_vaccinations_url'),
 ]

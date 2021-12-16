@@ -1,6 +1,6 @@
 from chartjs.views.columns import BaseColumnsHighChartsView
 
-from .vaccination_details_view_mixin import VaccinationDetailsViewMixin
+from .vaccination_details_stats_view_mixin import VaccinationDetailsViewMixin
 from edc_constants.constants import YES
 
 
