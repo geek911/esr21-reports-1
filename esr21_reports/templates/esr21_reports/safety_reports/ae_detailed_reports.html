@@ -1,0 +1,345 @@
+{% extends 'edc_base/base.html' %}
+{% load static %}
+
+
+{% block extra-styles %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" >
+<link href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap.min.css" rel='stylesheet'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<style>
+	html{
+		scrollY: 300
+	}
+</style>
+
+{% endblock extra-styles %}
+
+
+{% block extra-scripts %}
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
+
+ <script type="application/javascript">
+	$(document).ready(function() {
+        $('#example').DataTable({
+        "pageLength": 5,
+		scrollX:        300,
+		deferRender:    true,
+		scroller:       true,
+		dom: 'Bfrtip',
+		buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+		]
+    } );
+
+    table.buttons().container()
+        .appendTo( '#example .col-sm-6:eq(0)' );
+    } );
+    
+    $(document).ready(function() {
+        $('#example1').DataTable({
+        "pageLength": 5,
+        scrollX:        300,
+		deferRender:    true,
+		scroller:       true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+
+    table.buttons().container()
+        .appendTo( '#example1 .col-sm-6:eq(0)' );
+    } );
+
+	var areaOptions = {
+		plugins: {
+			filler: {
+			propagate: true
+			}
+		}
+	}
+
+	$(function() {
+	if ($("#areaChart").length) {
+		$.get('{% url "esr21_reports:adverse_event_chart_json_url" %}', function(data) {
+			var ctx = $("#areaChart").get(0).getContext("2d");
+			new Chart(ctx, {
+				type: 'line', 
+				data: data,
+				options: areaOptions
+			});
+		}); 
+	}
+
+	if ($("#barChart1").length) {
+			var barChartCanvas = $("#barChart1").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ experienced_ae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Experienced AE Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+		}
+
+		if ($("#barChart2").length) {
+			var barChartCanvas = $("#barChart2").get(0).getContext("2d");
+			var labels = {{ sites| safe }}
+			var data = {{ not_experienced_ae_events_data| safe }}
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar',
+				data: {
+					labels:labels ,
+					datasets: [{
+						label: '# Not Experienced AE Records',
+						data: data,
+						backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+						],
+						borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+						],
+						borderWidth: 1,
+						fill: false
+					}]
+					},
+			});
+		}
+	});
+</script>
+    
+{% endblock extra-scripts %}
+
+{% block main %}
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="panel-heading"><b>Adverse Events Statistics</b></div>
+				<div class="panel-body">
+					<table class="table table-hover">
+					  <thead>
+					    <tr>
+					      <th></th>
+					      <th colspan="5" class="text-center">Sites</th>
+					      <th>Overall</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	<tr>
+					        <td ></td>
+					        <td>Gaborone</td>
+					        <td>Maun</td>
+					        <td>S/Phikwe</td>
+					        <td>F/Town</td>
+					        <td>Serowe</td>
+					        <td>All Sites</td>
+					    </tr>
+					     <tr>
+					      <td>AE Experienced</td>
+					      {% for ae in experienced_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					     <tr>
+					      <td>AE Not Experienced</td>
+					      {% for ae in not_experienced_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					    
+					     <tr>
+					      <td>Total</td>
+					      {% for ae in total_ae %}
+					      	<td>{{ ae.1 }}</td>
+					      {% endfor %}
+					    </tr>
+					    
+					  </tbody>
+					</table>
+				   </div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			 <div class="centered">
+			 	<div class="form-group">
+				  <label for="sel1">Filter Sites</label>
+				  <select class="form-control" id="sel1">
+				    <option>All Sites</option>
+				     {% for site in sites %}
+						<option>{{ site }}</option>
+					  {% endfor %}
+				  </select>
+				</div>
+			 </div>
+			<div class="col-md-12">
+				 <canvas id="areaChart" style="display: block; height: 125px; width: 470px;"></canvas>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading"><b>Experienced Adverse Event Records </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	<tr>
+							        {% for ae in expected_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							    </tr>
+							     <tr>
+							      {% for ae in expected_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							    
+							  </tbody>
+							</table>
+					   </div>
+					</div>
+				</div>
+			<div class="col-md-6">	
+				<div class="panel panel-danger">
+					<div class="panel-heading"><b>Unexpected Adverse Event Records </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  
+							  	<tr>
+							  	 {% for ae in unexpected_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							   
+							    </tr>
+							     <tr>
+							      {% for ae in unexpected_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							  </tbody>
+							</table>
+					   </div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<canvas id="barChart1"></canvas>
+			</div>
+			<div class="col-md-6">
+				<canvas id="barChart2"></canvas>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="row" style="margin-bottom: 100px; ">
+			<div class="col-md-6">
+				<div class="panel panel-warning">
+					<div class="panel-heading"><b>Missing Adverse Event Records for Experienced AE </b></div>
+						<div class="panel-body">
+							<table class="table table-hover">
+							  <thead>
+							    <tr>
+							      <th colspan="5" class="text-center">Sites</th>
+							      <th>Overall</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	<tr>
+							        {% for ae in missing_ae_records %}
+							      	<td>{{ ae.0 }}</td>
+							      {% endfor %}
+							    </tr>
+							     <tr>
+							      {% for ae in missing_ae_records %}
+							      	<td>{{ ae.1 }}</td>
+							      {% endfor %}
+							    </tr>
+							    
+							  </tbody>
+							</table>
+					   </div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<canvas id="barChart3"></canvas>
+				</div>
+				
+				
+				
+			</div>
+		
+	</div>
+{% endblock main %}

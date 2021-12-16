@@ -1,0 +1,212 @@
+{% extends 'edc_base/base.html' %}
+{% load static %}
+{% block extra-styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<style>
+.row{
+    margin-top:10px;
+    padding: 0 10px;
+}
+
+.clickable{
+    cursor: pointer;   
+}
+
+.panel-heading span {
+	margin-top: -20px;
+	font-size: 15px;
+}
+
+</style>
+{% endblock extra-styles %}
+
+{% block extra-scripts %}
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+	<script src="https://code.highcharts.com/highcharts.src.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+        <script type="text/javascript">
+            $.get('{% url "esr21_reports:line_chart_json_url" %}', function(data) {
+                var ctx = $("#myChart33").get(0).getContext("2d");
+                new Chart(ctx, {
+                    type: 'line', data: data
+                });
+            });
+        </script>
+
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+<div class="container">
+
+	<div class="row">
+		
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading"><b>Screening numbers</b></div>
+					<div class="panel-body">
+						<table class="table table-hover">
+						  <thead>
+						    <tr>
+						      <th></th>
+						      <th colspan="5" class="text-center">Sites</th>
+						      <th>Overall</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						  	<tr>
+						        <td ></td>
+						        <td>Gaborone</td>
+						        <td>Maun</td>
+						        <td>S/Phikwe</td>
+						        <td>F/Town</td>
+						        <td>Serowe</td>
+						        <td>All Sites</td>
+						    </tr>
+						    <tr>
+						      <td>Screened</td>
+						      {% for site in site_screenings %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+						      <td>{{ total_screenings }}</td>
+						    </tr>
+						    <tr>
+						      <td>Enrolled</td>
+						      {% for site in site_vaccinations %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+						      <td>{{ total_vaccinations }}</td>
+						    </tr>
+						    <tr>
+						      <td>Not Enrolled</td>
+						      {% for site in not_erolled %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+						      <td>{{ total_not_erolled }}</td>
+						    </tr>
+						  </tbody>
+						</table>
+			      </div>
+			    </div>
+		    </div>
+		    
+		    <div class="col-md-6">
+			    <div class="panel panel-info">
+			      <div class="panel-heading"><b>Vaccination/Enrolment numbers</b></div>
+			      <div class="panel-body">
+			      	<table class="table table-hover">
+					    <thead>
+					      <tr>
+					        <th></th>
+					        <th colspan="5" class="text-center">Sites</th>
+					        <th>Overall</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					    	<tr>
+					          <td ></td>
+					          <td>Gaborone</td>
+					          <td>Maun</td>
+					          <td>S/Phikwe</td>
+					          <td>F/Town</td>
+					          <td>Serowe</td>
+					          <td>All-sites</td>
+					      </tr>
+					      <tr>
+					        <td>First dose</td>
+					        {% for site in first_dose_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td>{{total_first_dose}}</td>
+					      </tr>
+					      <tr>
+					        <td>Second dose</td>
+					        {% for site in second_dose_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td>{{total_second_dose}}</td>
+					      </tr>
+					    </tbody>
+					  </table>
+			      </div>
+			    </div>
+		    </div>
+
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<b>Enrolment Per Site Per Month:</b> All number are for first dose received only
+			<canvas id="myChart33" width="200" height="50"></canvas>
+		</div>
+	</div>
+
+
+    <div class='row'>
+		<div class="col-md-12">
+			    <div class="panel panel-info">
+			      <div class="panel-heading"><b>Withdrawals</b></div>
+			      <div class="panel-body">
+			      	<table class="table table-hover">
+					    <thead>
+					      <tr>
+					        <th></th>
+					        <th colspan="5" class="text-center">Sites</th>
+					        <th>Overall</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					    	<tr>
+					          <td ></td>
+					          <td>Gaborone</td>
+					          <td>Maun</td>
+					          <td>S/Phikwe</td>
+					          <td>F/Town</td>
+					          <td>Serowe</td>
+					          <td>All-sites</td>
+					      </tr>
+					      <tr>
+					        <td>Total withdrawals</td>
+					        {% for site in withdrawals_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td>{{total_withdrawals}}</td>
+					      </tr>
+					      <tr>
+					        <td>After Vax 1</td>
+					        {% for site in after_first_dose_withdrawals_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td>{{total_first_dose_withdrawals}}</td>
+					      </tr>
+					      <tr>
+					        <td>After Vax 2</td>
+					        {% for site in after_second_dose_withdrawals_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td>{{total_second_dose_withdrawals}}</td>
+					      </tr>
+					      <tr>
+					        <td>Reason for withdrawal</td>
+					        {% for site in reason_withdrawals_site %}
+						      	<td>{{ site.1 }}</td>
+						      {% endfor %}
+					        <td></td>
+					      </tr>
+					    </tbody>
+					  </table>
+			      </div>
+			    </div>
+		    </div>    	
+    </div>
+
+ 
+</div>
+
+{% endblock main %}
