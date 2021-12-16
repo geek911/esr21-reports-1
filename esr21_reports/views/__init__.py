@@ -10,4 +10,4 @@ from .adverse_events import DetailedAdverseEventView
 from .adverse_events import SeriousAdverseEventView
 from .adverse_events import SpecialInterestAdverseEventView
 from .graphs import line_chart, line_chart_json
-from .adverse_events import adverse_event_chart_json, aesi_chart_json
+from .adverse_events import adverse_event_chart_json, aesi_chart_json, serious_adverse_event_chart_json, sae_records_chart_json

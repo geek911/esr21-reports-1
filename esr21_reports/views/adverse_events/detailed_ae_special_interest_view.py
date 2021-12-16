@@ -35,6 +35,13 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        all_sites = 'All Sites'
+
+        total_aesi = []
+        existing_aesi_records = []
+        missing_aesi_records_by_site = []
+
+
         total_siae = [
             ['Gaborone', self.get_siae_by_site('Gaborone')],
             ['Maun', self.get_siae_by_site('Maun')],
@@ -104,7 +111,7 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
         if total > 0:
             return total
         return 0
-
+   
     def missing_saer_events_by_site(self, site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:

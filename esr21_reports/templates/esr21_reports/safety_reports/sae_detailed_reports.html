@@ -58,16 +58,8 @@
 
 {% block extra-scripts %}
 
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
@@ -80,6 +72,14 @@
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
 
 <script type="application/javascript">
 
@@ -97,6 +97,38 @@
 		
 	}
 });
+
+$(document).ready(function(){
+            var areaOptions = {
+		        plugins: {
+			    filler: {
+			    propagate: true
+                    }
+                }
+            };
+            if ($("#areaChart").length) {
+                $.get('{% url "esr21_reports:sae_chart_json_url" %}', function(data) {
+                    var ctx = $("#areaChart").get(0).getContext("2d");
+                    new Chart(ctx, { 
+                        type: 'line', 
+                        data: data,
+                        options: areaOptions
+                    });
+                }); 
+            }  
+			
+			if ($("#areaChart2").length) {
+                $.get('{% url "esr21_reports:sae_record_chart_json_url" %}', function(data) {
+                    console.log(data);
+                    var ctx = $("#areaChart2").get(0).getContext("2d");
+                    new Chart(ctx, { 
+                        type: 'line', 
+                        data: data,
+                        options: areaOptions
+                    });
+                }); 
+            }  
+        });
 
 $(document).ready(function() {
         var barChartCanvas = $("#barChart3").get(0).getContext("2d");
@@ -218,6 +250,8 @@ $(document).ready(function() {
     table.buttons().container()
         .appendTo( '#example .col-sm-6:eq(0)');
     });
+
+
 </script>
 
 {% endblock extra-scripts %}
@@ -285,16 +319,30 @@ $(document).ready(function() {
 		</div>
 	</div>
 
-	<div class="row">
+<!-- areachart -->
+<div class="row">
+	<div class="col-md-12">
+		<canvas id="areaChart" style="display: block; height: 125px; width: 470px;"></canvas>
+	</div>
+</div>
+<br>
+
+	<!-- <div class="row">
 		<div class="col-md-6">
 			<canvas id="barChart1"></canvas>
 		</div>
 		<div class="col-md-6">
 			<canvas id="barChart2"></canvas>
 		</div>
+	</div> -->
+
+<!-- areachart sae records -->
+<div class="row">
+	<div class="col-md-12">
+		<canvas id="areaChart2" style="display: block; height: 125px; width: 470px;"></canvas>
 	</div>
-
-
+</div>
+<br>
 	<div class="row">
 		<div class="panel panel-info">
 			<div class="panel-heading"><b>Serious Adverse Events Without Records Stats</b></div>
