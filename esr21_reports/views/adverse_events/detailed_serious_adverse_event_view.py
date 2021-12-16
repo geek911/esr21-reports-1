@@ -1,7 +1,5 @@
-from pdb import set_trace
 from django.apps import apps as django_apps
 from django.contrib.sites.models import Site
-from django.core.paginator import Paginator
 from django.views.generic.list import ListView
 
 from edc_base.view_mixins import EdcBaseViewMixin
@@ -39,48 +37,23 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
         context = super().get_context_data(**kwargs)
         saes = self.sae_cls.objects.all()
         saesr = self.sae_cls_record.objects.all()
+        all_sites = 'All Sites'
 
-        total_sae = [
-            ['Gaborone', self.get_sae_by_site('Gaborone')],
-            ['Maun', self.get_sae_by_site('Maun')],
-            ['Serowe', self.get_sae_by_site('Serowe')],
-            ['S/Phikwe', self.get_sae_by_site('Phikwe')],
-            ['F/Town', self.get_sae_by_site('Francistown')],
-            ['All Sites', self.get_total_sae()]
-        ]
+        total_sae = []
+        existing_sae_records = []
+        missing_saer_records_events_by_site = []
 
-        existing_sae_records = [
-            ['Gaborone', self.get_sae_record_by_site(
-                'Gaborone')],
-            ['Maun', self.get_sae_record_by_site('Maun')],
-            ['Serowe', self.get_sae_record_by_site(
-                'Serowe')],
-            ['S/Phikwe',
-                self.get_sae_record_by_site('Phikwe')],
-            ['F/Town',
-                self.get_sae_record_by_site('Francistown')],
-            ['All Sites', self.get_total_sae_records()]
-
-        ]
-
-        missing_saer_records_events_by_site = [
-            ['Gaborone', self.missing_saer_events_by_site('Gaborone')],
-            ['Maun', self.missing_saer_events_by_site('Maun')],
-            ['Serowe', self.missing_saer_events_by_site('Serowe')],
-            ['S/Phikwe', self.missing_saer_events_by_site('Phikwe')],
-            ['F/Town', self.missing_saer_events_by_site('Francistown')],
-            ['All Sites', self.get_total_missing_sae_records()]
-
-        ]
-        # test_get_no_sae_records = [
-        #     ['Gaborone', self.test_get_no_sae_records('Gaborone')],
-        #     ['Maun', self.test_get_no_sae_records('Maun')],
-        #     ['Serowe', self.test_get_no_sae_records('Serowe')],
-        #     ['S/Phikwe', self.test_get_no_sae_records('Phikwe')],
-        #     ['F/Town', self.test_get_no_sae_records('Francistown')],
-        #     ['All Sites', self.get_total_missing_sae_records()]
-
-        # ]
+        for site in self.sites:
+            total_sae.append([site, self.get_sae_by_site(site)])
+            existing_sae_records.append([site, self.get_sae_record_by_site(
+                site)])
+            missing_saer_records_events_by_site.append(
+                [site, self.missing_saer_events_by_site(site)]
+            )
+        total_sae.append([all_sites, self.get_total_sae()])
+        existing_sae_records.append([all_sites, self.get_total_sae_records()])
+        missing_saer_records_events_by_site.append(
+            [all_sites, self.get_total_missing_sae_records()])
 
         context.update(
             total_sae=total_sae,
@@ -155,15 +128,9 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
         for site in self.sites:
             missing_saer = self.get_total_missing_sae_records()    
             data.append(missing_saer)
-        return data    
+        return data
 
     def get_no_sae_records(self):
         saes = self.sae_cls_record.objects.all().values_list('serious_adverse_event_id')
-        res = self.sae_cls.objects.exclude(id__in = saes)
+        res = self.sae_cls.objects.exclude(id__in=saes)
         return res
-
-
-        
-            
-              
-
