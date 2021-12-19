@@ -40,6 +40,7 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
         total_aesi = []
         existing_aesi_records = []
         missing_aesi_records_by_site = []
+        aesi_records = self.saie_record_cls.objects.all()
 
 
         total_siae = [
@@ -51,12 +52,12 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
             ['All Sites', self.get_total_siae()]
         ]
 
-        missing_siae_records = [
-            ['Gaborone', self.missing_saer_events_by_site('Gaborone')],
-            ['Maun', self.missing_saer_events_by_site('Maun')],
-            ['Serowe', self.missing_saer_events_by_site('Serowe')],
-            ['S/Phikwe', self.missing_saer_events_by_site('Phikwe')],
-            ['F/Town', self.missing_saer_events_by_site('Francistown')],
+        missing_aesi_records_by_site = [
+            ['Gaborone', self.missing_aesi_records_by_site('Gaborone')],
+            ['Maun', self.missing_aesi_records_by_site('Maun')],
+            ['Serowe', self.missing_aesi_records_by_site('Serowe')],
+            ['S/Phikwe', self.missing_aesi_records_by_site('Phikwe')],
+            ['F/Town', self.missing_aesi_records_by_site('Francistown')],
             ['All Sites', self.get_total_missing_siae_records()]
         ]
 
@@ -70,15 +71,16 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
 
         ]
 
-        # context
         context.update(
             sites=self.sites,
             total_siae = total_siae,
-            missing_siae_records = missing_siae_records,
+            missing_aesi_records = missing_aesi_records_by_site,
             existing_siae_records = existing_siae_records,
+            aesi_records = aesi_records,
             experienced_siae_events_data = self.get_experienced_sae_events_data(),
-            existing_siaer_data = self.get_existing_siaer_data()
-
+            existing_siaer_data = self.get_existing_siaer_data(),
+            missing_saer = self.get_no_aesi_records(),
+            
         )
         return context
 
@@ -112,7 +114,7 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
             return total
         return 0
    
-    def missing_saer_events_by_site(self, site_name_postfix=None):
+    def missing_aesi_records_by_site(self, site_name_postfix=None):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             sae = self.siae_cls.objects.filter(site_id=site_id).count()
@@ -134,4 +136,9 @@ class SpecialInterestAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListVie
         for site in self.sites:
             saer = self.get_siae_record_by_site(site)
             data.append(saer)
-        return data           
+        return data        
+
+    def get_no_aesi_records(self):
+        aesi = self.saie_record_cls.objects.all().values_list('special_interest_adverse_event_id')
+        res = self.siae_cls.objects.exclude(id__in=aesi)
+        return res   
