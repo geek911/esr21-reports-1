@@ -9,6 +9,28 @@
 {% block extra-scripts %}
 	{{ block.super }}
 	<script type="application/javascript" charset="utf8">
+		$(document).ready(function() {
+	    	$('.vaccination-details').DataTable({
+	    		dom: 'Bfrtip',
+	    		buttons: [
+	    			{
+	   			      "extend": 'excel',
+	   			      "text": '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+	   			      'className': 'btn btn-success btn-sm'
+	   			    },
+	   			    {
+	   			    	"extend": 'pdf',
+	     			    "text": '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+	     			    'className': 'btn btn-info btn-sm'
+	     		}],
+	    		initComplete: function () {
+	                var btns = $('.dt-button');
+	                btns.removeClass('dt-button');
+	    		}
+	    	});
+	    	
+		});
+
 		$(function(){
 			$('#graphs, .graphs').hide();
 			$('.tables, .graphs').on('click',
@@ -116,6 +138,34 @@
 				    	</h6>
 				    	<p class="card-text">
 							{% with actual_aes_triggered as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Missing Adverse Event for Triggered Adverse Event
+				    	</h6>
+				    	<p class="card-text">
+							{% with missing_aes_triggered as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Unexpected Adverse Events
+				    	</h6>
+				    	<p class="card-text">
+							{% with unexpected_aes as items_dict %}
 								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
 							{% endwith %}
 						</p>

@@ -7,7 +7,6 @@ from edc_constants.constants import YES
 class VaccinationDetailsChartsView(VaccinationDetailsViewMixin,
                                    BaseColumnsHighChartsView):
 
-    title = 'Vaccination details by site'
     yUnit = 'count'
 
     def get_subtitle(self):
@@ -24,6 +23,11 @@ class VaccinationDetailsChartsView(VaccinationDetailsViewMixin,
 
     def get_xAxis(self):
         return {'categories': self.get_labels(), 'crosshair': True}
+
+    def get_title(self):
+        return [{'text': 'Vaccination details by site'},
+                {'text': 'Adverse events triggered from vaccination details'},
+                {'text': 'Adverse events not triggered from vaccination details'},]
 
     def get_series(self):
         series = []
