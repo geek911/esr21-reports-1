@@ -9,49 +9,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 <style>
-    html{
-    
-   		overflow-y: scroll;
-    }
-    .row{
-        margin-top:10px;
-        padding: 0 10px;
-    }
-
-    .clickable{
-        cursor: pointer;   
-    }
-
-    .panel-heading span {
-        margin-top: -20px;
-        font-size: 15px;
-    }
-       
-    .horizontal-scrollable > .row {
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-      
-    .horizontal-scrollable > .row > .col-xs-4 {
-        display: inline-block;
-        float: none;
-    }
-    /* Decorations */
-      
-    .col-xs-4 {
-        color: white;
-        font-size: 24px;
-        padding-bottom: 20px;
-        padding-top: 18px;
-    }
-      
-    .col-xs-4:nth-child(2n+1) {
-        background: green;
-    }
-      
-    .col-xs-4:nth-child(2n+2) {
-        background: black;
-    }
+	html{
+		scrollY: 300
+	}
 </style>
 
 {% endblock extra-styles %}
@@ -67,7 +27,9 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/vendor.bundle.base.js' %}"></script>
+
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
@@ -80,144 +42,74 @@
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
 
-
 <script type="application/javascript">
+    $(document).ready(function() {
+		$('#example2').DataTable({
+			"pageLength": 5,
+			scrollX:        300,
+			deferRender:    true,
+			scroller:       true,
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		});
+		table.buttons().container().appendTo( '#example2 .col-sm-6:eq(0)' );
 
-	$(document).on('click', '.panel-heading span.clickable', function(e){
-    var $this = $(this);
-	if(!$this.hasClass('panel-collapsed')) {
-		$this.parents('.panel').find('.panel-body').slideUp();
-		$this.addClass('panel-collapsed');
-		$this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-		
-	} else {
-		$this.parents('.panel').find('.panel-body').slideDown();
-		$this.removeClass('panel-collapsed');
-		$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-		
+    } );
+
+	var areaOptions1 = {
+		title: {
+			display: true,
+			text: 'Serious Adverse Events Per Site Per Month'
+		},
+		plugins: {
+			filler: {
+			propagate: true
+			}
+		}
 	}
+
+
+	$(function() {
+	if ($("#areaChart").length) {
+		$.get('{% url "esr21_reports:sae_chart_json_url" %}', function(data) {
+			console.log(data)
+			var ctx = $("#areaChart").get(0).getContext("2d");
+			new Chart(ctx, {
+				type: 'line', 
+				data: data,
+				options: areaOptions1
+			});
+		}); 
+	}	
+	var areaOptions2 = {
+		title: {
+			display: true,
+			text: 'Existing Serious Adverse Event Per Site Per Month'
+		},
+		plugins: {
+		filler: {
+		propagate: true
+			},
+			
+		}
+	}
+	if ($("#areaChart2").length) {
+		$.get('{% url "esr21_reports:sae_record_chart_json_url" %}', function(data) {
+			console.log(data);
+			var ctx = $("#areaChart2").get(0).getContext("2d");
+			new Chart(ctx, { 
+				type: 'line', 
+				data: data,
+				options: areaOptions2
+			});
+		}); 
+	}  
+
+
 });
 
-$(document).ready(function() {
-        var barChartCanvas = $("#barChart3").get(0).getContext("2d");
-			var labels = {{ sites| safe }}
-			var data = {{ experienced_sae_events_data| safe }}
-			var barChart = new Chart(barChartCanvas, {
-				type: 'bar',
-				data: {
-					labels:labels ,
-					datasets: [{
-						label: '# Experienced SAE',
-						data: data,
-						backgroundColor: [
-						'rgba(255, 99, 132, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(153, 102, 255, 0.2)',
-						'rgba(255, 159, 64, 0.2)'
-						],
-						borderColor: [
-						'rgba(255,99,132,1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(75, 192, 192, 1)',
-						'rgba(153, 102, 255, 1)',
-						'rgba(255, 159, 64, 1)'
-						],
-						borderWidth: 1,
-						fill: false
-					}]
-					},
-			});
-
-		});
-
-// graph
-$(document).ready(function() {
-        var barChartCanvas = $("#barChart1").get(0).getContext("2d");
-			var labels = {{ sites| safe }}
-			var data = {{ experienced_sae_events_data| safe }}
-			var barChart = new Chart(barChartCanvas, {
-				type: 'bar',
-				data: {
-					labels:labels ,
-					datasets: [{
-						label: '# Experienced SAE',
-						data: data,
-						backgroundColor: [
-						'rgba(255, 99, 132, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(153, 102, 255, 0.2)',
-						'rgba(255, 159, 64, 0.2)'
-						],
-						borderColor: [
-						'rgba(255,99,132,1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(75, 192, 192, 1)',
-						'rgba(153, 102, 255, 1)',
-						'rgba(255, 159, 64, 1)'
-						],
-						borderWidth: 1,
-						fill: false
-					}]
-					},
-			});
-
-			
-			$(document).ready(function() {
-		    var barChartCanvas = $("#barChart2").get(0).getContext("2d");
-			var labels = {{ sites| safe }}
-			var data = {{ existing_saer_data| safe }}
-			var barChart = new Chart(barChartCanvas, {
-				type: 'bar',
-				data: {
-					labels:labels ,
-					datasets: [{
-						label: '# Existing SAE Records',
-						data: data,
-						backgroundColor: [
-						'rgba(255, 99, 132, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(153, 102, 255, 0.2)',
-						'rgba(255, 159, 64, 0.2)'
-						],
-						borderColor: [
-						'rgba(255,99,132,1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(75, 192, 192, 1)',
-						'rgba(153, 102, 255, 1)',
-						'rgba(255, 159, 64, 1)'
-						],
-						borderWidth: 1,
-						fill: false
-					}]
-					},
-			});
-   });	
-   
-
-	$('#example').DataTable({
-		"pageLength": 5,
-		scrollX:        300,
-		deferRender:    true,
-		scroller:       true,
-		
-		dom: 'Bfrtip',
-		buttons: [
-			'copy', 'csv', 'excel', 'pdf', 'print'
-		]
-	});
-
-    table.buttons().container()
-        .appendTo( '#example .col-sm-6:eq(0)');
-    });
 </script>
 
 {% endblock extra-scripts %}
@@ -253,7 +145,7 @@ $(document).ready(function() {
 						</table>
 				   </div>
 				</div>
-			</div>
+		</div>
 		<div class="col-md-6">	
 			<div class="panel panel-danger">
 				<div class="panel-heading"><b>Existing Serious Adverse Events </b></div>
@@ -284,87 +176,138 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
-
+	
 	<div class="row">
 		<div class="col-md-6">
-			<canvas id="barChart1"></canvas>
+			<canvas id="areaChart"></canvas>
 		</div>
 		<div class="col-md-6">
-			<canvas id="barChart2"></canvas>
+			<canvas id="areaChart2"></canvas>
 		</div>
 	</div>
-
 
 	<div class="row">
 		<div class="panel panel-info">
 			<div class="panel-heading"><b>Serious Adverse Events Without Records Stats</b></div>
-			<table class="table table-hover">
-					<thead>
-					<tr>
-						<th></th>
-						<th colspan="5" class="text-center">Sites</th>
-						<th>Overall</th>
-					</tr>
-					</thead>
-					<tbody>
+				<table class="table table-hover">
+						<thead>
 						<tr>
-						<td ></td>
-						{% for msae in missing_sae_records %}
-								<td>{{ msae.0 }}</td>
-						{% endfor %}
-					</tr>
-					<tr>
-						<td ></td>
-						{% for msae in missing_sae_records %}
-								<td>{{ msae.1 }}</td>
-						{% endfor %}
-					</tr>
+							<th></th>
+							<th colspan="5" class="text-center">Sites</th>
+							<th>Overall</th>
+						</tr>
+						</thead>
+						<tbody>
+							<tr>
+							<td ></td>
+							{% for msae in missing_sae_records %}
+									<td>{{ msae.0 }}</td>
+							{% endfor %}
+						</tr>
+						<tr>
+							<td ></td>
+							{% for msae in missing_sae_records %}
+									<td>{{ msae.1 }}</td>
+							{% endfor %}
+						</tr>
 
-					</tbody>
-			</table>
+						</tbody>
+				</table>
 		</div>
-
-		<div class="row">
-		<div class="col-md-6">
-			<canvas id="barChart3"></canvas>
-		</div>
-	</div>
-		
-	
-	</div>
-
-	<div class="row">
 		<div class="panel panel-info">
 			<div class="panel-heading"><b>Serious Adverse Event Reporting</b></div>
 			<div class="panel-body">
+				<div class="row">
+					<table id="example2" class="table table-striped table-bordered" style="width:100%;">
+						<thead>
+						<tr>
+							<th>PID</th>
+							<th>Site</th>
+							<th>AE number</th>
+							<th>Gender</th>
+							<th>DOB</th>
+							<th>Vax date 1</th>
+							<th>Vax date 2</th>
+							<th>AE reported term</th>
+							<th>Intensity of SAE</th>
+							<th>Date AE Met Criteria for Serious AE </th>
+							<th>SAE Stop Date</th>
+							<th>Results in death</th>
+							<th>Was it a congenital anomaly or birth defect</th>
+							<th>Was it life threatening</th>
+							<th>Did it result in significant disability/incapacity? </th>
+							<th>Other medically important serious event?</th>
+							<th>Primary cause of death</th>
+							<th>Secondary cause of death</th>
+							<th>SAE caused by study procedure</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for ae in saesr %}
+							<tr>
+								<td>{{ ae.serious_adverse_event.subject_identifier }}</td>
+								<td>
+									{% if ae.site_id == 40 %}
+									{{ 'Gaborone' }}
+									{% elif ae.site_id == 41 %}
+									{{ 'Maun' }}
+									{% elif ae.site_id == 42 %}
+									{{ 'Serowe' }}
+									{% elif ae.site_id == 43 %}
+									{{ 'F/town' }}
+									{% elif ae.site_id == 44 %}
+									{{ 'Phikwe' }}
+									{% endif %}
+								</td>
+								<td>{{ae.ae_number}}</td>
+								<td>{{ae.gender}}</td>
+								<td>{{ae.dob}}</td>
+								<td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
+								<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
+								<td>{{ ae.sae_name }}</td>
+								<td>{{ae.sae_intensity}}</td>
+								<td>{{ae.start_date}}</td>
+								<td>{{ae.resolution_date}}</td>
+								<td>{{ae.ae_sdth}}</td>
+								<td>{{ ae.ae_scong }}</td>
+								<td>{{ ae.ae_slife }}</td>
+								<td>{{ ae.ae_sdisab }}</td>
+								<td>{{ ae.ae_smie }}</td>
+								<td>{{ ae.dthcaus_1 }}</td>
+								<td>{{ ae.dthcaus_2 }}</td>
+								<td>{{ ae.ae_caussp }}</td>
+								
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- BarChart -->
+		<!-- <div class="row">
+			<div class="col-md-6">
+				<canvas id="barChart3"></canvas>
+			</div>
+		</div> -->
+		
+		<div class="panel panel-info">
+			<div class="panel-heading"><b>Missing Serious Adverse Event Reporting</b></div>
+			<div class="panel-body">
 				<table id="example" class="table table-striped table-bordered" style="width:100%;">
 					<thead>
 					<tr>
-						<th>PID</th>
-						<th>Site</th>
-						<th>AE number</th>
-						<th>Gender</th>
-						<th>DOB</th>
-						<th>Vax date 1</th>
-						<th>Vax date 2</th>
-						<th>AE reported term</th>
-						<th>Intensity of SAE</th>
-						<th>Date AE Met Criteria for Serious AE </th>
-						<th>SAE Stop Date</th>
-						<th>Results in death</th>
-						<th>Was it a congenital anomaly or birth defect</th>
-						<th>Was it life threatening</th>
-						<th>Did it result in significant disability/incapacity? </th>
-						<th>Other medically important serious event?</th>
-						<th>Primary cause of death</th>
-						<th>Secondary cause of death</th>
-						<th>SAE caused by study procedure</th>
+						<th>Subject Identifier</th>
+						<th>Site Name</th>
+						<th>Visit Code</th>
+						<th>Report Date</th>
+
 					</tr>
 					</thead>
 					<tbody>
-					{% for ae in saesr %}
+					{% for ae in missing_saer %}
 						<tr>
-							<td>{{ ae.serious_adverse_event.subject_identifier }}</td>
+							<td>{{ ae.subject_identifier }}</td>
 							<td>
 								{% if ae.site_id == 40 %}
 								{{ 'Gaborone' }}
@@ -378,24 +321,11 @@ $(document).ready(function() {
 								{{ 'Phikwe' }}
 								{% endif %}
 							</td>
-							<td>{{ae.ae_number}}</td>
-							<td>{{ae.gender}}</td>
-							<td>{{ae.dob}}</td>
-							<td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
-							<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
-							<td>{{ ae.sae_name }}</td>
-							<td>{{ae.sae_intensity}}</td>
-							<td>{{ae.start_date}}</td>
-							<td>{{ae.resolution_date}}</td>
-							<td>{{ae.ae_sdth}}</td>
-							<td>{{ ae.ae_scong }}</td>
-							<td>{{ ae.ae_slife }}</td>
-							<td>{{ ae.ae_sdisab }}</td>
-							<td>{{ ae.ae_smie }}</td>
-							<td>{{ ae.dthcaus_1 }}</td>
-							<td>{{ ae.dthcaus_2 }}</td>
-							<td>{{ ae.ae_caussp }}</td>
+							<td>{{ae.visit_code}}</td>
+							<td>{{ae.created}}</td>
 							
+						
+
 						</tr>
 					{% endfor %}
 					</tbody>
@@ -403,76 +333,6 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
-
-	<div class="row">
-		<div class="panel panel-info">
-			<div class="panel-heading"><b>Missing Serious Adverse Event Record Reporting</b></div>
-			<div class="panel-body">
-				<table id="example" class="table table-striped table-bordered" style="width:100%;">
-					<thead>
-					<tr>
-						<th>PID</th>
-						<th>Site</th>
-						<th>AE number</th>
-						<th>Gender</th>
-						<th>DOB</th>
-						<!-- <th>Vax date 1</th>
-						<th>Vax date 2</th>
-						<th>AE reported term</th>
-						<th>Intensity of SAE</th>
-						<th>Date AE Met Criteria for Serious AE </th>
-						<th>SAE Stop Date</th>
-						<th>Results in death</th>
-						<th>Was it a congenital anomaly or birth defect</th>
-						<th>Was it life threatening</th>
-						<th>Did it result in significant disability/incapacity? </th>
-						<th>Other medically important serious event?</th>
-						<th>Primary cause of death</th>
-						<th>Secondary cause of death</th>
-						<th>SAE caused by study procedure</th> -->
-					</tr>
-					</thead>
-					<tbody>
-					{% for ae in test_mis_saer %}
-						<tr>
-							<td>{{ ae.serious_adverse_event.subject_identifier }}</td>
-							<td>
-								{% if ae.site_id == 40 %}
-								{{ 'Gaborone' }}
-								{% elif ae.site_id == 41 %}
-								{{ 'Maun' }}
-								{% elif ae.site_id == 42 %}
-								{{ 'Serowe' }}
-								{% elif ae.site_id == 43 %}
-								{{ 'F/town' }}
-								{% elif ae.site_id == 44 %}
-								{{ 'Phikwe' }}
-								{% endif %}
-							</td>
-							<td>{{ae.ae_number}}</td>
-							<td>{{ae.gender}}</td>
-							<td>{{ae.dob}}</td>
-							<!-- <td>{% if ae.first_dose_date %}{{ ae.first_dose_date }}{% else %}Not given first dose {% endif %}</td>
-							<td>{% if ae.second_dose_date %}{{ ae.second_dose_date }}{% else %}Not given second dose {% endif %}</td>
-							<td>{{ ae.sae_name }}</td>
-							<td>{{ae.sae_intensity}}</td>
-							<td>{{ae.start_date}}</td>
-							<td>{{ae.resolution_date}}</td>
-							<td>{{ae.ae_sdth}}</td>
-							<td>{{ ae.ae_scong }}</td>
-							<td>{{ ae.ae_slife }}</td>
-							<td>{{ ae.ae_sdisab }}</td>
-							<td>{{ ae.ae_smie }}</td>
-							<td>{{ ae.dthcaus_1 }}</td>
-							<td>{{ ae.dthcaus_2 }}</td>
-							<td>{{ ae.ae_caussp }}</td> -->
-							
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
-			</div>
-		</div>
 	</div>
 </div>
 <br>
