@@ -5,14 +5,15 @@ from django.views.generic.base import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 
-from .missed_appointments import MissedAppointmentsMixin
-from .missing_crfs import MissingCrfsMixin
+from .vaccination_details_stats_view_mixin import VaccinationDetailsViewMixin
+from .vaccination_data_tables_view_mixin import VaccinationDataTablesViewMixin
 
 
-class ManagementReportsView(MissedAppointmentsMixin, MissingCrfsMixin, EdcBaseViewMixin,
-                            NavbarViewMixin, TemplateView):
+class VaccinationDetailsView(VaccinationDetailsViewMixin,
+                             VaccinationDataTablesViewMixin,
+                             EdcBaseViewMixin, NavbarViewMixin, TemplateView):
 
-    template_name = 'esr21_reports/management_reports/management_reports.html'
+    template_name = 'esr21_reports/operational_reports/vaccination_details_stats.html'
     navbar_name = 'esr21_reports'
     navbar_selected_item = 'operational_reports'
 

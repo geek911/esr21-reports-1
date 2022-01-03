@@ -1,0 +1,183 @@
+{% extends 'edc_base/base.html' %}
+{% load esr21_reports_extras %}
+{% load static %}
+
+{% block extra-styles %}
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+{% endblock %}
+
+{% block extra-scripts %}
+	{{ block.super }}
+	<script type="application/javascript" charset="utf8">
+		$(document).ready(function() {
+	    	$('.vaccination-details').DataTable({
+	    		dom: 'Bfrtip',
+	    		buttons: [
+	    			{
+	   			      "extend": 'excel',
+	   			      "text": '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+	   			      'className': 'btn btn-success btn-sm'
+	   			    },
+	   			    {
+	   			    	"extend": 'pdf',
+	     			    "text": '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+	     			    'className': 'btn btn-info btn-sm'
+	     		}],
+	    		initComplete: function () {
+	                var btns = $('.dt-button');
+	                btns.removeClass('dt-button');
+	    		}
+	    	});
+	    	
+		});
+
+		$(function(){
+			$('#graphs, .graphs').hide();
+			$('.tables, .graphs').on('click',
+				  function() {
+				    $('.tables, .graphs, #tables, #graphs').toggle();
+				  }
+			);
+		});
+	</script>
+	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/highcharts.js' %}"></script>
+	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/exporting.js' %}"></script>
+	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/export-data.js' %}"></script>
+	<script type="text/javascript" charset="utf8" src="{% static 'esr21_reports/js/accessibility.js' %}"></script>
+	<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+{% endblock extra-scripts %}
+
+{% block main %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default" style="padding:10px">
+					<div class="btn btn-info btn-md tables">Tables <span class="glyphicon glyphicon-transfer"></span></div>
+					<div class="btn btn-info btn-md graphs">Graphs <span class="glyphicon glyphicon-transfer"></span></div>
+				</div>
+			</div>
+		</div>
+		<div class="row" id="tables">
+			<div class="col-md-6">			
+				<div class="panel panel-default">
+				  <div class="card-body">
+				    <h6 class="card-subtitle text-muted" style='text-transform:uppercase;text-align:center'>
+				    	Vaccination details by site <br/> (As Per Adverse Event response)
+				    </h6>
+				    <p class="card-text">
+				    	<table class="table table-hover small" cellspacing="0" width="100%">
+				    		<thead>
+				    			<tr>
+					    			<th width="17%"></th>
+					    			<th>Vaccination Details Recorded</th>
+					    			<th>AEs Triggered</th>
+					    			<th>AEs Not Triggered</th>
+					    			<th>N/A</th>
+					    			<th>Missing</th>
+					    		</tr>
+				    		</thead>
+				    		<tbody>
+				    			{% for site_items in overall_vaccination_table %}
+				    			<tr>
+				    				{% for value in site_items.values %}
+				    				<td>{{value}}</td>
+				    				{% endfor %}
+				    			</tr>
+				    			{% endfor %}
+				    		</tbody>
+				    	</table>
+				    </p>
+				  </div>
+				</div>
+			</div>
+			{% for response, data_items in ae_per_response.items %}
+			<div class="col-md-6">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  <div class="card-body">
+				    <h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    	Adverse Events Triggered from Vaccination Details <br/> RESPONSE **({{response}})
+				    </h6>
+				    <p class="card-text">
+				    	<table class="table table-hover small" cellspacing="0" width="100%">
+				    		<thead>
+				    			<tr>
+					    			<th width="18%"></th>
+					    			{% if response == 'Yes' %}
+						    			<th>Adverse Events Expected</th>
+						    			<th>Actual Adverse Event</th>
+						    			<th>Missing Adverse Events</th>
+						    		{% elif response == 'No' %}
+						    			<th>Adverse Events <br/> not triggered</th>
+						    			<th>Unexpected Adverse Event</th>
+						    			<th>Adverse Event accurately No</th>
+						    		{% endif %}
+					    		</tr>
+				    		</thead>
+				    		<tbody>
+				    			{% for value in data_items %}
+				    			<tr>
+				    				<td>{{value.site__domain}}</td>
+				    				<td>{{value.adverse_events_expected}}</td>
+				    				<td>{{value.actual_adverse_events}}</td>
+				    				<td>{{value.missing_adverse_events}}</td>
+				    			</tr>
+				    			{% endfor %}
+				    		</tbody>
+				    	</table>
+				    </p>
+				  </div>
+				</div>
+			</div>
+			{% endfor %}
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Actual Adverse Event for Triggered Adverse Event
+				    	</h6>
+				    	<p class="card-text">
+							{% with actual_aes_triggered as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Missing Adverse Event for Triggered Adverse Event
+				    	</h6>
+				    	<p class="card-text">
+							{% with missing_aes_triggered as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="panel panel-default {% if not forloop.counter0|odd_num %} col-md-offset-1 {% endif %}">
+				  	<div class="card-body">
+				    	<h6 class="card-subtitle mb-2 text-muted" style='text-transform:uppercase;text-align:center'>
+				    		Unexpected Adverse Events
+				    	</h6>
+				    	<p class="card-text">
+							{% with unexpected_aes as items_dict %}
+								{% include 'esr21_reports/operational_reports/vaccination_data_tables.html' %}
+							{% endwith %}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Graphs -->
+		<div class="row" id="graphs">
+			{% include 'esr21_reports/operational_reports/vaccination_details_charts.html' %}
+		</div>
+	</div>
+
+{% endblock main %}

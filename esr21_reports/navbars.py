@@ -21,15 +21,22 @@ operational_reports = NavBarDropdownItem(
     url_name='#',
     dropdown_items={'Screening Reports': 'esr21_reports:esr21_screening_reports_url',
                     'Consent Reports': 'esr21_reports:esr21_consent_reports_url',
-                    'Vaccination Reports': 'esr21_reports:esr21_vaccine_reports_url'})
+                    'Vaccination Reports': 'esr21_reports:esr21_vaccine_reports_url',
+                    'Vaccination Details': 'esr21_reports:esr21_vaccinations_url'})
 
 esr21_reports.append_item(operational_reports)
 
 esr21_reports.append_item(
-    NavbarItem(name='Adverse Events Reports',
-               label='Adverse Events Reports',
-               fa_icon='fa-cogs',
-               url_name='esr21_reports:esr21_ae_reports_url'))
+    NavBarDropdownItem(
+        name='Safety Reports',
+        label='Safety Reports',
+        fa_icon='fa-cogs',
+        url_name='esr21_reports:esr21_ae_reports_url',
+        dropdown_items={
+            'All Adverse Events': 'esr21_reports:esr21_ae_reports_url',
+            'Adverse Events': 'esr21_reports:esr21_ae_detailed_reports_url',
+            'Serious Adverse Events': 'esr21_reports:esr21_sae_detailed_reports_url',
+            'AE of Special Interest': 'esr21_reports:esr21_siae_detailed_reports_url'}))
 
 esr21_reports.append_item(
     NavbarItem(name='dm_reports',
