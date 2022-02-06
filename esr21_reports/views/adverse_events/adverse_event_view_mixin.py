@@ -60,6 +60,7 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
             overall.append(soc_stats)
+        return overall
 
     @property
     def hiv_uninfected(self):

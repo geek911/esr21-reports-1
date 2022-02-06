@@ -3,9 +3,10 @@ from django.contrib.sites.models import Site
 from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
+from ..views.adverse_events import AdverseEventRecordViewMixin
 
 
-class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
+class HomeView(AdverseEventRecordViewMixin, NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     template_name = 'esr21_reports/home.html'
     navbar_selected_item = 'Reports'
     navbar_name = 'esr21_reports'
@@ -151,89 +152,7 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        aes = self.ae_cls.objects.all().count()
-        saes = self.sae_cls.objects.all().count()
-        siaes = self.siae_cls.objects.all().count()
-
-        site_screenings = [
-            ['Gaborone', self.get_screened_by_site('Gaborone')],
-            ['F/Town', self.get_screened_by_site('Francistown')],
-            ['S/Phikwe', self.get_screened_by_site('Phikwe')],
-            ['Maun', self.get_screened_by_site('Maun')],
-            ['Serowe', self.get_screened_by_site('Serowe')]]
-
-        site_vaccinations = [
-            ['Gaborone', self.get_vaccinated_by_site('Gaborone')],
-            ['F/Town', self.get_vaccinated_by_site('Francistown')],
-            ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
-            ['Maun', self.get_vaccinated_by_site('Maun')],
-            ['Serowe', self.get_vaccinated_by_site('Serowe')]]
-
-        not_erolled = [
-            ['Gaborone', self.get_not_enrolled_by_site('Gaborone')],
-            ['F/Town', self.get_not_enrolled_by_site('Francistown')],
-            ['S/Phikwe', self.get_not_enrolled_by_site('Phikwe')],
-            ['Maun', self.get_not_enrolled_by_site('Maun')],
-            ['Serowe', self.get_not_enrolled_by_site('Serowe')]]
-
-        total_screenings = self.subject_screening_cls.objects.all().count()
-        total_vaccinations = self.vaccine_model_cls.objects.filter(
-            received_dose_before='first_dose').count()
-        total_not_erolled = self.get_total_not_enrolled()
-
-        first_dose_site = [
-            ['Gaborone', self.get_vaccinated_by_site('Gaborone')],
-            ['F/Town', self.get_vaccinated_by_site('Francistown')],
-            ['S/Phikwe', self.get_vaccinated_by_site('Phikwe')],
-            ['Maun', self.get_vaccinated_by_site('Maun')],
-            ['Serowe', self.get_vaccinated_by_site('Serowe')]]
-
-        second_dose_site = [
-            ['Gaborone', self.get_second_dose_by_site('Gaborone')],
-            ['F/Town', self.get_second_dose_by_site('Francistown')],
-            ['S/Phikwe', self.get_second_dose_by_site('Phikwe')],
-            ['Maun', self.get_second_dose_by_site('Maun')],
-            ['Serowe', self.get_second_dose_by_site('Serowe')]]
-
-        total_first_dose = self.vaccine_model_cls.objects.filter(
-            received_dose_before='first_dose').count()
-        total_second_dose = self.vaccine_model_cls.objects.filter(
-            received_dose_before='second_dose').count()
-
-        # Withdrawals stats
-        withdrawals_site = [
-            ['Gaborone', self.get_offstudy_by_site('Gaborone')],
-            ['F/Town', self.get_offstudy_by_site('Francistown')],
-            ['S/Phikwe', self.get_offstudy_by_site('Phikwe')],
-            ['Maun', self.get_offstudy_by_site('Maun')],
-            ['Serowe', self.get_offstudy_by_site('Serowe')]]
-
-        after_first_dose_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_after_first_dose_by_site('Gaborone')],
-            ['F/Town', self.get_offstudy_after_first_dose_by_site('Francistown')],
-            ['S/Phikwe', self.get_offstudy_after_first_dose_by_site('Phikwe')],
-            ['Maun', self.get_offstudy_after_first_dose_by_site('Maun')],
-            ['Serowe', self.get_offstudy_after_first_dose_by_site('Serowe')]]
-
-        after_second_dose_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_after_second_dose_by_site('Gaborone')],
-            ['F/Town', self.get_offstudy_after_second_dose_by_site('Francistown')],
-            ['S/Phikwe', self.get_offstudy_after_second_dose_by_site('Phikwe')],
-            ['Maun', self.get_offstudy_after_second_dose_by_site('Maun')],
-            ['Serowe', self.get_offstudy_after_second_dose_by_site('Serowe')]]
-
-        reason_withdrawals_site = [
-            ['Gaborone', self.get_offstudy_reasons_by_site('Gaborone')],
-            ['F/Town', self.get_offstudy_reasons_by_site('Francistown')],
-            ['S/Phikwe', self.get_offstudy_reasons_by_site('Phikwe')],
-            ['Maun', self.get_offstudy_reasons_by_site('Maun')],
-            ['Serowe', self.get_offstudy_reasons_by_site('Serowe')]]
-
-        total_withdrawals = self.offstudy_cls.objects.filter().count()
-        total_first_dose_withdrawals = self.get_offstudy_by_dose('first_dose')
-        total_second_dose_withdrawals = self.get_offstudy_by_dose('second_dose')
-
-# Fake data
+        # Fake data
         dummy_screening_data = [
             ['Total screened', 1, 2, 3, 4, 5, 6],
             ['Enrolled', 1, 2, 3, 4, 5, 6],
@@ -246,27 +165,27 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
 
         dummy_demographics_totals = [
             ['Total enrolled', 1, 2, 3, 4, 5, 6],
-            ['Participants with two doses', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['Participants with two doses', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
         dummy_demographics_gender = [
             ['Male', 1, 2, 3, 4, 5, 6],
-            ['Female', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['Female', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
         dummy_demographics_ethinicity = [
             ['Black', 1, 2, 3, 4, 5, 6],
-            ['Other', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['Other', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
         dummy_demographics_medianIQR_total = [
             ['Median Age (IQR)', 1, 2, 3, 4, 5, 6],
         ]
         dummy_demographics_medianIQR = [
             ['18-<30', 1, 2, 3, 4, 5, 6],
-            ['30-<40', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['30-<40', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
-        dummy_demographics_hiv= [
+        dummy_demographics_hiv = [
             ['Positive', 1, 2, 3, 4, 5, 6],
-            ['Negative', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',],
-            ['Unknown', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['Negative', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ],
+            ['Unknown', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
         dummy_demographics_pregnancy = [
             ['Pregnacy n(%)', 1, 2, 3, 4, 5, 6],
@@ -278,36 +197,35 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
             ['Prior COVID infection n(%)', 1, 2, 3, 4, 5, 6],
         ]
 
-        dummy_demographics_smoking= [
+        dummy_demographics_smoking = [
             ['Current', 1, 2, 3, 4, 5, 6],
-            ['Occasional', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)'],
-            ['Unknown', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)'],
+            ['Occasional', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)'],
+            ['Unknown', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)'],
         ]
-        dummy_demographics_alcohol= [
+        dummy_demographics_alcohol = [
             ['Current', 1, 2, 3, 4, 5, 6],
-            ['Occasional', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',],
-            ['Unknown', '3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)','3(6.1)',]
+            ['Occasional', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ],
+            ['Unknown', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', '3(6.1)', ]
         ]
-        dummy_demographics_totalfollowuptimeyears= [
+        dummy_demographics_totalfollowuptimeyears = [
             ['Total follow-up time (years)', 1, 2, 3, 4, 5, 6],
         ]
-        dummy_demographics_participants_with_ae= [
+        dummy_demographics_participants_with_ae = [
             ['Participants with at least one adverse event ', 1, 2, 3, 4, 5, 6],
         ]
-        dummy_demographics_total_ae_100= [
+        dummy_demographics_total_ae_100 = [
             ['Total AE; n (incidence per 100 participant-years)', 1, 2, 3, 4, 5, 6],
         ]
-        dummy_demographics_total_ae= [
+        dummy_demographics_total_ae = [
             ['Total AESI', 1, 2, 3, 4, 5, 6],
         ]
         summary = [{
-            'soc_name': 'Nervous system disorders', 'total': 150, 'mild': 143, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0,'hlt': [{'hlt_name': 'Headaches NEC', 'total': 111, 'mild': 104, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'headaches', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'Neurolodical signs and symptoms NEC', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0},]
+            'soc_name': 'Nervous system disorders', 'total': 150, 'mild': 143, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0, 'hlt': [{'hlt_name': 'Headaches NEC', 'total': 111, 'mild': 104, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'headaches', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'Neurolodical signs and symptoms NEC', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, ]
         }]
 
         context.update(
 
             # Fake screening data
-            summary=summary,
             screening_data=dummy_screening_data,
             screening_reasons_data=dummy_screening_reasons,
             demographics_data=dummy_demographics_totals,
@@ -326,39 +244,6 @@ class HomeView(NavbarViewMixin, EdcBaseViewMixin, TemplateView):
             demographics_data_prior_total_ae=dummy_demographics_total_ae,
             demographics_data_participants_with_ae=dummy_demographics_participants_with_ae,
 
-
-            
-            # Charts
-            # get_data=self.get_data(),
-            # get_providers=self.get_providers(),
-            # get_labels=self.get_labels(),
-            
-            # Totals
-            total_screenings=total_screenings,
-            total_vaccinations=total_vaccinations,
-            total_not_erolled=total_not_erolled,
-            # AEs
-            aes=aes,
-            saes=saes,
-            siaes=siaes,
-            # Screenigs
-            site_screenings=site_screenings,
-            site_vaccinations=site_vaccinations,
-            not_erolled=not_erolled,
-
-            # Vaccinations
-            first_dose_site=first_dose_site,
-            second_dose_site=second_dose_site,
-            total_first_dose=total_first_dose,
-            total_second_dose=total_second_dose,
-            # Withdrawals
-            withdrawals_site=withdrawals_site,
-            after_first_dose_withdrawals_site=after_first_dose_withdrawals_site,
-            after_second_dose_withdrawals_site=after_second_dose_withdrawals_site,
-            reason_withdrawals_site=reason_withdrawals_site,
-            total_withdrawals=total_withdrawals,
-            total_first_dose_withdrawals=total_first_dose_withdrawals,
-            total_second_dose_withdrawals=total_second_dose_withdrawals
         )
 
         return context
