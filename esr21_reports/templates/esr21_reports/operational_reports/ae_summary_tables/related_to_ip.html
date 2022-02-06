@@ -2,69 +2,117 @@
 <nav>
     <ul class="nav nav-tabs">
         <li class="nav nav-tabs active"><a data-toggle="tab" href="#ae1">Number
-            of participants with at least one SAE (%)</a></li>
+            of participants with at least one AE (%)</a></li>
         <li><a data-toggle="tab" href="#ae2">Number of
-            SAE (incidence per 1000 person-years)</a></li>
+            AE (incidence per 1000 person-years)</a></li>
     </ul>
 </nav>
 <div class="tab-content">
     <div id="ae1" class="tab-pane fade active">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
-            <tr>
-                <th>SOC</th>
-                <th>HLT</th>
-                <th>Total</th>
-                <th>Moderate</th>
-                <th>Severe</th>
-                <th>Life threatening</th>
-                <th>Fatal</th>
-        
-            </tr>
+                <tr>
+                    <th>SOC</th>
+                    <th>HLT</th>
+                    <th>Total</th>
+                    <th>Mild</th>
+                    <th>Moderate</th>
+                    <th>Severe</th>
+                    <th>Life threatening</th>
+                    <th>Fatal</th>
+                </tr>
             </thead>
             <tbody>
-            <tr class="clickable"
-                data-target="#group-of-rows-1" aria-expanded="false"
-                aria-controls="group-of-rows-1">
-                <td>Nervous System Disorders</td>
-                <td></td>
-                <td>2 (0.02)</td>
-                <td>0</td>
-                <td>1 (0.01)</td>
-                <td>1 (0.01)</td>
-                <td>1 (0.01)</td>
                 
-            </tr>
+                {% for item in summary %}
+                <tr>
+                    {% for k,v in item.items %}
+                    
+                        {% if k == 'total' %}
+                            <td></td>
+                            <td>{{ v }}</td>
+                            {% elif k != 'hlt' %}
+                            <td>{{ v }}</td>
+                            
+                        {% endif %}
+                         
+                        
+                    {% endfor %}
+                </tr>
+               
+                    {% for k,v in item.items %}
+                        {% if k == 'hlt' %} 
+                            {% for item in v %}
+                            <tr >
+                                {% for k,v in item.items %}
+                                    {% if k == 'hlt_name' %}
+                                    <td></td>
+                                    {% endif %}
+                                    <td>{{v }}</td>
+
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+               
+                
+                {% endfor %}
+            
             </tbody>
         </table>
     </div>
     <div id="ae2" class="tab-pane fade">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
-            <tr>
-                <th>SOC</th>
-                <th>HLT</th>
-                <th>Total</th>
-                <th>Moderate</th>
-                <th>Severe</th>
-                <th>Life threatening</th>
-                <th>Fatal</th>
-        
-            </tr>
+                <tr>
+                    <th>SOC</th>
+                    <th>HLT</th>
+                    <th>Total</th>
+                    <th>Mild</th>
+                    <th>Moderate</th>
+                    <th>Severe</th>
+                    <th>Life threatening</th>
+                    <th>Fatal</th>
+                </tr>
             </thead>
             <tbody>
-            <tr class="clickable"
-                data-target="#group-of-rows-1" aria-expanded="false"
-                aria-controls="group-of-rows-1">
-                <td>Nervous System Disorders</td>
-                <td></td>
-                <td>2 (0.02)</td>
-                <td>0</td>
-                <td>1 (0.01)</td>
-                <td>1 (0.01)</td>
-                <td>1 (0.01)</td>
                 
-            </tr>
+                {% for item in summary %}
+                <tr>
+                    {% for k,v in item.items %}
+                    
+                        {% if k == 'total' %}
+                            <td></td>
+                            <td>{{ v }}</td>
+                            {% elif k != 'hlt' %}
+                            <td>{{ v }}</td>
+                            
+                        {% endif %}
+                         
+                        
+                    {% endfor %}
+                </tr>
+               
+                    {% for k,v in item.items %}
+                        {% if k == 'hlt' %} 
+                            {% for item in v %}
+                            <tr >
+                                {% for k,v in item.items %}
+                                    {% if k == 'hlt_name' %}
+                                    <td></td>
+                                    {% endif %}
+                                    <td>{{v }}</td>
+
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+               
+                
+                {% endfor %}
+            
             </tbody>
         </table>
     </div>
