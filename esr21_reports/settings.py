@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+from esr21.esr21.settings import APP_NAME
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ETC_DIR = '/etc/'
+
+APP_NAME = 'esr21_reports'
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django_crypto_fields.apps.AppConfig',
+    'operational_reports.apps.OperationalReportsConfig',
+    'medical_reports.apps.MedicalReportsConfig',
 ]
 
 MIDDLEWARE = [

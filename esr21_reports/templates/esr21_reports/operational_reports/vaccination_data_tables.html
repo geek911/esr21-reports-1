@@ -1,0 +1,24 @@
+{% load esr21_reports_extras %}
+
+<div class="table table-responsive" style="padding:10px">
+	<table class="table table-hover small vaccination-details" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th>Subject Identifier</th>
+				<th>Site Name</th>
+				<th>Visit Code</th>
+				<th>Report Datetime</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in items_dict %}
+				<tr>
+					<td>{{item.subject_identifier}}</td>
+					<td>{{item.site_id|map_site_id}}</td>
+					<td>{{item.subject_visit.visit_code}}</td>
+					<td>{{item.report_datetime}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

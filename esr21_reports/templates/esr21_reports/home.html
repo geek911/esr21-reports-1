@@ -1,0 +1,68 @@
+{% extends 'edc_base/base.html' %}
+{% load static %}
+{% block extra-styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<style>
+.row{
+    margin-top:10px;
+    padding: 0 10px;
+}
+
+.clickable{
+    cursor: pointer;   
+}
+
+.panel-heading span {
+	margin-top: -20px;
+	font-size: 15px;
+}
+
+</style>
+{% endblock extra-styles %}
+
+{% block extra-scripts %}
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+	<script src="https://code.highcharts.com/highcharts.src.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+        <script type="text/javascript">
+            $.get('{% url "esr21_reports:line_chart_json_url" %}', function(data) {
+				console.log(data);
+                var ctx = $("#myChart33").get(0).getContext("2d");
+                new Chart(ctx, {
+                    type: 'line', data: data
+                });
+            });
+        </script>
+
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+<div class="container">
+
+	<section id="screening_table">
+		{% include './operational_reports/screening_table.html' %}
+
+	</section>
+    
+	<section id="demographics_table">
+		{% include './operational_reports/demographics_table.html' %}
+
+	</section>
+
+	<section id="ae_summary_table">
+		{% include './operational_reports/ae_summary_table.html' %}
+
+	</section>
+
+
+ 
+</div>
+
+{% endblock main %}

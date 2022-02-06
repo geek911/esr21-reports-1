@@ -1,0 +1,109 @@
+{% extends 'esr21_reports/operational_reports/main_template.html' %}
+
+{%block main %}
+<div class="jumbotron">
+<div class="alert alert-default text-center " role="alert"><h4>Number of vaccinated subjects per site</h4></div>
+
+  <div class="row w-100">
+    <div class="col-md-2">
+        <div class="card border-success mx-sm-1 p-3">
+            <div class="card border-success shadow text-success p-3 my-card"><span  aria-hidden="true"></span></div>
+            <div class="text-success text-center mt-3"><h4>Gaborone</h4></div>
+            <div class="text-success text-center mt-2"><h1>{{ gaborone }}</h1></div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-info mx-sm-1 p-3">
+            <div class="card border-info shadow text-info p-3 my-card" ><span  aria-hidden="true"></span></div>
+            <div class="text-info text-center mt-3"><h4>Maun</h4></div>
+            <div class="text-info text-center mt-2"><h1>{{ maun }}</h1></div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-warning mx-sm-1 p-3">
+            <div class="card border-warning shadow text-warning p-3 my-card" ><span  aria-hidden="true"></span></div>
+            <div class="text-warning text-center mt-3"><h4>Phikwe</h4></div>
+            <div class="text-warning text-center mt-2"><h1>{{ phikwe }}</h1></div>
+        </div>
+    </div>
+
+     <div class="col-md-2">
+        <div class="card border-danger mx-sm-1 p-3">
+            <div class="card border-danger shadow text-danger p-3 my-card" ><span  aria-hidden="true"></span></div>
+            <div class="text-danger text-center mt-3"><h4>Serowe</h4></div>
+            <div class="text-danger text-center mt-2"><h1>{{ serowe }}</h1></div>
+        </div>
+    </div>
+
+     <div class="col-md-4">
+        <div class="card border-primary mx-sm-1 p-3">
+            <div class="card border-primary shadow text-primary p-3 my-card" ><span  aria-hidden="true"></span></div>
+            <div class="text-primary text-center mt-3"><h4>F/town</h4></div>
+            <div class="text-primary text-center mt-2"><h1>{{ f_town }}</h1></div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<div class="panel panel-info">
+  <!-- Default panel contents -->
+  <div class="panel-heading">
+    First dose <span class="badge">{{ first_dose }}</span>  
+    Second dose <span class="badge">{{ second_dose }}</span>
+    Not vaccinated <span class="badge">{{ not_vaccinated }}</span>
+  </div>
+  <div class="panel-body">
+   
+<table id="example" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Subject Identifier</th>
+                <th>First dose</th>
+                <th>Second dose</th>
+                <th>Not vaccinated</th>
+                <th>Site</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+         {% for vaccine in vaccines %}
+            <tr>
+                <td>{{ vaccine.subject_identifier }}</td>
+                <td>{% if vaccine and vaccine.received_dose_before == first_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
+                <td>{% if vaccine and vaccine.received_dose_before == second_dose %} {{ 'Yes' }} {% else  %} {{ 'No' }} {% endif %}</td>
+                <td>{{ vaccine.received_dose }} </td>
+                <td>
+                    {% if vaccine.site_id == 40 %}
+                    {{ 'Gaborone' }}
+                    {% elif vaccine.site_id == 41 %}
+                    {{ 'Maun' }}
+                    {% elif vaccine.site_id == 42 %}
+                    {{ 'Serowe' }}
+                    {% elif vaccine.site_id == 43 %}
+                    {{ 'F/town' }}
+                    {% elif vaccine.site_id == 44 %}
+                    {{ 'Phikwe' }}
+                    {% endif %}
+                </td>
+                <td>{{ vaccine.created }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <th>Subject Identifier</th>
+            <th>First dose</th>
+            <th>Second dose</th>
+            <th>Not vaccinated</th>
+            <th>Site</th>
+            <th>Created</th>
+        </tfoot>
+    </table>
+  </div>
+</div>
+
+
+
+{% endblock main %}
