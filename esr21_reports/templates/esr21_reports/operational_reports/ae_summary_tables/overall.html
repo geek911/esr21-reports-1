@@ -9,6 +9,8 @@
 </nav>
 <div class="tab-content">
     <div id="overall_ae1" class="tab-pane fade active">
+        <div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
                 <tr>
@@ -61,8 +63,11 @@
             
             </tbody>
         </table>
+        </div>
     </div>
     <div id="overall_ae2" class="tab-pane fade">      
+        <div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
                 <tr>
@@ -78,7 +83,7 @@
             </thead>
             <tbody>
                 
-                {% for item in summary %}
+                {% for item in overral_adverse_events %}
                 <tr>
                     {% for k,v in item.items %}
                     
@@ -115,6 +120,7 @@
             
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 
