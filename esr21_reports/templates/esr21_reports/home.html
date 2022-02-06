@@ -46,166 +46,21 @@
 
 <div class="container">
 
-	<div class="row">
-		
-			<div class="col-md-6">
-				<div class="panel panel-info">
-					<div class="panel-heading"><b>Screening numbers</b></div>
-					<div class="panel-body">
-						<table class="table table-hover">
-						  <thead>
-						    <tr>
-						      <th></th>
-						      <th colspan="5" class="text-center">Sites</th>
-						      <th>Overall</th>
-						    </tr>
-						  </thead>
-						  <tbody>
-						  	<tr>
-						        <td ></td>
-						        <td>Gaborone</td>
-						        <td>Maun</td>
-						        <td>S/Phikwe</td>
-						        <td>F/Town</td>
-						        <td>Serowe</td>
-						        <td>All Sites</td>
-						    </tr>
-						    <tr>
-						      <td>Screened</td>
-						      {% for site in site_screenings %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-						      <td>{{ total_screenings }}</td>
-						    </tr>
-						    <tr>
-						      <td>Enrolled</td>
-						      {% for site in site_vaccinations %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-						      <td>{{ total_vaccinations }}</td>
-						    </tr>
-						    <tr>
-						      <td>Not Enrolled</td>
-						      {% for site in not_erolled %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-						      <td>{{ total_not_erolled }}</td>
-						    </tr>
-						  </tbody>
-						</table>
-			      </div>
-			    </div>
-		    </div>
-		    
-		    <div class="col-md-6">
-			    <div class="panel panel-info">
-			      <div class="panel-heading"><b>Vaccination/Enrolment numbers</b></div>
-			      <div class="panel-body">
-			      	<table class="table table-hover">
-					    <thead>
-					      <tr>
-					        <th></th>
-					        <th colspan="5" class="text-center">Sites</th>
-					        <th>Overall</th>
-					      </tr>
-					    </thead>
-					    <tbody>
-					    	<tr>
-					          <td ></td>
-					          <td>Gaborone</td>
-					          <td>Maun</td>
-					          <td>S/Phikwe</td>
-					          <td>F/Town</td>
-					          <td>Serowe</td>
-					          <td>All-sites</td>
-					      </tr>
-					      <tr>
-					        <td>First dose</td>
-					        {% for site in first_dose_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td>{{total_first_dose}}</td>
-					      </tr>
-					      <tr>
-					        <td>Second dose</td>
-					        {% for site in second_dose_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td>{{total_second_dose}}</td>
-					      </tr>
-					    </tbody>
-					  </table>
-			      </div>
-			    </div>
-		    </div>
+	<section id="screening_table">
+		{% include './operational_reports/screening_table.html' %}
 
-	</div>
+	</section>
+    
+	<section id="demographics_table">
+		{% include './operational_reports/demographics_table.html' %}
 
-	<div class="row">
-		<div class="col-md-12">
-			<b>Enrolment Per Site Per Month:</b> All number are for first dose received only
-			<canvas id="myChart33" width="200" height="50"></canvas>
-		</div>
-	</div>
+	</section>
 
+	<section id="ae_summary_table">
+		{% include './operational_reports/ae_summary_table.html' %}
 
-    <div class='row'>
-		<div class="col-md-12">
-			    <div class="panel panel-info">
-			      <div class="panel-heading"><b>Withdrawals</b></div>
-			      <div class="panel-body">
-			      	<table class="table table-hover">
-					    <thead>
-					      <tr>
-					        <th></th>
-					        <th colspan="5" class="text-center">Sites</th>
-					        <th>Overall</th>
-					      </tr>
-					    </thead>
-					    <tbody>
-					    	<tr>
-					          <td ></td>
-					          <td>Gaborone</td>
-					          <td>Maun</td>
-					          <td>S/Phikwe</td>
-					          <td>F/Town</td>
-					          <td>Serowe</td>
-					          <td>All-sites</td>
-					      </tr>
-					      <tr>
-					        <td>Total withdrawals</td>
-					        {% for site in withdrawals_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td>{{total_withdrawals}}</td>
-					      </tr>
-					      <tr>
-					        <td>After Vax 1</td>
-					        {% for site in after_first_dose_withdrawals_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td>{{total_first_dose_withdrawals}}</td>
-					      </tr>
-					      <tr>
-					        <td>After Vax 2</td>
-					        {% for site in after_second_dose_withdrawals_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td>{{total_second_dose_withdrawals}}</td>
-					      </tr>
-					      <tr>
-					        <td>Reason for withdrawal</td>
-					        {% for site in reason_withdrawals_site %}
-						      	<td>{{ site.1 }}</td>
-						      {% endfor %}
-					        <td></td>
-					      </tr>
-					    </tbody>
-					  </table>
-			      </div>
-			    </div>
-		    </div>    	
-    </div>
+	</section>
+
 
  
 </div>

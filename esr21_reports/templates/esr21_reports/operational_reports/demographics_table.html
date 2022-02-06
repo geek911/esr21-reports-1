@@ -1,0 +1,321 @@
+{% block extra-styles %}
+
+<!-- Style -->
+<style>
+	.column_head {
+		text-align: left;
+		position: sticky;
+		top: 0;
+		background-color: #FFFFFF;
+	}
+
+	.row_tag {
+		text-align: left;
+		width: 30em;
+		font-weight: bold;
+		padding-left: 2em;
+	}
+
+	.row_tag2 {
+		text-align: left;
+		padding-left: 2em;
+		width: 30em;
+
+	}
+
+	.table_style {
+		font-size: 16px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-left: auto;
+		margin-right: auto;
+		font-family:
+			"Arial Narrow", arial, helvetica, sans-serif;
+		margin-left: auto;
+		margin-right: auto;
+	}
+</style>
+
+{% endblock extra-styles %}
+
+
+
+{% block extra-scripts %}
+<!-- Script -->
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+<div class="row">
+	<div class="col-md-12">
+		<h1><b>Demographics</b> </h1>
+	</div>
+</div>
+<div class='row'>
+	<div class="col-md-12">
+		<div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:auto; overflow-x: scroll; width:110%; ">
+			<table class="table table table-striped table-hover table-condensed lightable-paper table_style">
+				<thead>
+					<tr>
+						<th class="column_head">
+							Variable
+						</th>
+						<th class="column_head">
+							Overall
+						</th>
+						<th class="column_head">
+							Gaborone
+						</th>
+						<th class="column_head">
+							Maun
+						</th>
+						<th class="column_head">
+							Serowe
+						</th>
+						<th class="column_head">
+							Francistown
+						</th>
+						<th class="column_head">
+							Selibe Phikwe
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for d_data in demographics_data %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<!-- Gender -->
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							Gender n(%)
+						</td>
+					</tr>
+					{% for d_data in demographics_data_gender %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<!-- Ethinicity -->
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							Ethinicity n(%)
+						</td>
+					</tr>
+					demographics_data_ethinicity
+					{% for d_data in demographics_data_ethinicity %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_medianIQR_total %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_medianIQR %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							HIV n(%)
+						</td>
+					</tr>
+
+					{% for d_data in demographics_data_hiv %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<!-- Pregnancy -->
+					{% for d_data in demographics_data_pregnancy %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+					<!-- Diabetes -->
+					{% for d_data in demographics_data_diabetes %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+					<!-- Prior COVID infection -->
+					{% for d_data in demographics_data_prior_covid_inf %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							Smoking status n(%)
+						</td>
+					</tr>
+					{% for d_data in demographics_data_smoking %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							Alcohol status n(%)
+						</td>
+					</tr>
+
+					{% for d_data in demographics_data_alcohol %}
+					<tr>
+						<td style="text-align:left;width: 30em;padding-left: 2em;" indentlevel="1">{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_totalfollowuptimeyears %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_total_ae_100 %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+
+					{% for d_data in demographics_data_participants_with_ae %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_prior_total_ae %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock main %}
