@@ -1,14 +1,16 @@
 <h5>Total participants: 8325</h5>
 <nav>
     <ul class="nav nav-tabs">
-        <li class="nav nav-tabs active"><a data-toggle="tab" href="#hive_ae1">Number
-            of participants with at least one AE (%)</a></li>
-        <li><a data-toggle="tab" href="#hive_ae2">Number of
-            AE (incidence per 1000 person-years)</a></li>
+        <li class="nav nav-tabs active"><a data-toggle="tab" href="#overall_sae1">Number
+            of participants with at least one SAE (%)</a></li>
+        <li><a data-toggle="tab" href="#overall_sae2">Number of
+            SAE (incidence per 1000 person-years)</a></li>
     </ul>
 </nav>
 <div class="tab-content">
-    <div id="hive_ae1" class="tab-pane fade active">
+    <div id="overall_sae1" class="tab-pane fade active">
+        <div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
                 <tr>
@@ -24,7 +26,7 @@
             </thead>
             <tbody>
                 
-                {% for item in hiv_uninfected %}
+                {% for item in overral_adverse_events %}
                 <tr>
                     {% for k,v in item.items %}
                     
@@ -61,8 +63,11 @@
             
             </tbody>
         </table>
+        </div>
     </div>
-    <div id="hive_ae2" class="tab-pane fade">
+    <div id="overall_sae2" class="tab-pane fade">      
+        <div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
         <table class="table table-bordered table-sm ">
             <thead class="thead-dark">
                 <tr>
@@ -78,7 +83,7 @@
             </thead>
             <tbody>
                 
-                {% for item in summary %}
+                {% for item in overral_adverse_events %}
                 <tr>
                     {% for k,v in item.items %}
                     
@@ -115,5 +120,6 @@
             
             </tbody>
         </table>
+        </div>
     </div>
 </div>
