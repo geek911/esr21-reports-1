@@ -1,0 +1,66 @@
+{% block main %}
+    <div class="container">
+        <h1>Line listing of adverse events</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>AE Number</th>
+                    <th>AE reported term</th>
+                    <th>MedDRA preferred term name</th>
+                    <th>MedDRA high level term name</th>
+                    <th>MedDRA system organ class name</th>
+                    <th>Reasonable possibility AE caused by IP?</th>
+                    <th>AE Start Date</th>
+                    <th>AE Stop Date</th>
+                    <th>Outcome</th>
+                    <th>Maximum CTCAE Grade</th>
+                    <th>Was this considered to be a serious adverse event?</th>
+                    <th>Was the event an AE of special interest?</th>
+                    <th>Timing of AE</th>
+                    <th>Age</th>
+                    <th>Age (category)</th>
+                    <th>Gender</th>
+                    <th>Date of first dose</th>
+                    <th>Date of second dose</th>
+                    <th>Ethnicity</th>
+                    <th>HIV result</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="clickable"
+                    data-target="#group-of-rows-1" aria-expanded="false"
+                    aria-controls="group-of-rows-1">
+                    <td>150-040140001-3</td>
+                    <td>1</td>
+                    <td>Painful neck</td>
+                    <td>Pain</td>
+                    <td>Pain And Discomfort Nec</td>
+                    <td>General Disorders And Administration Site Conditions</td>
+                    <td>No</td>
+                    <td>05-Oct-2021</td>
+                    <td>06-Oct-2021</td>
+                    <td>Recovered/Resolved</td>
+                    <td>No</td>
+                    <td>mild</td>
+                    <td>No</td>
+                    <td>After Vax1 and before Vax2</td>
+                    <td>40.83333</td>
+                    <td>40-<50</td>
+                    <td>F</td>
+                    <td>04-Oct-2021</td>
+                    <td>02-Dec-2021</td>
+                    <td>Black African</td>
+                    <td>Negative</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+{% endblock main %}
