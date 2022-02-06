@@ -1,31 +1,7 @@
 {% load esr21_reports_extras %}
 
-<script type="text/javascript">
-	$(document).ready(function() {
-    	$('#vaccination-details').DataTable({
-    		dom: 'Bfrtip',
-    		buttons: [
-    			{
-   			      "extend": 'excel',
-   			      "text": '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
-   			      'className': 'btn btn-success btn-sm'
-   			    },
-   			    {
-   			    	"extend": 'pdf',
-     			    "text": '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
-     			    'className': 'btn btn-info btn-sm'
-     		}],
-    		initComplete: function () {
-                var btns = $('.dt-button');
-                btns.removeClass('dt-button');
-    		}
-    	});
-    	
-	});
-</script>
-
 <div class="table table-responsive" style="padding:10px">
-	<table class="table table-hover small" cellspacing="0" width="100%" id="vaccination-details">
+	<table class="table table-hover small vaccination-details" cellspacing="0" width="100%">
 		<thead>
 			<tr>
 				<th>Subject Identifier</th>

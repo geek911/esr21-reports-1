@@ -65,7 +65,7 @@ class SeriousAdverseEventView(EdcBaseViewMixin, NavbarViewMixin, ListView):
             existing_saer_data=self.get_existing_saer_data(),
             missing_saer_data=self.get_missing_saer_data(),
             sites=self.sites,
-            test_mis_saer=self.get_no_sae_records(),
+            missing_saer=self.get_no_sae_records(),
         )
         return context
 

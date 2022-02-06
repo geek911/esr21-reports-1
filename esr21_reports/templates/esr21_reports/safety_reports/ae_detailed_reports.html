@@ -75,6 +75,11 @@
 		table.buttons().container().appendTo( '#example3 .col-sm-6:eq(0)' );
 	} );
 	var areaOptions = {
+		title: {
+			display: true,
+			text: 'Adverse Events Per Site Per Month',
+			position: 'top',
+		},
 		plugins: {
 			filler: {
 			propagate: true
@@ -85,6 +90,7 @@
 	$(function() {
 	if ($("#areaChart").length) {
 		$.get('{% url "esr21_reports:adverse_event_chart_json_url" %}', function(data) {
+			console.log(data)
 			var ctx = $("#areaChart").get(0).getContext("2d");
 			new Chart(ctx, {
 				type: 'line', 
@@ -220,8 +226,11 @@
 		<div class="row">
 			<div class="col-md-12">
 				<canvas id="areaChart" style="display: block; height: 125px; width: 470px;"></canvas>
+				<center><div>Graph 1: Adverse Events Per Month</div></center>
 			</div>
 		</div>
+		<br>
+		<br>
 		
 		<div class="row">
 			<div class="col-md-6">
