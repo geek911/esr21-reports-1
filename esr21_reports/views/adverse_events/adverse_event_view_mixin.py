@@ -8,7 +8,3 @@ class AdverseEventRecordViewMixin(AdverseEventRecordMixin):
     @property
     def ae_record_cls(self):
         return django_apps.get_model(self.ae_record_model)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
