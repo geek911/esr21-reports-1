@@ -24,7 +24,14 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            overral_adverse_events=self.overral_adverse_events
+            overral_adverse_events=self.overral_adverse_events,
+            hiv_uninfected=self.hiv_uninfected,
+            hiv_infected=self.hiv_infected,
+            received_first_dose=self.received_first_dose,
+            received_second_dose=self.received_second_dose,
+            related_ip=self.related_ip,
+            not_related_ip=self.not_related_ip,
+            received_first_dose_plus_28=self.received_first_dose_plus_28
         )
         return context
 
@@ -64,27 +71,27 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
 
     @property
     def hiv_uninfected(self):
-        return self.adverse_events_by_hiv_status(NEG)
+        return self.adverse_events_by_hiv_status(status=NEG)
 
     @property
     def hiv_infected(self):
-        return self.adverse_events_by_hiv_status(POS)
+        return self.adverse_events_by_hiv_status(status=POS)
 
     @property
     def received_first_dose(self):
-        return self.adverse_event_by_vaccination('first_dose')
+        return self.adverse_event_by_vaccination(dose='first_dose')
 
     @property
     def received_second_dose(self):
-        return self.adverse_event_by_vaccination('second_dose')
+        return self.adverse_event_by_vaccination(dose='second_dose')
 
     @property
     def related_ip(self):
-        return self.adverse_event_by_attrib(YES)
+        return self.adverse_event_by_attrib(choice=YES)
 
     @property
     def not_related_ip(self):
-        return self.adverse_event_by_attrib(NO)
+        return self.adverse_event_by_attrib(choice=NO)
 
     @property
     def received_first_dose_plus_28(self):
@@ -100,13 +107,11 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
         overall = self.overral_filter_by_query_object(q)
         return overall
 
-    @property
-    def adverse_event_by_attrib(self, attrib):
-        q = Q(ae_rel=attrib)
+    def adverse_event_by_attrib(self, choice):
+        q = Q(ae_rel=choice)
         overall = self.overral_filter_by_query_object(q)
         return overall
 
-    @property
     def adverse_event_by_vaccination(self, dose):
         received_dose = self.vaccination_detail_cls.objects.filter(
             received_dose_before=dose).values_list(
@@ -115,9 +120,8 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
         overall = self.overral_filter_by_query_object(q)
         return overall
 
-    @property
-    def overral_filter_by_query_object(self, q):
-        soc_list = self.ae_record_cls.objects.filter(q).values('soc_name').annotate(
+    def overral_filter_by_query_object(self, query):
+        soc_list = self.ae_record_cls.objects.filter(query).values('soc_name').annotate(
             total=Count('soc_name', filter=Q(soc_name__isnull=False)),
             mild=Count('ctcae_grade', filter=Q(ctcae_grade='mild')),
             moderate=Count('ctcae_grade', filter=Q(ctcae_grade='moderate')),
@@ -126,7 +130,7 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin):
             fatal=Count('ctcae_grade', filter=Q(ctcae_grade='fatal')),
         )
 
-        hlt_list = self.ae_record_cls.objects.filter(q).values(
+        hlt_list = self.ae_record_cls.objects.filter(query).values(
             'soc_name', 'hlt_name').annotate(
             total=Count('hlt_name', filter=Q(hlt_name__isnull=False)),
             mild=Count('ctcae_grade', filter=Q(ctcae_grade='mild')),
