@@ -222,6 +222,9 @@ class HomeView(AdverseEventRecordViewMixin, NavbarViewMixin, EdcBaseViewMixin, T
         summary = [{
             'soc_name': 'Nervous system disorders', 'total': 150, 'mild': 143, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0, 'hlt': [{'hlt_name': 'Headaches NEC', 'total': 111, 'mild': 104, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'headaches', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'Neurolodical signs and symptoms NEC', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, ]
         }]
+        ae_listing = [
+            ['1234567', 1, 2, 3, 4, 5, 6,1, 2, 3, 4, 5, 6,1, 2, 3, 4, 5, 6,8,9,4, 5, 6,1, 2, 3, 4, 5, 6,8,9,'Negative'],
+        ]
        
 
 
@@ -246,6 +249,10 @@ class HomeView(AdverseEventRecordViewMixin, NavbarViewMixin, EdcBaseViewMixin, T
             demographics_data_total_ae_100=dummy_demographics_total_ae_100,
             demographics_data_prior_total_ae=dummy_demographics_total_ae,
             demographics_data_participants_with_ae=dummy_demographics_participants_with_ae,
+            # listings
+            ae_listing=ae_listing,
+            sae_listing=ae_listing,
+
 
         )
 
