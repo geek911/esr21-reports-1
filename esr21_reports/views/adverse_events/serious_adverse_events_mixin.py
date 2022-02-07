@@ -270,7 +270,6 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
         context = super().get_context_data(**kwargs)
         context.update(
             new_sae_listing=self.new_sae_listing,
-            all_sae_records=self.all_sae_records,
             sae_overral_adverse_events=self.sae_overral_adverse_events,
             sae_hiv_uninfected=self.sae_hiv_uninfected,
             sae_hiv_infected=self.sae_hiv_infected,
