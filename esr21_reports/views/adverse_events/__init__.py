@@ -7,4 +7,5 @@ from .detailed_ae_special_interest_view import SpecialInterestAdverseEventView
 from .detailed_serious_adverse_event_view import SeriousAdverseEventView
 from .sae_records_graph import sae_records_chart_json
 from .serious_adverse_event_graph import serious_adverse_event_chart_json
+from .serious_adverse_events_mixin import SeriousAdverseEventRecordViewMixin
 
