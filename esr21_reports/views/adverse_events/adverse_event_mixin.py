@@ -21,20 +21,6 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
     def rapid_hiv_testing_cls(self):
         return django_apps.get_model(self.rapid_hiv_testing_model)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(
-            overral_adverse_events=self.overral_adverse_events,
-            hiv_uninfected=self.hiv_uninfected,
-            hiv_infected=self.hiv_infected,
-            received_first_dose=self.received_first_dose,
-            received_second_dose=self.received_second_dose,
-            related_ip=self.related_ip,
-            not_related_ip=self.not_related_ip,
-            received_first_dose_plus_28=self.received_first_dose_plus_28
-        )
-        return context
-
     @property
     def overral_adverse_events(self):
         overral_soc = self.ae_record_cls.objects.values('soc_name').annotate(
@@ -57,6 +43,7 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
         )
 
         overall = []
+        unique_soc = []
         for hlt in overral_hlt:
             soc_name = hlt.get('soc_name')
             soc_stats = next((sub for sub in overral_soc if sub['soc_name'] == soc_name), None)
@@ -66,7 +53,11 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
             elif soc_stats:
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
-            overall.append(soc_stats)
+
+            if soc_name not in unique_soc:
+                import pdb;pdb.set_trace()
+                overall.append(soc_stats)
+                unique_soc.append(soc_name)
         return overall
 
     @property
@@ -141,6 +132,7 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
         )
 
         overall = []
+        unique_soc = []
         for hlt in hlt_list:
             soc_name = hlt.get('soc_name')
             soc_stats = next((sub for sub in soc_list if sub['soc_name'] == soc_name), None)
@@ -150,7 +142,9 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
             elif soc_stats:
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
-            overall.append(soc_stats)
+            if soc_name not in unique_soc:
+                overall.append(soc_stats)
+                unique_soc.append(soc_name)
 
         return overall
 
