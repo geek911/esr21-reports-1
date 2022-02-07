@@ -86,7 +86,6 @@
                 </table>
             </div>
         </div>
-<<<<<<< HEAD
         <div class="tab-pane" id="tab4">
             <div
                 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
@@ -110,32 +109,6 @@
                             {% for k,v in item.items %}
 
                             {% if k == 'total' %}
-=======
-    </div>
-    <div id="overall_sae2" class="tab-pane fade active">      
-        <div
-			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
-        <table class="table table-bordered table-sm ">
-            <thead class="thead-dark">
-                <tr>
-                    <th>SOC</th>
-                    <th>HLT</th>
-                    <th>Total</th>
-                    <th>Mild</th>
-                    <th>Moderate</th>
-                    <th>Severe</th>
-                    <th>Life threatening</th>
-                    <th>Fatal</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                {% for item in overral_adverse_events %}
-                <tr>
-                    {% for k,v in item.items %}
-                    
-                        {% if k == 'total' %}
->>>>>>> c8482aec370a5c4574b83fea05a751edab3ef2f0
                             <td></td>
                             <td>{{ v }}</td>
                             {% elif k != 'hlt' %}
