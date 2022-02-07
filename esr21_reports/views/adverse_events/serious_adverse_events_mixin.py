@@ -112,14 +112,17 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
     @property
     def new_sae_listing(self):
-        sae_ids = self.sae_record_cls.objects.all().order_by('-date_aware_of')[0:3].values_list(
+        sae_ids = self.sae_record_cls.objects.all().order_by('-date_aware_of').distinct().values_list(
             'serious_adverse_event__subject_visit__subject_identifier', flat=True)
+        sae_ids = sae_ids[0:3]
         all_sae = []
         count = 0
         for subject_identifier in sae_ids:
             count += 1
             sae = self.sae_record(subject_identifier)
-            ae = self.ae_record(subject_identifier)
+            ae = self.ae_record(
+                subject_identifier=subject_identifier
+                )
             consent = self.consent(subject_identifier)
             hiv_test = self.hiv_test(subject_identifier)
             demographics = self.demographics_record(subject_identifier)
@@ -137,12 +140,12 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
     @property
     def all_sae_records(self):
-        sae_ids = self.sae_record_cls.objects.all().values_list(
+        sae_ids = self.sae_record_cls.objects.all().distinct().values_list(
             'serious_adverse_event__subject_visit__subject_identifier', flat=True)
         all_sae = []
         for subject_identifier in sae_ids:
             sae = self.sae_record(subject_identifier)
-            ae = self.ae_record(subject_identifier)
+            ae = None
             consent = self.consent(subject_identifier)
             hiv_test = self.hiv_test(subject_identifier)
             demographics = self.demographics_record(subject_identifier)
@@ -270,6 +273,7 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
         context = super().get_context_data(**kwargs)
         context.update(
             new_sae_listing=self.new_sae_listing,
+            all_sae_records=self.all_sae_records,
             sae_overral_adverse_events=self.sae_overral_adverse_events,
             sae_hiv_uninfected=self.sae_hiv_uninfected,
             sae_hiv_infected=self.sae_hiv_infected,

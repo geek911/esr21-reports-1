@@ -43,43 +43,48 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {% for sae_data in sae_listing %}
+                    {% for sae_data in all_sae_records %}
                     <tr>
                         <td>{{ sae_data.0 }}</td>
-                        <td>{{ sae_data.1 }}</td>
-                        <td>{{ sae_data.2 }}</td>
-                        <td>{{ sae_data.3 }}</td>
-                        <td>{{ sae_data.4 }}</td>
-                        <td>{{ sae_data.5 }}</td>
-                        <td>{{ sae_data.6 }}</td>
-                        <td>{{ sae_data.7 }}</td>
-                        <td>{{ sae_data.8 }}</td>
-                        <td>{{ sae_data.9 }}</td>
-                        <td>{{ sae_data.10 }}</td>
-                        <td>{{ sae_data.11 }}</td>
-                        <td>{{ sae_data.12 }}</td>
-                        <td>{{ sae_data.13 }}</td>
-                        <td>{{ sae_data.14 }}</td>
-                        <td>{{ sae_data.15 }}</td>
-                        <td>{{ sae_data.16 }}</td>
-                        <td>{{ sae_data.17 }}</td>
-                        <td>{{ sae_data.18 }}</td>
-                        <td>{{ sae_data.19 }}</td>
-                        <td>{{ sae_data.20 }}</td>
-                        <td>{{ sae_data.21 }}</td>
-                        <td>{{ sae_data.22 }}</td>
-                        <td>{{ sae_data.23 }}</td>
-                        <td>{{ sae_data.24 }}</td>
-                        <td>{{ sae_data.25 }}</td>
-                        <td>{{ sae_data.26 }}</td>
-                        <td>{{ sae_data.27 }}</td>
-                        <td>{{ sae_data.28 }}</td>
-                        <td>{{ sae_data.29 }}</td>
-                        <td>{{ sae_data.30 }}</td>
-                        <td>{{ sae_data.31 }}</td>
-                        <td>{{ sae_data.32 }}</td>
-                        <td>{{ sae_data.33 }}</td>
-                        <td>{{ sae_data.34 }}</td>
+                        <td>{{ sae_data.1.ae_number }}</td>
+                        <td>{{ sae_data.1.sae_details }}</td>
+                        <td>{{ sae_data.2.pt_name }}</td>
+                        <td>{{ sae_data.2.hlt_name }}</td>
+                        <td>{{ sae_data.2.soc_name }}</td>
+                        <td>{{ sae_data.1.start_date }}</td>
+                        <td>{{ sae_data.1.resolution_date }}</td>
+                        <td>{{ sae_data.1.date_aware_of }}</td>
+                        <td>{{ sae_data.1.timing }}</td>
+                        <td>{{ sae_data.1.ae_sdth }}</td>
+                        <td>{{ sae_data.1.ae_scong }}</td>
+                        <td>{{ sae_data.1.ae_slife }}</td>
+                        <td>{{ sae_data.1.ae_sdisab }} </td>
+                        <td>{{ sae_data.1.ae_smie  }}</td>
+                        <td>{{ sae_data.1.dthcaus_1 }}</td>
+                        <td>{{ sae_data.1.dthcaus_2 }}</td>
+                        <td>{{ sae_data.1.ae_caussp }}</td>
+                        <td>{{ sae_data.2.ae_term }}</td>
+                        <td>{{ sae_data.2.start_date }}</td>
+                        <td>{{ sae_data.2.stop_date }}</td>
+                        <td>{{ sae_data.2.ae_rel }}</td>
+                        <td>{{ sae_data.2.outcome }}</td>
+                        <td>{{ sae_data.2.serious_event }}</td>
+                        <td>{{ sae_data.2.max_ctcae_grade }}</td>
+                        <td>{{ sae_data.2.special_interest_ae }}</td>
+                        <td>{{ sae_data.3.dob }}</td>
+                        <td>{{ sae_data.3.dob }}</td>
+                        <td>{{ sae_data.3.gender }}</td>
+                        <td>{{ sae_data.4.vaccination_date }}</td>
+                        <td>{{ sae_data.5.vaccination_date }}</td>
+                        <td>{{ sae_data.6.ethnicity }}</td>
+                        <td> 
+                        	{% if sae_data.7.hiv_result %}
+                        		 {{ sae_data.7.hiv_result }} 
+                            {% else %}
+                        		{{ sae_data.7.rapid_test_result }} 
+                        	{% endif %}
+                        </td>
+                       
                     </tr>
                     {% endfor %}
                 </tbody>
