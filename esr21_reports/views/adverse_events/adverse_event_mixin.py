@@ -54,10 +54,9 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
 
-            if soc_name not in unique_soc:
-                import pdb;pdb.set_trace()
+            if soc_name.lower() not in unique_soc:
                 overall.append(soc_stats)
-                unique_soc.append(soc_name)
+                unique_soc.append(soc_name.lower())
         return overall
 
     @property
