@@ -162,8 +162,9 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        all_sae = self.sae_record_cls.objects.all().order_by('-date_aware_of')[0:3]
         context.update(
-            all_sae=self.sae_record_cls.objects.all(),
+            all_sae=all_sae,
             sae_overral_adverse_events=self.sae_overral_adverse_events,
             sae_hiv_uninfected=self.sae_hiv_uninfected,
             sae_hiv_infected=self.sae_hiv_infected,
