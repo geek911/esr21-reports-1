@@ -4,16 +4,16 @@
 <div class="container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a href="#ip_tab3" data-toggle="tab" class="nav-link active">Number
-                of participants with at least one AE (%)</a>
+            <a href="#ip_ae1" data-toggle="tab" class="nav-link active">Number
+                of participants with at least one SAE (%)</a>
         </li>
         <li class="nav-item">
-            <a href="#ip_tab4" data-toggle="tab" class="nav-link">Number of
-                AE (incidence per 1000 person-years)</a>
+            <a href="#ip_ae2" data-toggle="tab" class="nav-link">Number of
+                SAE (incidence per 1000 person-years)</a>
         </li>
     </ul>
     <div class="tab-content py-3">
-        <div class="tab-pane active" id="ip_tab3">
+        <div class="tab-pane active" id="ip_ae1">
 
             <div
                 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
@@ -43,7 +43,6 @@
                             <td>{{ v }}</td>
 
                             {% endif %}
-
 
                             {% endfor %}
                         </tr>
@@ -71,7 +70,7 @@
                 </table>
             </div>
         </div>
-        <div class="tab-pane" id="ip_tab4">
+        <div class="tab-pane" id="ip_ae2">
             <div
                 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
                 <table class="table table-bordered table-sm ">
@@ -101,7 +100,6 @@
 
                             {% endif %}
 
-
                             {% endfor %}
                         </tr>
 
@@ -121,8 +119,7 @@
                         {% endif %}
                         {% endfor %}
 
-
-                        {% endfor %}
+                       {% endfor %}
 
                     </tbody>
                 </table>
