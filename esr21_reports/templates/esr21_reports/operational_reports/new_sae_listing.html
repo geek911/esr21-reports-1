@@ -208,7 +208,11 @@
                 <tr class="table-warning">
                     <td>HIV result</td>
                     <td>
-                        {{ nsae_data.8.hiv_result }}
+                        {% if nsae_data.8.hiv_result %}
+                        		 {{ nsae_data.8.hiv_result }} 
+                        {% else %}
+                    		{{ nsae_data.8.rapid_test_result }} 
+                    	{% endif %}
                     </td>
                 </tr>
                 </tbody>
