@@ -11,6 +11,7 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
     ae_record_model = 'esr21_subject.adverseeventrecord'
     rapid_hiv_testing_model = 'esr21_subject.rapidhivtesting'
     vaccination_detail_model = 'esr21_subject.vaccinationdetails'
+    consent_model = 'esr21_subject.informedconsent'
 
     @property
     def sae_record_cls(self):
@@ -19,6 +20,10 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
     @property
     def ae_record_cls(self):
         return django_apps.get_model(self.ae_record_model)
+
+    @property
+    def consent_cls(self):
+        return django_apps.get_model(self.consent_model)
 
     @property
     def vaccination_detail_cls(self):
@@ -160,11 +165,56 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
         return overall
 
+    def consent(self, subject_identifier):
+        try:
+            return self.consent_cls.objects.get(subject_identifier=subject_identifier)
+        except self.consent_cls.DoesNotExist:
+                pass
+        return None
+
+    def sae_record(self, subject_identifier):
+        try:
+            return self.sae_record_cls.objects.get(
+                serious_adverse_event__subject_visit__subject_identifier=subject_identifier)
+        except self.sae_record_cls.DoesNotExist:
+                pass
+        return None
+
+    def ae_record(self, subject_identifier):
+        try:
+            return self.ae_record_cls.objects.get(
+                adverse_event__subject_visit__subject_identifier=subject_identifier)
+        except self.ae_record_cls.DoesNotExist:
+                pass
+        return None
+
+    def vaccination_record(self, subject_identifier):
+        try:
+            return self.vaccination_detail_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier,)
+        except self.vaccination_detail_cls.DoesNotExist:
+                pass
+        return None
+
+    @property
+    def new_sae_listing(self):
+        sae_ids = self.sae_record_cls.objects.all().order_by('-date_aware_of')[0:3].values_list(
+            'serious_adverse_event__subject_visit__subject_identifier', flat=True)
+        all_sae = []
+        count = 0
+        for subject_identifier in sae_ids:
+            count += 1
+            sae = self.sae_record(subject_identifier)
+            ae = self.ae_record(subject_identifier)
+            consent = self.consent(subject_identifier)
+            vaccination = self.vaccination_record(subject_identifier)
+            all_sae.append((subject_identifier, sae, ae, count, consent, vaccination))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        all_sae = self.sae_record_cls.objects.all().order_by('-date_aware_of')[0:3]
+
         context.update(
-            all_sae=all_sae,
+            new_sae_listing=self.new_sae_listing,
             sae_overral_adverse_events=self.sae_overral_adverse_events,
             sae_hiv_uninfected=self.sae_hiv_uninfected,
             sae_hiv_infected=self.sae_hiv_infected,
