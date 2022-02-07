@@ -154,9 +154,9 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
             elif soc_stats:
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
-            if soc_name not in unique_soc:
+            if soc_name.lower() not in unique_soc:
                 overall.append(soc_stats)
-                unique_soc.append(soc_name)
+                unique_soc.append(soc_name.lower())
 
         return overall
 

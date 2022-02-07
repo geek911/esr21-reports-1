@@ -13,14 +13,12 @@
                 </thead>
                 <tbody>
                     {% for nsae_data in sae_listing %}
-                <tr class="clickable" data-toggle="collapse"
-                    data-target="#group-of-rows-1" aria-expanded="false"
-                    aria-controls="group-of-rows-1">
-                    <td><i class="fa fa-folder"></i> Subject Identifier</td>
+                <tr  >
+                  
+                    <td> Subject Identifier</td>
                     <td>{{ nsae_data.0 }}</td>
                 </tr>
                 </tbody>
-                <tbody id="group-of-rows-1" class="collapse">
                 <tr class="table-warning">
                     <td>AE number</td>
                     <td>1</td>
