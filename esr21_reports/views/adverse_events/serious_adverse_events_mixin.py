@@ -11,14 +11,24 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
     ae_record_model = 'esr21_subject.adverseeventrecord'
     rapid_hiv_testing_model = 'esr21_subject.rapidhivtesting'
     vaccination_detail_model = 'esr21_subject.vaccinationdetails'
+    consent_model = 'esr21_subject.informedconsent'
+    demographics_data_model = 'esr21_subject.demographicsdata'
 
     @property
     def sae_record_cls(self):
         return django_apps.get_model(self.sae_record_model)
 
     @property
+    def demographics_data_cls(self):
+        return django_apps.get_model(self.demographics_data_model)
+
+    @property
     def ae_record_cls(self):
         return django_apps.get_model(self.ae_record_model)
+
+    @property
+    def consent_cls(self):
+        return django_apps.get_model(self.consent_model)
 
     @property
     def vaccination_detail_cls(self):
@@ -100,6 +110,54 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
     def sae_received_first_dose_plus_28(self):
         pass
 
+    @property
+    def new_sae_listing(self):
+        sae_ids = self.sae_record_cls.objects.all().order_by('-date_aware_of')[0:3].values_list(
+            'serious_adverse_event__subject_visit__subject_identifier', flat=True)
+        all_sae = []
+        count = 0
+        for subject_identifier in sae_ids:
+            count += 1
+            sae = self.sae_record(subject_identifier)
+            ae = self.ae_record(subject_identifier)
+            consent = self.consent(subject_identifier)
+            hiv_test = self.hiv_test(subject_identifier)
+            demographics = self.demographics_record(subject_identifier)
+
+            first_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='first_dose')
+
+            second_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='second_dose')
+
+            all_sae.append((subject_identifier, sae, ae, count, consent,
+                            first_dose_vaccine, second_dose_vaccine,
+                            demographics, hiv_test))
+        return all_sae
+
+    @property
+    def all_sae_records(self):
+        sae_ids = self.sae_record_cls.objects.all().values_list(
+            'serious_adverse_event__subject_visit__subject_identifier', flat=True)
+        all_sae = []
+        for subject_identifier in sae_ids:
+            sae = self.sae_record(subject_identifier)
+            ae = self.ae_record(subject_identifier)
+            consent = self.consent(subject_identifier)
+            hiv_test = self.hiv_test(subject_identifier)
+            demographics = self.demographics_record(subject_identifier)
+
+            first_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='first_dose')
+
+            second_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='second_dose')
+
+            all_sae.append((subject_identifier, sae, ae, consent,
+                            first_dose_vaccine, second_dose_vaccine,
+                            demographics, hiv_test))
+        return all_sae
+
     def adverse_events_by_hiv_status(self, status=None):
         hiv_test = self.rapid_hiv_testing_cls.objects.filter(
             Q(hiv_result=status) | Q(rapid_test_result=status)).values_list(
@@ -160,10 +218,59 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
         return overall
 
+    def hiv_test(self, subject_identifier):
+        try:
+            return self.rapid_hiv_testing_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier,)
+        except self.rapid_hiv_testing_cls.DoesNotExist:
+                pass
+        return None
+
+    def consent(self, subject_identifier):
+        try:
+            return self.consent_cls.objects.get(subject_identifier=subject_identifier)
+        except self.consent_cls.DoesNotExist:
+                pass
+        return None
+
+    def sae_record(self, subject_identifier):
+        try:
+            return self.sae_record_cls.objects.get(
+                serious_adverse_event__subject_visit__subject_identifier=subject_identifier)
+        except self.sae_record_cls.DoesNotExist:
+                pass
+        return None
+
+    def ae_record(self, subject_identifier):
+        try:
+            return self.ae_record_cls.objects.get(
+                adverse_event__subject_visit__subject_identifier=subject_identifier)
+        except self.ae_record_cls.DoesNotExist:
+                pass
+        return None
+
+    def vaccination_record(self, subject_identifier, dose):
+        try:
+            return self.vaccination_detail_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier,
+                received_dose_before=dose)
+        except self.vaccination_detail_cls.DoesNotExist:
+                pass
+        return None
+
+    def demographics_record(self, subject_identifier):
+        try:
+            return self.demographics_data_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier)
+        except self.demographics_data_cls.DoesNotExist:
+                pass
+        return None
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            all_sae=self.sae_record_cls.objects.all(),
+            new_sae_listing=self.new_sae_listing,
+            all_sae_records=self.all_sae_records,
             sae_overral_adverse_events=self.sae_overral_adverse_events,
             sae_hiv_uninfected=self.sae_hiv_uninfected,
             sae_hiv_infected=self.sae_hiv_infected,
