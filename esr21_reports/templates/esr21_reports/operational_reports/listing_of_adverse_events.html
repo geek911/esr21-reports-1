@@ -31,31 +31,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="clickable"
-                    data-target="#group-of-rows-1" aria-expanded="false"
-                    aria-controls="group-of-rows-1">
-                    <td>150-040140001-3</td>
-                    <td>1</td>
-                    <td>Painful neck</td>
-                    <td>Pain</td>
-                    <td>Pain And Discomfort Nec</td>
-                    <td>General Disorders And Administration Site Conditions</td>
-                    <td>No</td>
-                    <td>05-Oct-2021</td>
-                    <td>06-Oct-2021</td>
-                    <td>Recovered/Resolved</td>
-                    <td>No</td>
-                    <td>mild</td>
-                    <td>No</td>
-                    <td>After Vax1 and before Vax2</td>
-                    <td>40.83333</td>
-                    <td>40-<50</td>
-                    <td>F</td>
-                    <td>04-Oct-2021</td>
-                    <td>02-Dec-2021</td>
-                    <td>Black African</td>
-                    <td>Negative</td>
-                </tr>
+                    {% for ae_data in ae_listing %}
+                    <tr>
+                        <td>{{ ae_data.0 }}</td>
+                        <td>{{ ae_data.1 }}</td>
+                        <td>{{ ae_data.2 }}</td>
+                        <td>{{ ae_data.3 }}</td>
+                        <td>{{ ae_data.4 }}</td>
+                        <td>{{ ae_data.5 }}</td>
+                        <td>{{ ae_data.6 }}</td>
+                        <td>{{ ae_data.7 }}</td>
+                        <td>{{ ae_data.8 }}</td>
+                        <td>{{ ae_data.9 }}</td>
+                        <td>{{ ae_data.10 }}</td>
+                        <td>{{ ae_data.11 }}</td>
+                        <td>{{ ae_data.12 }}</td>
+                        <td>{{ ae_data.13 }}</td>
+                        <td>{{ ae_data.14 }}</td>
+                        <td>{{ ae_data.15 }}</td>
+                        <td>{{ ae_data.16 }}</td>
+                        <td>{{ ae_data.17 }}</td>
+                        <td>{{ ae_data.18 }}</td>
+                        <td>{{ ae_data.19 }}</td>
+                        <td>{{ ae_data.20 }}</td>
+                    </tr>
+                    {% endfor %}
+    
                 </tbody>
             </table>
         </div>

@@ -246,6 +246,10 @@ class HomeView(AdverseEventRecordViewMixin,
             demographics_data_total_ae_100=dummy_demographics_total_ae_100,
             demographics_data_prior_total_ae=dummy_demographics_total_ae,
             demographics_data_participants_with_ae=dummy_demographics_participants_with_ae,
+            # listings
+            ae_listing=ae_listing,
+            sae_listing=ae_listing,
+
 
         )
 
