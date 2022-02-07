@@ -1,24 +1,17 @@
 from django.apps import apps as django_apps
-
 from django.db.models import Q, Count
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_constants.constants import NEG, POS, YES, NO
 
 
-class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
-
-    sae_record_model = 'esr21_subject.seriousadverseeventrecord'
-    ae_record_model = 'esr21_subject.adverseeventrecord'
+class AdverseEventRecordMixin(EdcBaseViewMixin):
+    ae_record_model = None
     rapid_hiv_testing_model = 'esr21_subject.rapidhivtesting'
     vaccination_detail_model = 'esr21_subject.vaccinationdetails'
 
     @property
-    def sae_record_cls(self):
-        return django_apps.get_model(self.sae_record_model)
-
-    @property
     def ae_record_cls(self):
-        return django_apps.get_model(self.ae_record_model)
+        pass
 
     @property
     def vaccination_detail_cls(self):
@@ -29,14 +22,8 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
         return django_apps.get_model(self.rapid_hiv_testing_model)
 
     @property
-    def sae_overral_adverse_events(self):
-
-        alll_sae_ids = self.sae_record_cls.objects.all().values_list(
-            'serious_adverse_event__subject_visit__subject_identifier', flat=True)
-
-        q = Q(adverse_event__subject_visit__subject_identifier__in=alll_sae_ids)
-
-        overral_soc = self.ae_record_cls.objects.filter(q).values('soc_name').annotate(
+    def overral_adverse_events(self):
+        overral_soc = self.ae_record_cls.objects.values('soc_name').annotate(
             total=Count('soc_name', filter=Q(soc_name__isnull=False)),
             mild=Count('ctcae_grade', filter=Q(ctcae_grade='mild')),
             moderate=Count('ctcae_grade', filter=Q(ctcae_grade='moderate')),
@@ -46,7 +33,7 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
 
         )
 
-        overral_hlt = self.ae_record_cls.objects.filter(q).values('soc_name', 'hlt_name').annotate(
+        overral_hlt = self.ae_record_cls.objects.values('soc_name', 'hlt_name').annotate(
             total=Count('hlt_name', filter=Q(soc_name__isnull=False)),
             mild=Count('ctcae_grade', filter=Q(ctcae_grade='mild')),
             moderate=Count('ctcae_grade', filter=Q(ctcae_grade='moderate')),
@@ -66,38 +53,38 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
             elif soc_stats:
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
-            if soc_name not in unique_soc:
-                overall.append(soc_stats)
-                unique_soc.append(soc_name)
 
+            if soc_name.lower() not in unique_soc:
+                overall.append(soc_stats)
+                unique_soc.append(soc_name.lower())
         return overall
 
     @property
-    def sae_hiv_uninfected(self):
+    def hiv_uninfected(self):
         return self.adverse_events_by_hiv_status(status=NEG)
 
     @property
-    def sae_hiv_infected(self):
+    def hiv_infected(self):
         return self.adverse_events_by_hiv_status(status=POS)
 
     @property
-    def sae_received_first_dose(self):
+    def received_first_dose(self):
         return self.adverse_event_by_vaccination(dose='first_dose')
 
     @property
-    def sae_received_second_dose(self):
+    def received_second_dose(self):
         return self.adverse_event_by_vaccination(dose='second_dose')
 
     @property
-    def sae_related_ip(self):
+    def related_ip(self):
         return self.adverse_event_by_attrib(choice=YES)
 
     @property
-    def sae_not_related_ip(self):
+    def not_related_ip(self):
         return self.adverse_event_by_attrib(choice=NO)
 
     @property
-    def sae_received_first_dose_plus_28(self):
+    def received_first_dose_plus_28(self):
         pass
 
     def adverse_events_by_hiv_status(self, status=None):
@@ -154,24 +141,9 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
             elif soc_stats:
                 del hlt['soc_name']
                 soc_stats['hlt'] = [hlt]
-            if soc_name.lower() not in unique_soc:
+            if soc_name not in unique_soc:
                 overall.append(soc_stats)
-                unique_soc.append(soc_name.lower())
+                unique_soc.append(soc_name)
 
         return overall
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(
-            all_sae=self.sae_record_cls.objects.all(),
-            sae_overral_adverse_events=self.sae_overral_adverse_events,
-            sae_hiv_uninfected=self.sae_hiv_uninfected,
-            sae_hiv_infected=self.sae_hiv_infected,
-            sae_received_first_dose=self.sae_received_first_dose,
-            sae_received_second_dose=self.sae_received_second_dose,
-            sae_related_ip=self.sae_related_ip,
-            sae_not_related_ip=self.sae_not_related_ip,
-            sae_received_first_dose_plus_28=self.sae_received_first_dose_plus_28
-            )
-        return context
 

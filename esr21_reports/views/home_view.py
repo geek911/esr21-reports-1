@@ -3,10 +3,13 @@ from django.contrib.sites.models import Site
 from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
-from ..views.adverse_events import AdverseEventRecordViewMixin
+from ..views.adverse_events import (AdverseEventRecordViewMixin,
+                                    SeriousAdverseEventRecordViewMixin)
 
 
-class HomeView(AdverseEventRecordViewMixin, NavbarViewMixin, EdcBaseViewMixin, TemplateView):
+class HomeView(AdverseEventRecordViewMixin,
+               SeriousAdverseEventRecordViewMixin,
+               NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     template_name = 'esr21_reports/home.html'
     navbar_selected_item = 'Reports'
     navbar_name = 'esr21_reports'
@@ -222,12 +225,6 @@ class HomeView(AdverseEventRecordViewMixin, NavbarViewMixin, EdcBaseViewMixin, T
         summary = [{
             'soc_name': 'Nervous system disorders', 'total': 150, 'mild': 143, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0, 'hlt': [{'hlt_name': 'Headaches NEC', 'total': 111, 'mild': 104, 'moderate': 7, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'headaches', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, {'hlt_name': 'Neurolodical signs and symptoms NEC', 'total': 2, 'mild': 2, 'moderate': 0, 'severe': 0, 'life_threatening': 0, 'fatal': 0}, ]
         }]
-        ae_listing = [
-            ['1234567', 1, 2, 3, 4, 5, 6,1, 2, 3, 4, 5, 6,1, 2, 3, 4, 5, 6,8,9,4, 5, 6,1, 2, 3, 4, 5, 6,8,9,'Negative'],
-        ]
-       
-
-
 
         context.update(
 
