@@ -1,0 +1,77 @@
+{% block extra-styles %}
+
+
+{% endblock extra-styles %}
+
+
+
+{% block extra-scripts %}
+<!-- Script -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function(){
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    console.log("tab shown...");
+    localStorage.setItem('activeTab', $(e.target).attr('href'));
+});
+
+var activeTab = localStorage.getItem('activeTab');
+if(activeTab){
+    $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+}
+});
+</script>
+
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+<div class="container">
+	<h1>Summary of Adverse Events</h1>
+	<nav class="tab-pane fade in active">
+		<ul class="nav nav-tabs">
+			<li class="nav nav-tabs active">
+				<a data-toggle="tab" href="#menu1">Overall</a>
+			</li>
+			<li><a data-toggle="tab" href="#menu2">HIV-uninfected</a></li>
+			<li><a data-toggle="tab" href="#menu3">PLWH</a></li>
+			<li><a data-toggle="tab" href="#menu4">Not related to IP</a></li>
+			<li><a data-toggle="tab" href="#menu5">Related to IP</a></li>
+			<li><a data-toggle="tab" href="#menu6">After first dose</a></li>
+			<li><a data-toggle="tab" href="#menu7">After first dose + 28 days</a></li>
+		</ul>
+	</nav>
+	<div class="tab-content">
+		<div id="menu1" class="tab-pane fade in active" >
+			 {% include 'esr21_reports/operational_reports/ae_summary_tables/overall.html' %}
+		</div>
+		<div id="menu2" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/hiv_uninfected.html' %}
+		</div>
+		<div id="menu3" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/plwh.html' %}
+		</div>
+		<div id="menu4" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/not_related_to_ip.html' %}
+		</div>
+		<div id="menu5" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/related_to_ip.html' %}
+
+		</div>
+		<div id="menu6" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/after_first_dose.html' %}
+		</div>
+		<div id="menu7" class="tab-pane fade">
+			{% include 'esr21_reports/operational_reports/ae_summary_tables/after_second_dose.html' %}
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+{% endblock main %}

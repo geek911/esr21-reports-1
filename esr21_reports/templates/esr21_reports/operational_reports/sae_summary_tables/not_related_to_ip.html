@@ -1,0 +1,125 @@
+<h5>Total participants: 8325</h5>
+<nav>
+    <ul class="nav nav-tabs">
+        <li class="nav nav-tabs active"><a data-toggle="tab" href="#ip_unrelated_sae1">Number
+            of participants with at least one SAE (%)</a></li>
+        <li><a data-toggle="tab" href="#ip_unrelated_sae2">Number of
+            SAE (incidence per 1000 person-years)</a></li>
+    </ul>
+</nav>
+<div class="tab-content">
+    <div id="ip_unrelated_sae1" class="tab-pane fade active">
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
+    <table class="table table-bordered table-sm ">
+        <thead class="thead-dark">
+            <tr>
+                <th>SOC</th>
+                <th>HLT</th>
+                <th>Total</th>
+                <th>Mild</th>
+                <th>Moderate</th>
+                <th>Severe</th>
+                <th>Life threatening</th>
+                <th>Fatal</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for item in sae_not_related_ip %}
+            <tr>
+                {% for k,v in item.items %}
+                
+                    {% if k == 'total' %}
+                        <td></td>
+                        <td>{{ v }}</td>
+                        {% elif k != 'hlt' %}
+                        <td>{{ v }}</td>
+                        
+                    {% endif %}
+                     
+                    
+                {% endfor %}
+            </tr>
+           
+                {% for k,v in item.items %}
+                    {% if k == 'hlt' %} 
+                        {% for item in v %}
+                        <tr >
+                            {% for k,v in item.items %}
+                                {% if k == 'hlt_name' %}
+                                <td></td>
+                                {% endif %}
+                                <td>{{v }}</td>
+
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+           
+            
+            {% endfor %}
+        
+        </tbody>
+    </table>
+    </div>
+    </div>
+    <div id="ip_unrelated_sae2" class="tab-pane fade">
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
+    <table class="table table-bordered table-sm ">
+        <thead class="thead-dark">
+            <tr>
+                <th>SOC</th>
+                <th>HLT</th>
+                <th>Total</th>
+                <th>Mild</th>
+                <th>Moderate</th>
+                <th>Severe</th>
+                <th>Life threatening</th>
+                <th>Fatal</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for item in overral_adverse_events %}
+            <tr>
+                {% for k,v in item.items %}
+                
+                    {% if k == 'total' %}
+                        <td></td>
+                        <td>{{ v }}</td>
+                        {% elif k != 'hlt' %}
+                        <td>{{ v }}</td>
+                        
+                    {% endif %}
+                     
+                    
+                {% endfor %}
+            </tr>
+           
+                {% for k,v in item.items %}
+                    {% if k == 'hlt' %} 
+                        {% for item in v %}
+                        <tr >
+                            {% for k,v in item.items %}
+                                {% if k == 'hlt_name' %}
+                                <td></td>
+                                {% endif %}
+                                <td>{{v }}</td>
+
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+           
+            
+            {% endfor %}
+        
+        </tbody>
+    </table>
+    </div>
+    </div>
+</div>

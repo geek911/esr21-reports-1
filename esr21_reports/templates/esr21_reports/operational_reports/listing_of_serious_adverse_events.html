@@ -1,0 +1,92 @@
+{% block main %}
+    <div class="container">
+        <h1>Line listing of serious adverse events</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>AE Number</th>
+                    <th>SAE Description</th>
+                    <th>MedDRA preferred term name</th>
+                    <th>MedDRA high level term name</th>
+                    <th>MedDRA system organ class name</th>
+                    <th>SAE start date</th>
+                    <th>SAE end date</th>
+                    <th>Date investigator became aware of SAE</th>
+                    <th>SAE timing</th>
+                    <th>Results in death</th>
+                    <th>Was it a congenital anomaly or birth defect?</th>
+                    <th>Was it life-threatening</th>
+                    <th>Did it result in significant disability/incapacity?</th>
+                    <th>Other medically important serious event</th>
+                    <th>Primary cause of death</th>
+                    <th>Secondary cause of death</th>
+                    <th>SAE caused by study procedure(s)?</th>
+                    <th>AE reported term</th>
+                    <th>AE start date</th>
+                    <th>AE stop date</th>
+                    <th>Reasonable possibility AE caused by IP?</th>
+                    <th>Outcome</th>
+                    <th>Was this considered to be a serious adverse event?</th>
+                    <th>Maximum CTCAE Grade</th>
+                    <th>Was the event an AE of special interest?</th>
+                    <th>Age</th>
+                    <th>Age (category)</th>
+                    <th>Gender</th>
+                    <th>Date of first dose</th>
+                    <th>Date of second dose</th>
+                    <th>Ethnicity</th>
+                    <th>HIV result</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for sae_data in sae_listing %}
+                    <tr>
+                        <td>{{ sae_data.0 }}</td>
+                        <td>{{ sae_data.1 }}</td>
+                        <td>{{ sae_data.2 }}</td>
+                        <td>{{ sae_data.3 }}</td>
+                        <td>{{ sae_data.4 }}</td>
+                        <td>{{ sae_data.5 }}</td>
+                        <td>{{ sae_data.6 }}</td>
+                        <td>{{ sae_data.7 }}</td>
+                        <td>{{ sae_data.8 }}</td>
+                        <td>{{ sae_data.9 }}</td>
+                        <td>{{ sae_data.10 }}</td>
+                        <td>{{ sae_data.11 }}</td>
+                        <td>{{ sae_data.12 }}</td>
+                        <td>{{ sae_data.13 }}</td>
+                        <td>{{ sae_data.14 }}</td>
+                        <td>{{ sae_data.15 }}</td>
+                        <td>{{ sae_data.16 }}</td>
+                        <td>{{ sae_data.17 }}</td>
+                        <td>{{ sae_data.18 }}</td>
+                        <td>{{ sae_data.19 }}</td>
+                        <td>{{ sae_data.20 }}</td>
+                        <td>{{ sae_data.21 }}</td>
+                        <td>{{ sae_data.22 }}</td>
+                        <td>{{ sae_data.23 }}</td>
+                        <td>{{ sae_data.24 }}</td>
+                        <td>{{ sae_data.25 }}</td>
+                        <td>{{ sae_data.26 }}</td>
+                        <td>{{ sae_data.27 }}</td>
+                        <td>{{ sae_data.28 }}</td>
+                        <td>{{ sae_data.29 }}</td>
+                        <td>{{ sae_data.30 }}</td>
+                        <td>{{ sae_data.31 }}</td>
+                        <td>{{ sae_data.32 }}</td>
+                        <td>{{ sae_data.33 }}</td>
+                        <td>{{ sae_data.34 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+{% endblock main %}

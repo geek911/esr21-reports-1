@@ -1,0 +1,67 @@
+{% block main %}
+    <div class="container">
+        <h1>Line listing of adverse events</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>AE Number</th>
+                    <th>AE reported term</th>
+                    <th>MedDRA preferred term name</th>
+                    <th>MedDRA high level term name</th>
+                    <th>MedDRA system organ class name</th>
+                    <th>Reasonable possibility AE caused by IP?</th>
+                    <th>AE Start Date</th>
+                    <th>AE Stop Date</th>
+                    <th>Outcome</th>
+                    <th>Maximum CTCAE Grade</th>
+                    <th>Was this considered to be a serious adverse event?</th>
+                    <th>Was the event an AE of special interest?</th>
+                    <th>Timing of AE</th>
+                    <th>Age</th>
+                    <th>Age (category)</th>
+                    <th>Gender</th>
+                    <th>Date of first dose</th>
+                    <th>Date of second dose</th>
+                    <th>Ethnicity</th>
+                    <th>HIV result</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for ae_data in ae_listing %}
+                    <tr>
+                        <td>{{ ae_data.0 }}</td>
+                        <td>{{ ae_data.1 }}</td>
+                        <td>{{ ae_data.2 }}</td>
+                        <td>{{ ae_data.3 }}</td>
+                        <td>{{ ae_data.4 }}</td>
+                        <td>{{ ae_data.5 }}</td>
+                        <td>{{ ae_data.6 }}</td>
+                        <td>{{ ae_data.7 }}</td>
+                        <td>{{ ae_data.8 }}</td>
+                        <td>{{ ae_data.9 }}</td>
+                        <td>{{ ae_data.10 }}</td>
+                        <td>{{ ae_data.11 }}</td>
+                        <td>{{ ae_data.12 }}</td>
+                        <td>{{ ae_data.13 }}</td>
+                        <td>{{ ae_data.14 }}</td>
+                        <td>{{ ae_data.15 }}</td>
+                        <td>{{ ae_data.16 }}</td>
+                        <td>{{ ae_data.17 }}</td>
+                        <td>{{ ae_data.18 }}</td>
+                        <td>{{ ae_data.19 }}</td>
+                        <td>{{ ae_data.20 }}</td>
+                    </tr>
+                    {% endfor %}
+    
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+{% endblock main %}
