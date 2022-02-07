@@ -145,7 +145,6 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
         all_sae = []
         for subject_identifier in sae_ids:
             sae = self.sae_record(subject_identifier)
-            ae = None
             consent = self.consent(subject_identifier)
             hiv_test = self.hiv_test(subject_identifier)
             demographics = self.demographics_record(subject_identifier)
@@ -156,9 +155,12 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin):
             second_dose_vaccine = self.vaccination_record(
                 subject_identifier=subject_identifier, dose='second_dose')
 
-            all_sae.append((subject_identifier, sae, ae, consent,
-                            first_dose_vaccine, second_dose_vaccine,
-                            demographics, hiv_test))
+            aes = self.ae_record_cls.objects.filter(
+                adverse_event__subject_visit__subject_identifier=subject_identifier)
+            for ae in aes:
+                all_sae.append((subject_identifier, sae, ae, consent,
+                                first_dose_vaccine, second_dose_vaccine,
+                                demographics, hiv_test))
         return all_sae
 
     def adverse_events_by_hiv_status(self, status=None):

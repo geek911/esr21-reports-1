@@ -12,7 +12,7 @@ class AdverseEventRecordViewMixin(AdverseEventRecordMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            all_ae=self.ae_record_cls.objects.all(),
+            all_ae=self.all_ae_records,
             overral_adverse_events=self.overral_adverse_events,
             hiv_uninfected=self.hiv_uninfected,
             hiv_infected=self.hiv_infected,

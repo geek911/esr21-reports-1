@@ -8,6 +8,8 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
     ae_record_model = None
     rapid_hiv_testing_model = 'esr21_subject.rapidhivtesting'
     vaccination_detail_model = 'esr21_subject.vaccinationdetails'
+    consent_model = 'esr21_subject.informedconsent'
+    demographics_data_model = 'esr21_subject.demographicsdata'
 
     @property
     def ae_record_cls(self):
@@ -20,6 +22,14 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
     @property
     def rapid_hiv_testing_cls(self):
         return django_apps.get_model(self.rapid_hiv_testing_model)
+
+    @property
+    def demographics_data_cls(self):
+        return django_apps.get_model(self.demographics_data_model)
+
+    @property
+    def consent_cls(self):
+        return django_apps.get_model(self.consent_model)
 
     @property
     def overral_adverse_events(self):
@@ -87,6 +97,31 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
     def received_first_dose_plus_28(self):
         pass
 
+    @property
+    def all_ae_records(self):
+        sae_ids = self.ae_record_cls.objects.all().distinct().values_list(
+            'adverse_event__subject_visit__subject_identifier', flat=True)
+        all_ae = []
+        for subject_identifier in sae_ids:
+            sae = self.sae_record(subject_identifier)
+            consent = self.consent(subject_identifier)
+            hiv_test = self.hiv_test(subject_identifier)
+            demographics = self.demographics_record(subject_identifier)
+
+            first_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='first_dose')
+
+            second_dose_vaccine = self.vaccination_record(
+                subject_identifier=subject_identifier, dose='second_dose')
+
+            aes = self.ae_record_cls.objects.filter(
+                adverse_event__subject_visit__subject_identifier=subject_identifier)
+            for ae in aes:
+                all_ae.append((subject_identifier, ae, sae, consent,
+                               first_dose_vaccine, second_dose_vaccine,
+                               demographics, hiv_test))
+        return all_ae
+
     def adverse_events_by_hiv_status(self, status=None):
         hiv_test = self.rapid_hiv_testing_cls.objects.filter(
             Q(hiv_result=status) | Q(rapid_test_result=status)).values_list(
@@ -146,4 +181,44 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
                 unique_soc.append(soc_name)
 
         return overall
+
+    def hiv_test(self, subject_identifier):
+        try:
+            return self.rapid_hiv_testing_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier,)
+        except self.rapid_hiv_testing_cls.DoesNotExist:
+                pass
+        return None
+
+    def consent(self, subject_identifier):
+        try:
+            return self.consent_cls.objects.get(subject_identifier=subject_identifier)
+        except self.consent_cls.DoesNotExist:
+                pass
+        return None
+
+    def sae_record(self, subject_identifier):
+        try:
+            return self.sae_record_cls.objects.get(
+                serious_adverse_event__subject_visit__subject_identifier=subject_identifier)
+        except self.sae_record_cls.DoesNotExist:
+                pass
+        return None
+
+    def vaccination_record(self, subject_identifier, dose):
+        try:
+            return self.vaccination_detail_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier,
+                received_dose_before=dose)
+        except self.vaccination_detail_cls.DoesNotExist:
+                pass
+        return None
+
+    def demographics_record(self, subject_identifier):
+        try:
+            return self.demographics_data_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier)
+        except self.demographics_data_cls.DoesNotExist:
+                pass
+        return None
 
