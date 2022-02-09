@@ -8,4 +8,5 @@ from .detailed_serious_adverse_event_view import SeriousAdverseEventView
 from .sae_records_graph import sae_records_chart_json
 from .serious_adverse_event_graph import serious_adverse_event_chart_json
 from .serious_adverse_events_mixin import SeriousAdverseEventRecordViewMixin
+from .screening_reports_view_mixin import ScreeningReportsViewMixin
 

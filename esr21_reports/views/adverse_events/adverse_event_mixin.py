@@ -1,11 +1,10 @@
 from django.apps import apps as django_apps
 from django.db.models import Q, Count
-from edc_base.view_mixins import EdcBaseViewMixin
 from edc_constants.constants import NEG, POS, YES, NO
 
 
-class AdverseEventRecordMixin(EdcBaseViewMixin):
-    ae_record_model = None
+class AdverseEventRecordMixin:
+    ae_record_model = 'esr21_subject.adverseeventrecord'
     rapid_hiv_testing_model = 'esr21_subject.rapidhivtesting'
     vaccination_detail_model = 'esr21_subject.vaccinationdetails'
     consent_model = 'esr21_subject.informedconsent'
@@ -13,7 +12,7 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
 
     @property
     def ae_record_cls(self):
-        pass
+        return django_apps.get_model(self.ae_record_model)
 
     @property
     def vaccination_detail_cls(self):
@@ -167,6 +166,7 @@ class AdverseEventRecordMixin(EdcBaseViewMixin):
 
         overall = []
         unique_soc = []
+
         for hlt in hlt_list:
             soc_name = hlt.get('soc_name')
             soc_stats = next((sub for sub in soc_list if sub['soc_name'] == soc_name), None)
