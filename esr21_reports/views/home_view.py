@@ -4,11 +4,14 @@ from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from ..views.adverse_events import (AdverseEventRecordViewMixin,
-                                    SeriousAdverseEventRecordViewMixin)
+                                    SeriousAdverseEventRecordViewMixin,
+                                    ScreeningReportsViewMixin,
+                                    )
 
 
 class HomeView(AdverseEventRecordViewMixin,
                SeriousAdverseEventRecordViewMixin,
+               ScreeningReportsViewMixin,
                NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     template_name = 'esr21_reports/home.html'
     navbar_selected_item = 'Reports'

@@ -34,7 +34,7 @@
                 <tr class="table-warning">
                     <td>MedDRA preferred term name</td>
                     <td>
-                        {{ nsae_data.2.ae_number }}
+                        {{ nsae_data.2.pt_name }}
                     </td>
                 </tr>
                 <tr class="table-warning">
@@ -46,7 +46,7 @@
                 <tr class="table-warning">
                     <td>MedDRA system organ class name</td>
                     <td>
-                        {{ nsae_data.2.soc_code }}
+                        {{ nsae_data.2.soc_name }}
                     </td>
                 </tr>
                 <tr class="table-warning">
@@ -208,7 +208,11 @@
                 <tr class="table-warning">
                     <td>HIV result</td>
                     <td>
-                        {{ nsae_data.8.hiv_result }}
+                        {% if nsae_data.8.hiv_result %}
+                        		 {{ nsae_data.8.hiv_result }} 
+                        {% else %}
+                    		{{ nsae_data.8.rapid_test_result }} 
+                    	{% endif %}
                     </td>
                 </tr>
                 </tbody>
