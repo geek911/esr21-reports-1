@@ -60,7 +60,7 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
 		for participants in self.get_overall_participant():
 			perc = (participants / total_participants) * 100
-			percentages.append(perc)
+			percentages.append(round(perc, 1))
 		return percentages
 		
 
