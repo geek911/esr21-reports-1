@@ -34,9 +34,6 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             name =  site.name.split('-')[1]
             site_lists.append(name)
         return site_lists
-
-    def site_index_mapping(self,site_name):
-        return self.sites_names.index(site_name)
     
     @property
     def site_age_dist(self):
@@ -45,10 +42,11 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
         return age_dist
     
+    def site_index_mapping(self,site_name):
+        return self.sites_names.index(site_name)
+    
     
     def get_distribution_site(self, site_name_postfix):
-        
-        
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             
@@ -94,11 +92,6 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)
             min_outlier = lowerquartile-(1.5 * IQR)
-
-            # # outliers
-            # IQR = upperquartile - lowerquartile
-            # upper_outlier = upperquartile+(1.5 * IQR)
-            # lower_outlier = lowerquartile-(1.5 * IQR)
 
             min_ages = []
             max_ages = []

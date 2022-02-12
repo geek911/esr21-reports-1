@@ -23,25 +23,32 @@ class ScreeningGraphView(EdcBaseViewMixin):
         return django_apps.get_model(self.consent_model)
     
     @property
-    def site_screenings(self):
-        site_screenings = [
-            ['Gaborone', self.get_screened_by_site(site_name_postfix='Gaborone',)],
-            ['F/Town', self.get_screened_by_site(site_name_postfix='Francistown')],
-            ['S/Phikwe', self.get_screened_by_site(site_name_postfix='Phikwe')],
-            ['Maun', self.get_screened_by_site(site_name_postfix='Maun')],
-            ['Serowe', self.get_screened_by_site(site_name_postfix='Serowe')]]
+    def sites_names(self):
+        site_lists = []
+        sites = Site.objects.all()
+        for site in sites:
+            name =  site.name.split('-')[1]
+            site_lists.append(name)
+        return site_lists
 
+    @property
+    def site_age_dist(self):
+        age_dist = []
+        for site in self.sites_names:
+            age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
+        return age_dist
+    
+    @property
+    def site_screenings(self):
+        site_screenings = []
+        for site in self.sites_names:
+            site_screenings.append([site, self.get_screened_by_site(site_name_postfix=site)])
         return site_screenings
     
     
     def get_screened_by_site(self, site_name_postfix):
-        
-        
-        
-        
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
-            
             eligible_identifiers = self.subject_screening_cls.objects.filter(
                 is_eligible=True).values_list('screening_identifier', flat=True)
             eligible_identifiers = list(set(eligible_identifiers))
@@ -79,8 +86,6 @@ class ScreeningGraphView(EdcBaseViewMixin):
     
     @property  
     def overall_screened(self):
-            
-            
             eligible_identifiers = self.subject_screening_cls.objects.filter(
                 is_eligible=True).values_list('screening_identifier', flat=True)
             eligible_identifiers = list(set(eligible_identifiers))
