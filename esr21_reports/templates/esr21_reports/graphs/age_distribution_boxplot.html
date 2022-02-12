@@ -42,7 +42,7 @@
 
         series: [{
           name: 'Observations',
-          data: [{% for value in site_age_dist %} {{ value.1.0 }} , {% endfor %}],
+          data: [{% for value in site_age_dist %} {{ value.1.0 }} ,  {% endfor %}],
 
         }, 
         // {
@@ -125,7 +125,7 @@
   </style>
 
   <figure class="highcharts-figure">
-    <div id="container">My graph</div>
+    <div id="container"></div>
 
   </figure>
   
