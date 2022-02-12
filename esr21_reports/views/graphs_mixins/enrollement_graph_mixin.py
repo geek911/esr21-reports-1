@@ -1,8 +1,5 @@
-
-import imp
-
-
 import json
+from django.contrib.sites.models import Site
 from edc_base.view_mixins import EdcBaseViewMixin
 from esr21_subject.models import VaccinationDetails, InformedConsent
 from edc_constants.constants import FEMALE, MALE
@@ -10,7 +7,8 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
 	@property
 	def site_ids(self):
-		return [40, 41, 42, 43, 44]
+		site_ids = Site.objects.order_by('id').values_list('id', flat=True)
+		return site_ids
 
 
 	def get_vaccinated_by_site(self):
