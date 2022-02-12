@@ -85,11 +85,11 @@
 			           accessibility: {
 			             description: 'Study Site'
 			           },
-			           categories: [{% for screening in site_screenings %}  '{{ screening.0 }}' , {% endfor %}]
+			           categories: ['Gaborone', 'Maun', 'Serowe', 'F/Town', 'S/Phikwe',]
 			         },
 	
 			         tooltip: {
-			           valueSuffix: '%'
+			           
 			         },
 	
 			         plotOptions: {
@@ -136,11 +136,11 @@
 			                 itemWidth: 150
 			               },
 			               xAxis: {
-			                 categories: [{% for screening in site_screenings %}  '{{ screening.0 }}' , {% endfor %}],
+			                 categories: ['Gaborone', 'Maun', 'Serowe', 'F/Town', 'S/Phikwe',],
 			                 title: ''
 			               },
 			               yAxis: {
-			                 visible: false
+			                 visible: true
 			               }
 			             }
 			           }]
@@ -159,74 +159,75 @@
 			</figure>
 	    	<script>
 	    		  Highcharts.chart('stacked-graph', {
-  chart: {
-    zoomType: 'xy'
-  },
-  title: {
-    text: 'Enrolled Per Site'
-  },
-  subtitle: {
-    text: 'Total enrolled regardless of gender'
-  },
-  xAxis: [{
-    categories: [{% for screening in site_screenings %}  '{{ screening.0 }}' , {% endfor %} "All Sites"],
-    crosshair: true
-  }],
-  yAxis: [{ // Primary yAxis
-	max: 100,
-    labels: {
-      style: {
-        color: Highcharts.getOptions().colors[1]
-      }
-    },
-    title: {
-      text: 'Enrollments By Percentage',
-      style: {
-        color: Highcharts.getOptions().colors[1]
-      }
-    }
-  }, { // Secondary yAxis
-    title: {
-      text: 'Number of Enrollments',
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    },
-    labels: {
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    },
-    opposite: true
-  }],
-  tooltip: {
-    shared: true
-  },
-  legend: {
-    layout: 'vertical',
-    align: 'left',
-    x: 120,
-    verticalAlign: 'top',
-    y: 100,
-    floating: true,
-    backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
-      'rgba(255,255,255,0.25)'
-  },
-  series: [{
-    name: 'Sites',
-    type: 'column',
-    yAxis: 1,
-    data: {{ overall }},
+									chart: {
+										zoomType: 'xy'
+									},
+									title: {
+										text: 'Enrolled Per Site'
+									},
+									subtitle: {
+										text: 'Total enrolled regardless of gender'
+									},
+									xAxis: [{
+										categories: ['Gaborone', 'Maun', 'Serowe', 'F/Town', 'S/Phikwe', 'All Sites'],
+										crosshair: true
+									}],
+									yAxis: [{ // Primary yAxis
+										max: 100,
+										labels: {
+										style: {
+											color: Highcharts.getOptions().colors[1]
+										}
+										},
+										title: {
+										text: 'Enrollments By Percentage',
+										style: {
+											color: Highcharts.getOptions().colors[1]
+										}
+										}
+									}, { // Secondary yAxis
+										title: {
+										text: 'Number of Enrollments',
+										style: {
+											color: Highcharts.getOptions().colors[0]
+										}
+										},
+										labels: {
+										style: {
+											color: Highcharts.getOptions().colors[0]
+										}
+										},
+										opposite: true
+									}],
+									tooltip: {
+										shared: true
+									},
+									legend: {
+										layout: 'vertical',
+										align: 'left',
+										x: 120,
+										verticalAlign: 'top',
+										y: 100,
+										floating: true,
+										backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
+										'rgba(255,255,255,0.25)'
+									},
+									series: [{
+										name: 'Sites',
+										type: 'column',
+										yAxis: 1,
+										valueSuffix: '%',
+										data: {{ overall }},
 
-  }, {
-    name: 'Enrolled By Percentage',
-    type: 'spline',
-    data: {{ overall_percentages }},
-    tooltip: {
-      valueSuffix: '%'
-    }
-  }]
-});
+									}, {
+										name: 'Enrolled By Percentage',
+										type: 'spline',
+										data: {{ overall_percentages }},
+										tooltip: {
+										valueSuffix: '%'
+										}
+									}]
+									});
 
 	    	</script>
 	    </div>

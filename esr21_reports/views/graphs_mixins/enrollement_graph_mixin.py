@@ -1,8 +1,5 @@
-
-import imp
-
-
 import json
+from django.contrib.sites.models import Site
 from edc_base.view_mixins import EdcBaseViewMixin
 from esr21_subject.models import VaccinationDetails, InformedConsent
 from edc_constants.constants import FEMALE, MALE
@@ -10,7 +7,8 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
 	@property
 	def site_ids(self):
-		return [40, 41, 42, 43, 44]
+		site_ids = Site.objects.order_by('id').values_list('id', flat=True)
+		return site_ids
 
 
 	def get_vaccinated_by_site(self):
@@ -60,7 +58,7 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
 		for participants in self.get_overall_participant():
 			perc = (participants / total_participants) * 100
-			percentages.append(perc)
+			percentages.append(round(perc, 1))
 		return percentages
 		
 
@@ -80,7 +78,7 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 			females=json.dumps(gender_by_site['females']),
 			males=json.dumps(gender_by_site['males']),
 			overall = json.dumps(overall_participant),
-			overall_percentages=json.dumps(overall_percentages)
+			overall_percentages=json.dumps(overall_percentages),
 		)
 
 		return context
