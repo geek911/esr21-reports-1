@@ -37,6 +37,8 @@ class ScreeningGraphView(EdcBaseViewMixin):
     def get_screened_by_site(self, site_name_postfix):
         
         
+        
+        
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             
@@ -69,14 +71,16 @@ class ScreeningGraphView(EdcBaseViewMixin):
             
             total = len(passed_screening)+failed
             
-            passed_screening = len(passed_screening)/total * 100
-            failed = failed/total * 100
+            passed_screening = round(len(passed_screening)/total * 100,1)
+            failed = round(failed/total * 100,1)
 
             return [passed_screening,failed]
         
     
     @property  
     def overall_screened(self):
+            
+            
             eligible_identifiers = self.subject_screening_cls.objects.filter(
                 is_eligible=True).values_list('screening_identifier', flat=True)
             eligible_identifiers = list(set(eligible_identifiers))
@@ -106,8 +110,8 @@ class ScreeningGraphView(EdcBaseViewMixin):
             
             total = len(passed_screening)+failed
             
-            passed_screening = len(passed_screening)/total * 100
-            failed = failed/total * 100
+            passed_screening = round(len(passed_screening)/total * 100,1)
+            failed = round(failed/total * 100,1)
 
             return [passed_screening,failed]
             

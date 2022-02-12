@@ -5,6 +5,7 @@
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
   
+
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script type="application/javascript">
    
@@ -44,9 +45,7 @@ console.log('{{site_age_dist.0}}')
         series: [{
           name: 'Observations',
           data: [{% for value in site_age_dist %} {% for data in value %} '{{ data.1}}' , {% endfor %}{% endfor %}],
-          tooltip: {
-            headerFormat: '<em>Experiment No {point.key}</em><br/>'
-          }
+    
         }, 
         // {
         //   name: 'Outliers',
