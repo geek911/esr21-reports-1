@@ -1,0 +1,1 @@
+from .screening_graphs_mixin import ScreeningGraphView
