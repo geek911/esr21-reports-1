@@ -81,7 +81,7 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             median = statistics.mean(site_ages)
             upperquartile = np.quantile(site_ages, .75)
             max = np.max(site_ages)
-            data.append([site_id,[mean,lowerquartile,median,upperquartile,max]])
+            data.append([mean,lowerquartile,median,upperquartile,max])
           
             return data
         

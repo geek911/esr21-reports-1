@@ -8,9 +8,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script type="application/javascript">
-   
 
-console.log('{{site_age_dist.0}}')
 
     window.onload = () => {
 
@@ -44,8 +42,8 @@ console.log('{{site_age_dist.0}}')
 
         series: [{
           name: 'Observations',
-          data: [{% for value in site_age_dist %} {% for data in value %} '{{ data.1}}' , {% endfor %}{% endfor %}],
-    
+          data: [{% for value in site_age_dist %} {{ value.1.0 }} , {% endfor %}],
+
         }, 
         // {
         //   name: 'Outliers',
