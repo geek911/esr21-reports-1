@@ -12,6 +12,7 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
     subject_screening_model = 'esr21_subject.eligibilityconfirmation'
     vaccination_model =  'esr21_subject.vaccinationdetails'
     consent_model = 'esr21_subject.informedconsent'
+    site_outliers = []
     
     @property
     def subject_screening_cls(self):
@@ -24,16 +25,24 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
     @property
     def consent_model_cls(self):
         return django_apps.get_model(self.consent_model)
+
+    @property
+    def sites_names(self):
+        site_lists = []
+        sites = Site.objects.all()
+        for site in sites:
+            name =  site.name.split('-')[1]
+            site_lists.append(name)
+        return site_lists
+
+    def site_index_mapping(self,site_name):
+        return self.sites_names.index(site_name)
     
     @property
     def site_age_dist(self):
-        age_dist = [
-            ['Gaborone', self.get_distribution_site(site_name_postfix='Gaborone',)],
-            ['F/Town', self.get_distribution_site(site_name_postfix='Francistown')],
-            ['S/Phikwe', self.get_distribution_site(site_name_postfix='Phikwe')],
-            ['Maun', self.get_distribution_site(site_name_postfix='Maun')],
-            ['Serowe', self.get_distribution_site(site_name_postfix='Serowe')]]
-
+        age_dist = []
+        for site in self.sites_names:
+            age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
         return age_dist
     
     
@@ -67,23 +76,46 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
                 Q(site_id=site_id)).values_list('dob')
                 
             site_ages = []
-            data = []
             for dob in passed_screening_ages:
                 mask_date = ''.join(map(str,dob))
                 mask_year = datetime.strptime(mask_date,'%Y-%m-%d')
                 age = datetime.today().year - mask_year.year
                 site_ages.append(age)    
-
-            # calculate statistics
-            #  [mean,lowerquartile,median,upperquartile,max]
-            min = np.min(site_ages)
+           
+            
             lowerquartile = np.quantile(site_ages, .25)
-            median = statistics.mean(site_ages)
+            median = statistics.median(site_ages)
             upperquartile = np.quantile(site_ages, .75)
             max = np.max(site_ages)
-            data.append([min,lowerquartile,median,upperquartile,max])
-          
-            return data
+            min = np.min(site_ages)
+
+
+
+            IQR = upperquartile - lowerquartile
+            max_outlier = upperquartile+(1.5 * IQR)
+            min_outlier = lowerquartile-(1.5 * IQR)
+
+            # # outliers
+            # IQR = upperquartile - lowerquartile
+            # upper_outlier = upperquartile+(1.5 * IQR)
+            # lower_outlier = lowerquartile-(1.5 * IQR)
+
+            min_ages = []
+            max_ages = []
+            site_index = self.site_index_mapping(site_name_postfix)
+            for age in site_ages:
+                if age < max_outlier:
+                    min_ages.append(age)
+                else:
+                    self.site_outliers.append([site_index,age])
+                if age > min_outlier:
+                    max_ages.append(age)
+                else:
+                    self.site_outliers.append([site_index,age])
+
+            min = np.min(max_ages)
+            max = np.max(min_ages)
+            return [min,lowerquartile,median,upperquartile,max]
         
            
     def get_site_id(self, site_name_postfix):
@@ -94,8 +126,8 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-       
         context.update(
             site_age_dist=self.site_age_dist,
+            site_outliers=self.site_outliers
         )
         return context
