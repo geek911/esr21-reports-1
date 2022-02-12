@@ -1,1 +1,3 @@
+import imp
 from .screening_graphs_mixin import ScreeningGraphView
+from .enrollement_graph_mixin import EnrollmentGraphMixin

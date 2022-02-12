@@ -52,7 +52,7 @@
 	<div class="col-md-6">
 			<figure class="highcharts-figure">
 			  <div id="splineChart"></div>
-			  <p class="highcharts-description">Line chart demonstrating some accessibility features of Highcharts. The chart displays the most commonly used screen readers in surveys taken by WebAIM from December 2010 to September 2019. JAWS was the most used screen reader until 2019, when NVDA took over. VoiceOver is the third most used screen reader, followed by Narrator. ZoomText/Fusion had a surge in 2015, but usage is otherwise low. The overall use of other screen readers has declined drastically the past few years.</p>
+			  <p class="highcharts-description">Enrolled participants by gender per site </p>
 			</figure>
 		       <script>
 			       var colors = Highcharts.getOptions().colors;
@@ -67,7 +67,7 @@
 			         },
 	
 			         title: {
-			           text: 'Breakdown of enrolled participants by site'
+			           text: 'Enrolled participants by gender per site'
 			         },
 	
 			         yAxis: {
@@ -109,7 +109,7 @@
 			         series: [
 			           {
 			             name: 'Male',
-			             data: [34.8, 43.0, 51.2, 41.4, 64.9],
+			             data: {{ males }},
 			             website: 'https://www.nvaccess.org',
 			             color: colors[2],
 			             accessibility: {
@@ -117,7 +117,7 @@
 			             }
 			           },{
 			             name: 'Female',
-			             data: [42.6, 51.5, 54.2, 45.8, 20.2],
+			             data: {{ females }},
 			             website: 'http://www.disabled-world.com/assistivedevices/computer/screen-readers.php',
 			             color: colors[3]
 			           }
@@ -150,73 +150,85 @@
 			   </script>
 		</div>
 	    <div class="col-md-6">
-	    <figure class="highcharts-figure">
-		  <div id="paretoChart"></div>
-		  <p class="highcharts-description">
-		    A Pareto Chart is a chart type based on the Pareto principle, commonly
-		    used to maximize business efficiency. Highcharts can calculate the
-		    Pareto line automatically based on a series, as shown in this chart.
-		  </p>
-		</figure>
+			<figure class="highcharts-figure">
+				<div id="stacked-graph"></div>
+				<p class="highcharts-description">
+					Chart showing a combination of a column and a line chart, using multiple
+					y-axes. Using multiple axes allows for data within different ranges to
+					be visualized together.
+				</p>
+			</figure>
 	    	<script>
-	    	Highcharts.chart('paretoChart', {
-	    		  chart: {
-	    		    renderTo: 'paretoChart',
-	    		    type: 'column'
-	    		  },
-	    		  title: {
-	    		    text: 'Restaurants Complaints'
-	    		  },
-	    		  tooltip: {
-	    		    shared: true
-	    		  },
-	    		  xAxis: {
-	    		    categories: [
-	    		      'Overpriced',
-	    		      'Small portions',
-	    		      'Wait time',
-	    		      'Food is tasteless',
-	    		      'No atmosphere',
-	    		      'Not clean',
-	    		      'Too noisy',
-	    		      'Unfriendly staff'
-	    		    ],
-	    		    crosshair: true
-	    		  },
-	    		  yAxis: [{
-	    		    title: {
-	    		      text: ''
-	    		    }
-	    		  }, {
-	    		    title: {
-	    		      text: ''
-	    		    },
-	    		    minPadding: 0,
-	    		    maxPadding: 0,
-	    		    max: 100,
-	    		    min: 0,
-	    		    opposite: true,
-	    		    labels: {
-	    		      format: "{value}%"
-	    		    }
-	    		  }],
-	    		  series: [{
-	    		    type: 'pareto',
-	    		    name: 'Pareto',
-	    		    yAxis: 1,
-	    		    zIndex: 10,
-	    		    baseSeries: 1,
-	    		    tooltip: {
-	    		      valueDecimals: 2,
-	    		      valueSuffix: '%'
-	    		    }
-	    		  }, {
-	    		    name: 'Complaints',
-	    		    type: 'column',
-	    		    zIndex: 2,
-	    		    data: [755, 222, 151, 86, 72, 51, 36, 10]
-	    		  }]
-	    		});
+	    		  Highcharts.chart('stacked-graph', {
+  chart: {
+    zoomType: 'xy'
+  },
+  title: {
+    text: 'Enrolled Per Site'
+  },
+  subtitle: {
+    text: 'Total enrolled regardless of gender'
+  },
+  xAxis: [{
+    categories: [{% for screening in site_screenings %}  '{{ screening.0 }}' , {% endfor %} "All Sites"],
+    crosshair: true
+  }],
+  yAxis: [{ // Primary yAxis
+	max: 100,
+    labels: {
+      style: {
+        color: Highcharts.getOptions().colors[1]
+      }
+    },
+    title: {
+      text: 'Enrollments By Percentage',
+      style: {
+        color: Highcharts.getOptions().colors[1]
+      }
+    }
+  }, { // Secondary yAxis
+    title: {
+      text: 'Number of Enrollments',
+      style: {
+        color: Highcharts.getOptions().colors[0]
+      }
+    },
+    labels: {
+      style: {
+        color: Highcharts.getOptions().colors[0]
+      }
+    },
+    opposite: true
+  }],
+  tooltip: {
+    shared: true
+  },
+  legend: {
+    layout: 'vertical',
+    align: 'left',
+    x: 120,
+    verticalAlign: 'top',
+    y: 100,
+    floating: true,
+    backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
+      'rgba(255,255,255,0.25)'
+  },
+  series: [{
+    name: 'Sites',
+    type: 'column',
+    yAxis: 1,
+    data: {{ overall }},
+
+  }, {
+    name: 'Enrolled By Percentage',
+    type: 'spline',
+    data: {{ overall_percentages }},
+    tooltip: {
+      valueSuffix: '%'
+    }
+  }]
+});
+
 	    	</script>
 	    </div>
 	</div>
