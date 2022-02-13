@@ -4,6 +4,7 @@ from esr21_subject.models import *
 from dateutil.relativedelta import relativedelta
 from django.contrib.sites.models import Site
 from edc_constants.constants import *
+from django.db.models import Q
 
 class DemographicsMixin(EdcBaseViewMixin):
 
@@ -139,20 +140,17 @@ class DemographicsMixin(EdcBaseViewMixin):
 
 
         for site_id in self.site_ids:
-            enrolled = VaccinationDetails.objects.filter(
-                received_dose_before='first_dose', site_id=site_id).values_list(
-                'subject_visit__subject_identifier', flat=True).distinct()
 
             status = POS
-            positive = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=enrolled) & Q(
+            positive = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=self.enrolled) & Q(
                 site_id=site_id)) & (Q(hiv_result=status) | Q(rapid_test_result=status))).count()
 
             status = NEG
-            negative = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=enrolled) & Q(
+            negative = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=self.enrolled) & Q(
                 site_id=site_id)) & (Q(hiv_result=status) | Q(rapid_test_result=status))).count()
 
             status = IND
-            unknown = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=enrolled) & Q(
+            unknown = RapidHIVTesting.objects.filter((Q(subject_visit__subject_identifier__in=self.enrolled) & Q(
                 site_id=site_id)) & (Q(hiv_result=status) | Q(rapid_test_result=status))).count()
 
             hiv_positive.append(positive)
