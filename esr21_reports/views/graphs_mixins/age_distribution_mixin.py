@@ -34,6 +34,9 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             name =  site.name.split('-')[1]
             site_lists.append(name)
         return site_lists
+
+    def site_index_mapping(self,site_name):
+        return self.sites_names.index(site_name)
     
     @property
     def site_age_dist(self):
@@ -42,30 +45,14 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
         return age_dist
     
-    def site_index_mapping(self,site_name):
-        return self.sites_names.index(site_name)
-    
     
     def get_distribution_site(self, site_name_postfix):
+        
+        
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
-            
-            eligible_identifiers = self.subject_screening_cls.objects.filter(
-                is_eligible=True).values_list('screening_identifier', flat=True)
-            eligible_identifiers = list(set(eligible_identifiers))
-            
-            consent_screening_ids = self.subject_screening_cls.objects.all().values_list('screening_identifier', flat=True)
-            consent_screening_ids = list(set(consent_screening_ids))
-            no_consent_screenigs = list(set(eligible_identifiers) - set(consent_screening_ids))
-            
-            total_screened = self.subject_screening_cls.objects.filter(
-                ~Q(screening_identifier__in=no_consent_screenigs))
-            
-            all_screening_ids = total_screened.values_list('screening_identifier', flat=True)
-            all_screening_ids = list(set(all_screening_ids))
-            
             vaccination = self.vaccination_model_cls.objects.filter(
-                Q(received_dose_before='first_dose') | Q(received_dose_before='second_dose')
+                Q(received_dose_before='first_dose')
                 ).values_list('subject_visit__subject_identifier', flat=True)
             vaccination = list(set(vaccination))
             
@@ -92,6 +79,11 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)
             min_outlier = lowerquartile-(1.5 * IQR)
+
+            # # outliers
+            # IQR = upperquartile - lowerquartile
+            # upper_outlier = upperquartile+(1.5 * IQR)
+            # lower_outlier = lowerquartile-(1.5 * IQR)
 
             min_ages = []
             max_ages = []
