@@ -6,6 +6,8 @@ from django.db.models import Q
 from datetime import datetime
 import statistics
 import numpy as np
+import pandas as pd
+from django_pandas.io import read_frame
 
 class AgeDistributionGraphMixin(EdcBaseViewMixin):
 
@@ -68,10 +70,42 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
                 Q(received_dose_before='first_dose') | Q(received_dose_before='second_dose')
                 ).values_list('subject_visit__subject_identifier', flat=True)
             vaccination = list(set(vaccination))
+
+            vaccination_df = self.vaccination_model_cls.objects.filter(
+                Q(received_dose_before='first_dose') 
+                ).values_list('subject_visit__subject_identifier', 'vaccination_date')
+            vaccination_df = list(set(vaccination_df))
+            df_vaccination = read_frame(vaccination_df,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
+
+# DataFrames
+            vaccination_df = self.vaccination_model_cls.objects.filter( 
+                Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', 'vaccination_date')
+            df_vaccination = read_frame(vaccination_df, fieldnames=['subject_visit__subject_identifier',
+                                                            'vaccination_date'])
+
+
+            consents = self.consent_model_cls.objects.filter(
+                Q(subject_identifier__in=vaccination) & 
+                Q(site_id=site_id)).values_list('subject_visit__subject_identifier','dob')
+
+            df_consent = read_frame(consents, fieldnames=['subject_visit__subject_identifier','dob'])
+            vaccinations = df_vaccination.drop_duplicates(subset="subject_visit__subject_identifier")
+
+            df_consent = df_consent.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
+            df_vaccinations = vaccinations.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
+
+            merged_result = pd.merge(df_vaccinations, df_consent, on='subject_identifier') 
+
+
             
             passed_screening_ages = self.consent_model_cls.objects.filter(
                 Q(subject_identifier__in=vaccination) & 
                 Q(site_id=site_id)).values_list('dob')
+
+
+           
+
+            merged_df = pd
                 
             site_ages = []
             for dob in passed_screening_ages:
@@ -86,8 +120,6 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             upperquartile = np.quantile(site_ages, .75)
             max = np.max(site_ages)
             min = np.min(site_ages)
-
-
 
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)
