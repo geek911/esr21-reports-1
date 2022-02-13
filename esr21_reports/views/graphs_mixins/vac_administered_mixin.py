@@ -2,6 +2,7 @@ from datetime import date
 
 import pytz
 from django.apps import apps as django_apps
+from django.contrib.sites.models import Site
 from edc_base.view_mixins import EdcBaseViewMixin
 
 
@@ -167,6 +168,15 @@ class VacAdministeredMixin(EdcBaseViewMixin):
         return all_sites_dose
 
     @property
+    def sites_names(self):
+        site_lists = []
+        sites = Site.objects.all()
+        for site in sites:
+            name = site.name.split('-')[1]
+            site_lists.append(name)
+        return site_lists
+
+    @property
     def second_dose(self):
         vaccinations_second_gabs_sites_per = self.get_percentage(
             self.vaccinations_second_gabs_sites)
@@ -196,7 +206,7 @@ class VacAdministeredMixin(EdcBaseViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        labels = [ 'Gaborone', 'Maun', 'Serowe', 'Ftown', 'S/Phikwe']
+        labels = self.sites_names
 
         context.update(
             vac_details_labels=labels,
