@@ -11,6 +11,12 @@ from django.db.models import Q
 class DemographicsMixin(EdcBaseViewMixin):
 
     @property
+    def site_names(self):
+        site_names = Site.objects.values_list('name', flat=True)
+        site_names = list(map(lambda name: name.split('-')[1], site_names))
+        return site_names
+
+    @property
     def site_ids(self):
         site_ids = Site.objects.order_by('id').values_list('id', flat=True)
         return site_ids
@@ -323,12 +329,14 @@ class DemographicsMixin(EdcBaseViewMixin):
                     previously_drunk_alcohol=previously_drunk_alcohol,
                     occasionally_drinks_alcohol=occasionally_drinks_alcohol,
                     currently_drinks_alcohol=currently_drinks_alcohol)
+        
 
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update(
+            site_names = self.site_names,
             age_stats = self.age_range_statistics,
             alcohol_stats = self.alcohol_status_statistics,
             diabates_stats = self.diabates_statistics,
