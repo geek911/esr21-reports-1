@@ -6,6 +6,8 @@ from django.db.models import Q
 from datetime import datetime
 import statistics
 import numpy as np
+import pandas as pd
+from django_pandas.io import read_frame
 
 class AgeDistributionGraphMixin(EdcBaseViewMixin):
 
@@ -45,49 +47,43 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
     def site_index_mapping(self,site_name):
         return self.sites_names.index(site_name)
     
+    def age(self, enrolment_date=None, dob=None):
+        age = enrolment_date.year - dob.year - ((enrolment_date.month, enrolment_date.day) < (dob.month, dob.day))
+        return age
     
     def get_distribution_site(self, site_name_postfix):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             
-            eligible_identifiers = self.subject_screening_cls.objects.filter(
-                is_eligible=True).values_list('screening_identifier', flat=True)
-            eligible_identifiers = list(set(eligible_identifiers))
-            
-            consent_screening_ids = self.subject_screening_cls.objects.all().values_list('screening_identifier', flat=True)
-            consent_screening_ids = list(set(consent_screening_ids))
-            no_consent_screenigs = list(set(eligible_identifiers) - set(consent_screening_ids))
-            
-            total_screened = self.subject_screening_cls.objects.filter(
-                ~Q(screening_identifier__in=no_consent_screenigs))
-            
-            all_screening_ids = total_screened.values_list('screening_identifier', flat=True)
-            all_screening_ids = list(set(all_screening_ids))
-            
-            vaccination = self.vaccination_model_cls.objects.filter(
-                Q(received_dose_before='first_dose') | Q(received_dose_before='second_dose')
-                ).values_list('subject_visit__subject_identifier', flat=True)
-            vaccination = list(set(vaccination))
-            
-            passed_screening_ages = self.consent_model_cls.objects.filter(
-                Q(subject_identifier__in=vaccination) & 
-                Q(site_id=site_id)).values_list('dob')
-                
-            site_ages = []
-            for dob in passed_screening_ages:
-                mask_date = ''.join(map(str,dob))
-                mask_year = datetime.strptime(mask_date,'%Y-%m-%d')
-                age = datetime.today().year - mask_year.year
-                site_ages.append(age)    
+            vaccination_qs = self.vaccination_model_cls.objects.filter(
+                Q(received_dose_before='first_dose') 
+                )
+            df_vaccination = read_frame(vaccination_qs,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
+
+            # DataFrames
+            vaccination_identifiers = self.vaccination_model_cls.objects.filter( 
+                Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', flat=True)
+            vaccination_identifiers = list(set(vaccination_identifiers))
+
+            consents = self.consent_model_cls.objects.filter(
+                subject_identifier__in=vaccination_identifiers, 
+                site_id=site_id)
+
+            df_vaccination = df_vaccination.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
+            df_consent = read_frame(consents, fieldnames=['subject_identifier','dob'])
+            df_vaccination = df_vaccination.drop_duplicates(subset="subject_identifier")
+
+            merged_result = pd.merge(df_vaccination, df_consent, on='subject_identifier') 
            
+            merged_result['Age'] = merged_result.apply(lambda x: self.age(x['vaccination_date'], x['dob']), axis=1)
+            
+            site_ages = merged_result['Age'].to_list()
             
             lowerquartile = np.quantile(site_ages, .25)
             median = statistics.median(site_ages)
             upperquartile = np.quantile(site_ages, .75)
             max = np.max(site_ages)
             min = np.min(site_ages)
-
-
 
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)
