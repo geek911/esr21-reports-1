@@ -6,9 +6,10 @@ from edc_navbar import NavbarViewMixin
 from ..views.adverse_events import (
     AdverseEventRecordViewMixin,SeriousAdverseEventRecordViewMixin)
 from .screening_reports_view_mixin import ScreeningReportsViewMixin
+from .psrt_mixins import DemographicsMixin
 
 
-class PSRTView(AdverseEventRecordViewMixin,
+class PSRTView(DemographicsMixin, AdverseEventRecordViewMixin,
                SeriousAdverseEventRecordViewMixin,
                ScreeningReportsViewMixin,
                NavbarViewMixin, EdcBaseViewMixin, TemplateView):
