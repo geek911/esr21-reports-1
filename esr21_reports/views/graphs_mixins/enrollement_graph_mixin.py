@@ -50,13 +50,13 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 				subject_visit__subject_identifier__in=male_pids,
 				received_dose_before='first_dose', site_id=site_id).count()
 			percentage = (males / enrolled) * 100
-			statistics['males'].append(percentage)
+			statistics['males'].append(round(percentage, 1))
 
 			females = VaccinationDetails.objects.filter(
 				subject_visit__subject_identifier__in=female_pids,
 				received_dose_before='first_dose', site_id=site_id).count()
 			percentage = (females / enrolled) * 100
-			statistics['females'].append(percentage)
+			statistics['females'].append(round(percentage, 1))
 		
 		return statistics
 
