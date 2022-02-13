@@ -36,22 +36,43 @@
 {% block main %}
 
     <div class="container">
-
-        <section id="vac_administered">
-            {% include './graphs/vac_administered.html' %}
-        </section>
-        <section id="vac_administered">
-            {% include './graphs/missed_2nd_dose_bar_graph.html' %}
-        </section>
-        <section id="screening_graphs">
-            {% include './graphs/screening_graphs.html' %}
-        </section>
-        <section id="enrollments_graphs">
-            {% include './graphs/enrollments_graphs.html' %}
-        </section>
-        <section id="age_dist_boxplot">
-            {% include './graphs/age_distribution_boxplot.html' %}
-        </section>
+    	  <div class="panel-group">
+		
+		    <div class="panel panel-info">
+		      <div class="panel-heading">Screening</div>
+		      <div class="panel-body">
+		      	<section id="screening_graphs">
+		            {% include './graphs/screening_graphs.html' %}
+		        </section>
+		      </div>
+		    </div>
+		    
+		    <hr>
+		    
+		    <div class="panel panel-success">
+		      <div class="panel-heading">Enrollment</div>
+		      <div class="panel-body">
+		      	
+		      	<section id="enrollments_graphs">
+		            {% include './graphs/enrollments_graphs.html' %}
+		        </section>
+		        <hr>
+		        <section id="vac_administered">
+		            {% include './graphs/vac_administered.html' %}
+		        </section>
+		        <hr>
+		        <section id="vac_administered">
+		            {% include './graphs/missed_2nd_dose_bar_graph.html' %}
+		        </section>
+		        <hr>
+		        <section id="age_dist_boxplot">
+		            {% include './graphs/age_distribution_boxplot.html' %}
+		        </section>
+		        
+		      </div>
+		    </div>
+		
+		  </div>
 
     </div>
 

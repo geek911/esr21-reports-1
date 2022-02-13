@@ -3,9 +3,10 @@ from django.apps import apps as django_apps
 from edc_base.view_mixins import EdcBaseViewMixin
 from django.contrib.sites.models import Site
 from django.db.models import Q
-from datetime import datetime
 import statistics
 import numpy as np
+import pandas as pd
+from django_pandas.io import read_frame
 
 class AgeDistributionGraphMixin(EdcBaseViewMixin):
 
@@ -45,36 +46,42 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
         return age_dist
     
+    def age(self, enrolment_date=None, dob=None):
+        age = enrolment_date.year - dob.year - ((enrolment_date.month, enrolment_date.day) < (dob.month, dob.day))
+        return age
     
     def get_distribution_site(self, site_name_postfix):
-        
-        
         site_id = self.get_site_id(site_name_postfix)
+
         if site_id:
-            vaccination = self.vaccination_model_cls.objects.filter(
-                Q(received_dose_before='first_dose')
-                ).values_list('subject_visit__subject_identifier', flat=True)
-            vaccination = list(set(vaccination))
-            
-            passed_screening_ages = self.consent_model_cls.objects.filter(
-                Q(subject_identifier__in=vaccination) & 
-                Q(site_id=site_id)).values_list('dob')
-                
-            site_ages = []
-            for dob in passed_screening_ages:
-                mask_date = ''.join(map(str,dob))
-                mask_year = datetime.strptime(mask_date,'%Y-%m-%d')
-                age = datetime.today().year - mask_year.year
-                site_ages.append(age)    
+            vaccination_qs = self.vaccination_model_cls.objects.filter(
+                Q(received_dose_before='first_dose') 
+                )
+            df_vaccination = read_frame(vaccination_qs,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
+
+            # DataFrames
+            vaccination_identifiers = self.vaccination_model_cls.objects.filter( 
+                Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', flat=True)
+            vaccination_identifiers = list(set(vaccination_identifiers))
+
+            consents = self.consent_model_cls.objects.filter(
+                subject_identifier__in=vaccination_identifiers, 
+                site_id=site_id)
+
+            df_vaccination = df_vaccination.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
+            df_consent = read_frame(consents, fieldnames=['subject_identifier','dob'])
+            df_vaccination = df_vaccination.drop_duplicates(subset="subject_identifier")
+
+            merged_result = pd.merge(df_vaccination, df_consent, on='subject_identifier') 
            
+            merged_result['Age'] = merged_result.apply(lambda x: self.age(x['vaccination_date'], x['dob']), axis=1)
+            
+            site_ages = merged_result['Age'].to_list()
             
             lowerquartile = np.quantile(site_ages, .25)
             median = statistics.median(site_ages)
             upperquartile = np.quantile(site_ages, .75)
-            max = np.max(site_ages)
-            min = np.min(site_ages)
-
-
+           
 
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)

@@ -46,115 +46,17 @@
 	  background: #f1f7ff;
 	}
 </style>
-<div class="container">
 	<div class="row">
+	
 	<div class="col-md-6">
-			<figure class="highcharts-figure">
-			  <div id="splineChart"></div>
-			  <p class="highcharts-description">Enrolled participants by gender per site </p>
-			</figure>
-		       <script>
-			       var colors = Highcharts.getOptions().colors;
-	
-			       Highcharts.chart('splineChart', {
-			         chart: {
-			           type: 'spline'
-			         },
-	
-			         legend: {
-			           symbolWidth: 40
-			         },
-	
-			         title: {
-			           text: 'Enrolled participants by gender per site'
-			         },
-	
-			         yAxis: {
-			           title: {
-			             text: 'Percentage usage'
-			           },
-			           accessibility: {
-			             description: 'Percentage usage'
-			           }
-			         },
-	
-			         xAxis: {
-			           title: {
-			             text: 'Study Site'
-			           },
-			           accessibility: {
-			             description: 'Study Site'
-			           },
-			           categories: ['Gaborone', 'Maun', 'Serowe', 'F/Town', 'S/Phikwe',]
-			         },
-	
-			         tooltip: {
-			           
-			         },
-	
-			         plotOptions: {
-			           series: {
-			             point: {
-			               events: {
-			                 click: function () {
-			                   window.location.href = this.series.options.website;
-			                 }
-			               }
-			             },
-			             cursor: 'pointer'
-			           }
-			         },
-	
-			         series: [
-			           {
-			             name: 'Male',
-			             data: {{ males }},
-			             website: 'https://www.nvaccess.org',
-			             color: colors[2],
-			             accessibility: {
-			               description: 'This is the most used screen reader in 2019'
-			             }
-			           },{
-			             name: 'Female',
-			             data: {{ females }},
-			             website: 'http://www.disabled-world.com/assistivedevices/computer/screen-readers.php',
-			             color: colors[3]
-			           }
-			         ],
-	
-			         responsive: {
-			           rules: [{
-			             condition: {
-			               maxWidth: 550
-			             },
-			             chartOptions: {
-			               chart: {
-			                 spacingLeft: 3,
-			                 spacingRight: 3
-			               },
-			               legend: {
-			                 itemWidth: 150
-			               },
-			               xAxis: {
-			                 categories: ['Gaborone', 'Maun', 'Serowe', 'F/Town', 'S/Phikwe',],
-			                 title: ''
-			               },
-			               yAxis: {
-			                 visible: true
-			               }
-			             }
-			           }]
-			         }
-			       });
-			   </script>
-		</div>
-	    <div class="col-md-6">
 			<figure class="highcharts-figure">
 				<div id="stacked-graph"></div>
 				<p class="highcharts-description">
 					Chart showing a combination of a column and a line chart, using multiple
 					y-axes. Using multiple axes allows for data within different ranges to
-					be visualized together.
+					be visualized together. 
+					
+					The graph shows overall enrollment per site
 				</p>
 			</figure>
 	    	<script>
@@ -231,5 +133,109 @@
 
 	    	</script>
 	    </div>
-	</div>
+	
+	
+	<div class="col-md-6">
+			<figure class="highcharts-figure">
+			  <div id="splineChart"></div>
+			  <p class="highcharts-description">The line graph shows enrolled participants by gender per site </p>
+			</figure>
+		       <script>
+			       var colors = Highcharts.getOptions().colors;
+	
+			       Highcharts.chart('splineChart', {
+			         chart: {
+			           type: 'spline'
+			         },
+	
+			         legend: {
+			           symbolWidth: 40
+			         },
+	
+			         title: {
+			           text: 'Enrolled participants by gender per site'
+			         },
+	
+			         yAxis: {
+			           title: {
+			             text: 'Enrollment Percentages'
+			           },
+			           accessibility: {
+			             description: 'Enrollment Percentages',
+			           },
+
+			         },
+	
+			         xAxis: {
+			           title: {
+			             text: 'Study Site'
+			           },
+			           accessibility: {
+			             description: 'Study Site',
+
+			           },
+			           categories:  [{% for name in site_names %}  '{{ name }}', {% endfor %}],
+			         },
+	
+			         tooltip: {
+			           	valueSuffix: '%'
+			         },
+	
+			         plotOptions: {
+			           series: {
+			             point: {
+			               events: {
+			                 click: function () {
+			                   window.location.href = this.series.options.website;
+			                 }
+			               }
+			             },
+			             cursor: 'pointer'
+			           }
+			         },
+	
+			         series: [
+			           {
+			             name: 'Male',
+			             data: {{ males }},
+			             color: colors[2],
+			             accessibility: {
+			               description: 'This is the most used screen reader in 2019'
+			             }
+			           },{
+			             name: 'Female',
+			             data: {{ females }},
+			             color: colors[3],
+						 valueSuffix: '%',
+
+
+			           }
+			         ],
+	
+			         responsive: {
+			           rules: [{
+			             condition: {
+			               maxWidth: 550
+			             },
+			             chartOptions: {
+			               chart: {
+			                 spacingLeft: 3,
+			                 spacingRight: 3
+			               },
+			               legend: {
+			                 itemWidth: 150
+			               },
+			               xAxis: {
+			                 categories: [{% for name in site_names %}  '{{ name }}', {% endfor %}],
+			                 title: ''
+			               },
+			               yAxis: {
+			                 visible: true
+			               }
+			             }
+			           }]
+			         }
+			       });
+			   </script>
+		</div>
 </div>
