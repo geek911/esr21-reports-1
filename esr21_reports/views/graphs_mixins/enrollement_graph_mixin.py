@@ -36,15 +36,19 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 		male_pids = InformedConsent.objects.filter(gender=MALE).values_list(
 			'subject_identifier').distinct()
 
+		enrolled = VaccinationDetails.objects.filter(received_dose_before='first_dose').count()
+
 		for site_id in self.site_ids:
 			
 			males = VaccinationDetails.objects.filter(
 				subject_visit__subject_identifier__in=male_pids, received_dose_before='first_dose', site_id=site_id).count()
-			statistics['males'].append(males)
+			percentage = (males / enrolled) * 100
+			statistics['males'].append(round(percentage, 1))
 
 			females = VaccinationDetails.objects.filter(
 				subject_visit__subject_identifier__in=female_pids, received_dose_before='first_dose', site_id=site_id).count()
-			statistics['females'].append(females)
+			percentage = (females / enrolled) * 100
+			statistics['females'].append(round(percentage, 1))
 		
 		return statistics
 

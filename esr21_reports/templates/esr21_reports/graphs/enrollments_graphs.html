@@ -158,11 +158,12 @@
 	
 			         yAxis: {
 			           title: {
-			             text: 'Percentage usage'
+			             text: 'Enrollment Percentages'
 			           },
 			           accessibility: {
-			             description: 'Percentage usage'
-			           }
+			             description: 'Enrollment Percentages',
+			           },
+
 			         },
 	
 			         xAxis: {
@@ -170,13 +171,14 @@
 			             text: 'Study Site'
 			           },
 			           accessibility: {
-			             description: 'Study Site'
+			             description: 'Study Site',
+
 			           },
 			           categories:  [{% for name in site_names %}  '{{ name }}', {% endfor %}],
 			         },
 	
 			         tooltip: {
-			           
+			           	valueSuffix: '%'
 			         },
 	
 			         plotOptions: {
@@ -196,7 +198,6 @@
 			           {
 			             name: 'Male',
 			             data: {{ males }},
-			             website: 'https://www.nvaccess.org',
 			             color: colors[2],
 			             accessibility: {
 			               description: 'This is the most used screen reader in 2019'
@@ -204,8 +205,10 @@
 			           },{
 			             name: 'Female',
 			             data: {{ females }},
-			             website: 'http://www.disabled-world.com/assistivedevices/computer/screen-readers.php',
-			             color: colors[3]
+			             color: colors[3],
+						 valueSuffix: '%',
+
+
 			           }
 			         ],
 	
