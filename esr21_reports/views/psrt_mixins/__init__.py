@@ -1,1 +1,2 @@
 from .demographics_mixin import DemographicsMixin
+from .stats_per_week_mixin import StatsPerWeekMixin
