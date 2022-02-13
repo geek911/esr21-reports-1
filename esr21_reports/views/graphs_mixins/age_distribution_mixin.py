@@ -47,45 +47,27 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
     def site_index_mapping(self,site_name):
         return self.sites_names.index(site_name)
     
+    def age(self, enrolment_date=None, dob=None):
+        age = enrolment_date.year - dob.year - ((enrolment_date.month, enrolment_date.day) < (dob.month, dob.day))
+        return age
     
     def get_distribution_site(self, site_name_postfix):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             
-            eligible_identifiers = self.subject_screening_cls.objects.filter(
-                is_eligible=True).values_list('screening_identifier', flat=True)
-            eligible_identifiers = list(set(eligible_identifiers))
-            
-            consent_screening_ids = self.subject_screening_cls.objects.all().values_list('screening_identifier', flat=True)
-            consent_screening_ids = list(set(consent_screening_ids))
-            no_consent_screenigs = list(set(eligible_identifiers) - set(consent_screening_ids))
-            
-            total_screened = self.subject_screening_cls.objects.filter(
-                ~Q(screening_identifier__in=no_consent_screenigs))
-            
-            all_screening_ids = total_screened.values_list('screening_identifier', flat=True)
-            all_screening_ids = list(set(all_screening_ids))
-            
-            vaccination = self.vaccination_model_cls.objects.filter(
-                Q(received_dose_before='first_dose') | Q(received_dose_before='second_dose')
-                ).values_list('subject_visit__subject_identifier', flat=True)
-            vaccination = list(set(vaccination))
-
             vaccination_df = self.vaccination_model_cls.objects.filter(
                 Q(received_dose_before='first_dose') 
                 ).values_list('subject_visit__subject_identifier', 'vaccination_date')
             vaccination_df = list(set(vaccination_df))
             df_vaccination = read_frame(vaccination_df,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
 
-# DataFrames
-            vaccination_df = self.vaccination_model_cls.objects.filter( 
+            # DataFrames
+            vaccination_identifier = self.vaccination_model_cls.objects.filter( 
                 Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', 'vaccination_date')
-            df_vaccination = read_frame(vaccination_df, fieldnames=['subject_visit__subject_identifier',
-                                                            'vaccination_date'])
 
 
             consents = self.consent_model_cls.objects.filter(
-                Q(subject_identifier__in=vaccination) & 
+                Q(subject_identifier__in=vaccination_identifier) & 
                 Q(site_id=site_id)).values_list('subject_visit__subject_identifier','dob')
 
             df_consent = read_frame(consents, fieldnames=['subject_visit__subject_identifier','dob'])
@@ -95,25 +77,10 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             df_vaccinations = vaccinations.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
 
             merged_result = pd.merge(df_vaccinations, df_consent, on='subject_identifier') 
-
-
+           
+            merged_result['Age'] = merged_result.apply(lambda x: self.age(x['vaccination_date'], x['dob']), axis=1)
             
-            passed_screening_ages = self.consent_model_cls.objects.filter(
-                Q(subject_identifier__in=vaccination) & 
-                Q(site_id=site_id)).values_list('dob')
-
-
-           
-
-            merged_df = pd
-                
-            site_ages = []
-            for dob in passed_screening_ages:
-                mask_date = ''.join(map(str,dob))
-                mask_year = datetime.strptime(mask_date,'%Y-%m-%d')
-                age = datetime.today().year - mask_year.year
-                site_ages.append(age)    
-           
+            site_ages = merged_result['Age'].to_list()
             
             lowerquartile = np.quantile(site_ages, .25)
             median = statistics.median(site_ages)
