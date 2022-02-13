@@ -96,10 +96,6 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
         gender_by_site = self.get_vaccinated_by_site()
         overall_participant = self.get_overall_participant()
         overall_percentages = self.get_overall_percentage()
-        # site_names = self.sites_names
-
-        # import pdb
-        # pdb.set_trace()
 
         context.update(
             site_names=self.sites_names,
