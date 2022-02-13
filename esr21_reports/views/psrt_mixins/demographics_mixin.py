@@ -1,4 +1,5 @@
 from datetime import date
+from operator import sub
 from edc_base.view_mixins import EdcBaseViewMixin
 from esr21_subject.models import *
 from dateutil.relativedelta import relativedelta
@@ -236,3 +237,15 @@ class DemographicsMixin(EdcBaseViewMixin):
                     caucasian=caucasian, 
                     other_race=other_race)
 
+    def pregnancy_statistics(self):
+        pregnancies = []
+        for site_id in self.site_ids:
+            consent = InformedConsent.objects.filter(gender=MALE).values_list('subject_identifier', flat=True)
+            pregnancy_status = PregnancyTest.objects.filter(site_id=site_id, result=POS)\
+                                                    .exclude(subject_visit__subject_identifier__in=consent) \
+                                                    .count()
+            pregnancies.append(pregnancy_status)
+
+        pregnancies.insert(0, sum(pregnancies))
+
+        return pregnancies
