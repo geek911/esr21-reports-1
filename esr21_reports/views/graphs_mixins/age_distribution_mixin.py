@@ -3,7 +3,6 @@ from django.apps import apps as django_apps
 from edc_base.view_mixins import EdcBaseViewMixin
 from django.contrib.sites.models import Site
 from django.db.models import Q
-from datetime import datetime
 import statistics
 import numpy as np
 import pandas as pd
