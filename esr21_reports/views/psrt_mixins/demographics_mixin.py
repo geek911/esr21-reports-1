@@ -94,6 +94,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         return total
 
+    @property
     def age_range_statistics(self)-> dict[str, list[int]]:
         age_18_to_30 = []
         age_30_to_40 = []
@@ -136,6 +137,7 @@ class DemographicsMixin(EdcBaseViewMixin):
                     age_60_to_70=age_60_to_70,)
 
 
+    @property
     def hiv_statistics(self)-> dict[str, list[int]]:
         hiv_positive = []
         hiv_negative = []
@@ -169,6 +171,7 @@ class DemographicsMixin(EdcBaseViewMixin):
                     hiv_positive=hiv_positive, 
                     hiv_unknown=hiv_unknown)
 
+    @property
     def smoking_statistics(self) -> dict[str, list[int]]:
         never_smoked = []
         occasional_smoker = []
@@ -203,7 +206,7 @@ class DemographicsMixin(EdcBaseViewMixin):
                     current_smoking=current_smoking, 
                     previous_smoker=previous_smoker)
 
-
+    @property
     def race_statistics(self) -> dict[str, list[int]]:
         black_african = []
         asian = []
@@ -238,6 +241,7 @@ class DemographicsMixin(EdcBaseViewMixin):
                     caucasian=caucasian, 
                     other_race=other_race)
 
+    @property
     def pregnancy_statistics(self)->list[int]:
         pregnancies = []
         for site_id in self.site_ids:
@@ -254,6 +258,7 @@ class DemographicsMixin(EdcBaseViewMixin):
         return pregnancies
     
 
+    @property
     def diabates_statistics(self) -> list[int]:
 
         diabetes = []
@@ -268,6 +273,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         return diabetes
 
+    @property
     def alcohol_status_statistics(self) -> dict[str, list[int]]:
 
         never_drunk_alcohol = []
@@ -317,6 +323,24 @@ class DemographicsMixin(EdcBaseViewMixin):
             occasionally_drinks_alcohol=occasionally_drinks_alcohol,
             currently_drinks_alcohol=currently_drinks_alcohol
         )
+
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context.update(
+            age_stats = self.age_range_statistics,
+            alcohol_stats = self.alcohol_status_statistics,
+            diabates_stats = self.diabates_statistics,
+            females_stats = self.females_statistics,
+            males_stats = self.males_statistics,
+            hiv_stats = self.hiv_statistics,
+            pregnency_stats = self.pregnancy_statistics,
+            race_stats = self.race_statistics,
+            smoking_stats = self.smoking_statistics,
+        )
+
+        return context
 
 
             
