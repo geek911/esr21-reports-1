@@ -10,9 +10,10 @@ from django.db.models import Q
 
 class DemographicsMixin(EdcBaseViewMixin):
 
+
     @property
     def site_names(self):
-        site_names = Site.objects.values_list('name', flat=True)
+        site_names = Site.objects.order_by('id').values_list('name', flat=True)
         site_names = list(map(lambda name: name.split('-')[1], site_names))
         return site_names
 
@@ -63,7 +64,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         males.insert(0, sum(males))
 
-        return males
+        return ['Males', *males]
 
     @property
     def females_statistics(self) -> list[int]:
@@ -80,7 +81,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         females.insert(0, sum(females))
 
-        return females
+        return ['Females', *females]
 
     
     def _get_age_range(self, site_id, lower_limit_age, upper_limit_age=None)->int:
@@ -176,9 +177,9 @@ class DemographicsMixin(EdcBaseViewMixin):
         hiv_negative.insert(0, sum(hiv_negative))
         hiv_unknown.insert(0, sum(hiv_unknown))
 
-        return dict(hiv_positive=hiv_positive, 
-                    hiv_negative=hiv_positive, 
-                    hiv_unknown=hiv_unknown)
+        return [['HIV Positive', *hiv_positive], 
+                ['HIV Negative', *hiv_negative],
+                ['Unknown', *hiv_unknown]]
 
     @property
     def smoking_statistics(self):
@@ -210,10 +211,12 @@ class DemographicsMixin(EdcBaseViewMixin):
         current_smoking.insert(0, sum(current_smoking))
         previous_smoker.insert(0, sum(previous_smoker))
 
-        return dict(never_smoked=never_smoked, 
-                    occasional_smoker=occasional_smoker, 
-                    current_smoking=current_smoking, 
-                    previous_smoker=previous_smoker)
+        return [
+            ['Never Smoked', *never_smoked],
+            ['Occasional Smoker', *occasional_smoker],
+            ['Current Smoker', *current_smoking],
+            ['Previous Smoker', *previous_smoker]
+        ]
 
     @property
     def race_statistics(self):
@@ -245,10 +248,10 @@ class DemographicsMixin(EdcBaseViewMixin):
         caucasian.insert(0, sum(caucasian))
         other_race.insert(0, sum(other_race))
 
-        return dict(black_african=black_african, 
-                    asian=asian, 
-                    caucasian=caucasian, 
-                    other_race=other_race)
+        return [['Black African', *black_african], 
+                ['Asian', *asian], 
+                ['Caucasian', *caucasian], 
+                ['Other Race', *other_race]]
 
     @property
     def pregnancy_statistics(self):
@@ -264,7 +267,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         pregnancies.insert(0, sum(pregnancies))
 
-        return pregnancies
+        return ['Pregnencies', *pregnancies]
     
 
     @property
@@ -280,7 +283,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         diabetes.insert(0, sum(diabetes))
 
-        return diabetes
+        return ["Diabetes", *diabetes]
 
     @property
     def alcohol_status_statistics(self):
@@ -324,21 +327,25 @@ class DemographicsMixin(EdcBaseViewMixin):
         previously_drunk_alcohol.insert(0, sum(previously_drunk_alcohol))
         occasionally_drinks_alcohol.insert(0, sum(occasionally_drinks_alcohol))
         currently_drinks_alcohol.insert(0, sum(currently_drinks_alcohol))
-        
-        return dict(never_drunk_alcohol=never_drunk_alcohol,
-                    previously_drunk_alcohol=previously_drunk_alcohol,
-                    occasionally_drinks_alcohol=occasionally_drinks_alcohol,
-                    currently_drinks_alcohol=currently_drinks_alcohol)
+
+        return [
+            ["Never drunk alcohol", *never_drunk_alcohol],
+            ["Previously drunk alcohol", *previously_drunk_alcohol],
+            ["Occasionally drinks alcohol", *occasionally_drinks_alcohol],
+            ["Currently drinks alcohol", *currently_drinks_alcohol]
+        ]
         
 
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        
+
         context.update(
             site_names = self.site_names,
             age_stats = self.age_range_statistics,
-            alcohol_stats = self.alcohol_status_statistics,
+            alcohol_stats=self.alcohol_status_statistics,
             diabates_stats = self.diabates_statistics,
             females_stats = self.females_statistics,
             males_stats = self.males_statistics,
