@@ -267,5 +267,57 @@ class DemographicsMixin(EdcBaseViewMixin):
         diabetes.insert(0, sum(diabetes))
 
         return diabetes
+
+    def alcohol_status_statistics(self) -> dict[str, list[int]]:
+
+        never_drunk_alcohol = []
+        previously_drunk_alcohol = []
+        occasionally_drinks_alcohol = []
+        currently_drinks_alcohol = []
+
+        for site_id in self.site_ids:
+
+            never_drunk_alcohol_count = MedicalHistory.objects.filter(
+                site_id=site_id,
+                subject_visit__subject_identifier__in=self.enrolled_pids,
+                alcohol_status='never_drunk_alcohol',).count()
+            never_drunk_alcohol.append(never_drunk_alcohol_count)
+
+
+            previously_drunk_alcohol_count = MedicalHistory.objects.filter(
+                site_id=site_id,
+                subject_visit__subject_identifier__in=self.enrolled_pids,
+                alcohol_status='previously_drunk_alcohol',)
+            previously_drunk_alcohol.append(previously_drunk_alcohol_count)
+
+
+            occasionally_drinks_alcohol_count = MedicalHistory.objects.filter(
+                site_id=site_id,
+                subject_visit__subject_identifier__in=self.enrolled_pids,
+                alcohol_status='occasionally_drinks_alcohol',)
+            occasionally_drinks_alcohol.append(occasionally_drinks_alcohol_count)
+
+
+            currently_drinks_alcohol_count = MedicalHistory.objects.filter(
+                site_id=site_id,
+                subject_visit__subject_identifier__in=self.enrolled_pids,
+                alcohol_status='currently_drinks_alcohol',)
+            currently_drinks_alcohol.append(currently_drinks_alcohol_count)
+
+
+        never_drunk_alcohol.insert(0, sum(never_drunk_alcohol))
+        previously_drunk_alcohol.insert(0, sum(previously_drunk_alcohol))
+        occasionally_drinks_alcohol.insert(0, sum(occasionally_drinks_alcohol))
+        currently_drinks_alcohol.insert(0, sum(currently_drinks_alcohol))
+        
+
+        return dict(
+            never_drunk_alcohol=never_drunk_alcohol,
+            previously_drunk_alcohol=previously_drunk_alcohol,
+            occasionally_drinks_alcohol=occasionally_drinks_alcohol,
+            currently_drinks_alcohol=currently_drinks_alcohol
+        )
+
+
             
 
