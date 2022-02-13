@@ -240,14 +240,24 @@ class DemographicsMixin(EdcBaseViewMixin):
     def pregnancy_statistics(self)->list[int]:
         pregnancies = []
         for site_id in self.site_ids:
-            consent = InformedConsent.objects.filter(gender=MALE).values_list('subject_identifier', flat=True)
+            male_consents = InformedConsent.objects.filter(gender=MALE).values_list('subject_identifier', flat=True)
 
             #exclude all males if any exist with pregnancy tests
-            pregnancy_status = PregnancyTest.objects.filter(site_id=site_id, subject_visit__subject_identifier__in=self.enrolled_pids, result=POS)\
-                                                    .exclude(subject_visit__subject_identifier__in=consent) \
+            all_pregnancies = PregnancyTest.objects.filter(site_id=site_id, subject_visit__subject_identifier__in=self.enrolled_pids, result=POS)\
+                                                    .exclude(subject_visit__subject_identifier__in=male_consents) \
                                                     .count()
-            pregnancies.append(pregnancy_status)
+            pregnancies.append(all_pregnancies)
 
         pregnancies.insert(0, sum(pregnancies))
 
         return pregnancies
+    
+
+    # def diabates_statistics(self):
+
+    #     diabetes = []
+
+    #     for site_id in self.site_ids:
+    #         medical_history = MedicalHistory.objects.filter(subject_visit__subject_identifier__in=self.enrolled_pids, diabetes=YES, site_id=site_id,).count()
+            
+
