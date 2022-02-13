@@ -8,12 +8,9 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 	
 	@property
 	def sites_names(self):
-		site_lists = []
-		sites = Site.objects.all()
-		for site in sites:
-			name =  site.name.split('-')[1]
-			site_lists.append(name)
-		return site_lists
+		site_names = Site.objects.values_list('name', flat=True)
+		site_names = list(map(lambda name: name.split('-')[1], site_names))
+		return site_names
 
 	@property
 	def site_age_dist(self):
@@ -85,11 +82,18 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 		gender_by_site = self.get_vaccinated_by_site()
 		overall_participant = self.get_overall_participant()
 		overall_percentages = self.get_overall_percentage()
+		# site_names = self.sites_names
+
+		# import pdb
+		# pdb.set_trace()
+
 		context.update(
+        	site_names=self.sites_names,
 			females=json.dumps(gender_by_site['females']),
 			males=json.dumps(gender_by_site['males']),
 			overall = json.dumps(overall_participant),
 			overall_percentages=json.dumps(overall_percentages),
+
 		)
 
 		return context
