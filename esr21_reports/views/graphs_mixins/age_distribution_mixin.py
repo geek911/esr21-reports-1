@@ -55,28 +55,25 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
         site_id = self.get_site_id(site_name_postfix)
         if site_id:
             
-            vaccination_df = self.vaccination_model_cls.objects.filter(
+            vaccination_qs = self.vaccination_model_cls.objects.filter(
                 Q(received_dose_before='first_dose') 
-                ).values_list('subject_visit__subject_identifier', 'vaccination_date')
-            vaccination_df = list(set(vaccination_df))
-            df_vaccination = read_frame(vaccination_df,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
+                )
+            df_vaccination = read_frame(vaccination_qs,fieldnames=['subject_visit__subject_identifier','vaccination_date'])
 
             # DataFrames
-            vaccination_identifier = self.vaccination_model_cls.objects.filter( 
-                Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', 'vaccination_date')
-
+            vaccination_identifiers = self.vaccination_model_cls.objects.filter( 
+                Q(received_dose_before='first_dose')).values_list('subject_visit__subject_identifier', flat=True)
+            vaccination_identifiers = list(set(vaccination_identifiers))
 
             consents = self.consent_model_cls.objects.filter(
-                Q(subject_identifier__in=vaccination_identifier) & 
-                Q(site_id=site_id)).values_list('subject_visit__subject_identifier','dob')
+                subject_identifier__in=vaccination_identifiers, 
+                site_id=site_id)
 
-            df_consent = read_frame(consents, fieldnames=['subject_visit__subject_identifier','dob'])
-            vaccinations = df_vaccination.drop_duplicates(subset="subject_visit__subject_identifier")
+            df_vaccination = df_vaccination.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
+            df_consent = read_frame(consents, fieldnames=['subject_identifier','dob'])
+            df_vaccination = df_vaccination.drop_duplicates(subset="subject_identifier")
 
-            df_consent = df_consent.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
-            df_vaccinations = vaccinations.rename(columns={'subject_visit__subject_identifier': 'subject_identifier'})
-
-            merged_result = pd.merge(df_vaccinations, df_consent, on='subject_identifier') 
+            merged_result = pd.merge(df_vaccination, df_consent, on='subject_identifier') 
            
             merged_result['Age'] = merged_result.apply(lambda x: self.age(x['vaccination_date'], x['dob']), axis=1)
             
