@@ -8,6 +8,7 @@ from django.db.models import Q
 
 class DemographicsMixin(EdcBaseViewMixin):
 
+    @property
     def site_ids(self):
         site_ids = Site.objects.order_by('id').values_list('id', flat=True)
         return site_ids
@@ -234,7 +235,4 @@ class DemographicsMixin(EdcBaseViewMixin):
                     asian=asian, 
                     caucasian=caucasian, 
                     other_race=other_race)
-
-
-
 
