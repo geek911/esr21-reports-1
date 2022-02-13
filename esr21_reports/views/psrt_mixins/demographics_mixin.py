@@ -1,3 +1,4 @@
+from __future__ import with_statement
 from datetime import date
 from operator import sub
 from edc_base.view_mixins import EdcBaseViewMixin
@@ -253,11 +254,18 @@ class DemographicsMixin(EdcBaseViewMixin):
         return pregnancies
     
 
-    # def diabates_statistics(self):
+    def diabates_statistics(self) -> list[int]:
 
-    #     diabetes = []
+        diabetes = []
 
-    #     for site_id in self.site_ids:
-    #         medical_history = MedicalHistory.objects.filter(subject_visit__subject_identifier__in=self.enrolled_pids, diabetes=YES, site_id=site_id,).count()
+        for site_id in self.site_ids:
+            with_diabetes = MedicalHistory.objects.filter(
+                subject_visit__subject_identifier__in=self.enrolled_pids, diabetes=YES, site_id=site_id,).count()
+            
+            diabetes.append(with_diabetes)
+
+        diabetes.insert(0, sum(diabetes))
+
+        return diabetes
             
 
