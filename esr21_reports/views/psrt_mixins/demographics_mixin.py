@@ -237,11 +237,13 @@ class DemographicsMixin(EdcBaseViewMixin):
                     caucasian=caucasian, 
                     other_race=other_race)
 
-    def pregnancy_statistics(self):
+    def pregnancy_statistics(self)->list[int]:
         pregnancies = []
         for site_id in self.site_ids:
             consent = InformedConsent.objects.filter(gender=MALE).values_list('subject_identifier', flat=True)
-            pregnancy_status = PregnancyTest.objects.filter(site_id=site_id, result=POS)\
+
+            #exclude all males if any exist with pregnancy tests
+            pregnancy_status = PregnancyTest.objects.filter(site_id=site_id, subject_visit__subject_identifier__in=self.enrolled_pids, result=POS)\
                                                     .exclude(subject_visit__subject_identifier__in=consent) \
                                                     .count()
             pregnancies.append(pregnancy_status)
