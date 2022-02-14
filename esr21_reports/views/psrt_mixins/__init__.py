@@ -1,1 +1,2 @@
 from .demographics_mixin import DemographicsMixin
+from .summary_queries_mixin import SummaryQueriesMixin

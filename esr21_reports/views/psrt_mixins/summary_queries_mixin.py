@@ -16,6 +16,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
     medical_history_model = 'esr21_subject.medicalhistory'
     screening_eligibility_model = 'esr21_subject.screeningeligibility'
     informed_consent_model = 'esr21_subject.informedconsent'
+    demographics_data_model = 'esr21_subject.demographicsdata'
 
 
     """
@@ -41,6 +42,10 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
     @property
     def informed_consent_cls(self):
         return django_apps.get_model(self.informed_consent_model)
+
+    @property
+    def demographics_data_cls(self):
+        return django_apps.get_model(self.demographics_data_model)
 
     
 
@@ -146,7 +151,16 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         Not on demographic data	
         """
-        return [0, 0, 0, 0, 0, 0]
+        # enrolled but no demographics
+        no_demographics = []
+
+        for site_id in self.site_ids:
+            demographics = self.dem.objects.filter(
+                ~Q(subject_visit__subject_identifier__in=self.enrolled) & Q(site=site_id)).count()
+
+            no_demographics.append(demographics)
+
+        return [*no_demographics, sum(no_demographics)]
 
     @property
     def ineligible_vaccinated_participant_statistics(self):
