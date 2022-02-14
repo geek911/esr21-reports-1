@@ -92,7 +92,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         Eligible from eligibility confirmation but no ICF form	
         """
 
-        screening_identifiers = self.eligibility_confirmation_cls.objects.values_list('screening_identifier')
+        screening_identifiers = self.eligibility_confirmation_cls.objects.values_list('screening_identifier').distinct()
 
         eligible_no_crfs = []
 
@@ -137,7 +137,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 subject_visit__subject_identifier__in=self.enrolled)).count()
             no_medical_histories.append(medical_histories)
 
-        return [*no_medical_histories, sum(medical_histories)]
+        return [*no_medical_histories, sum(no_medical_histories)]
 
     @property
     def no_preg_results_statistics(self):
@@ -155,7 +155,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         no_demographics = []
 
         for site_id in self.site_ids:
-            demographics = self.dem.objects.filter(
+            demographics = self.demographics_data_cls.objects.filter(
                 ~Q(subject_visit__subject_identifier__in=self.enrolled) & Q(site=site_id)).count()
 
             no_demographics.append(demographics)
@@ -220,6 +220,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
 
         context.update(
             ae_stats = self.ae_statistics,
+            site_names = self.site_names,
             eligible_no_icf_stats = self.eligible_no_icf_statistics,
             first_dose_second_dose_stats = self.first_dose_second_dose_missing_statistics,
             ineligible_vaccinated_participants_stats = self.ineligible_vaccinated_participant_statistics,

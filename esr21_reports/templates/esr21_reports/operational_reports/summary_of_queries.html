@@ -1,0 +1,37 @@
+{% block main %}
+    <div class="container">
+        <h1>Summary of queries</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th></th>
+                    <th>Gaborone</th>
+                    <th>Maun</th>
+                    <th>Serowe</th>
+                    <th>Francistown</th>
+                    <th>Selibe Phikwe</th>
+                    <th>Sum</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for sae_data in all_sae_records %}
+                    <tr>
+                        <td>{{ sae_data.0 }}</td>
+                        <td>{{ sae_data.1.ae_number }}</td>
+                        <td>{{ sae_data.1.sae_details }}</td>
+                        <td>{{ sae_data.2.pt_name }}</td>
+                        <td>{{ sae_data.2.hlt_name }}</td>
+                        <td>{{ sae_data.2.soc_name }}</td>
+                        <td>{{ sae_data.1.start_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+{% endblock main %}
