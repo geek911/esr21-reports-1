@@ -167,7 +167,20 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         participant vaccinated but ineligible	
         """
-        return [0, 0, 0, 0, 0, 0]
+
+        # ineligible but vaccinated
+
+        not_eligible = []
+
+        ineligible_pids = self.screening_eligibility_cls.objects.filter(
+            is_eligible=False).values_list('subject_identifier', flat=True)
+
+        for site_id in self.site_ids:
+            vaccinated_count = self.vaccination_details_cls.objects.filter(
+                site_id=site_id, subject_visit__subject_identifier__in=ineligible_pids).count()
+            not_eligible.append(vaccinated_count)
+
+        return [*not_eligible, sum(not_eligible)]
 
     @property
     def no_screening_for_icf_statistics(self):
