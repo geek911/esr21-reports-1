@@ -1,3 +1,4 @@
+from curses.ascii import SI
 import imp
 from edc_base.view_mixins import EdcBaseViewMixin
 from django.contrib.sites.models import Site
@@ -15,6 +16,11 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
     medical_history_model = 'esr21_subject.medicalhistory'
     screening_eligibility_model = 'esr21_subject.screeningeligibility'
     informed_consent_model = 'esr21_subject.informedconsent'
+
+
+    """
+    CLS classes for the models being used from esr21-subject
+    """
     
     @property
     def vaccination_details_cls(self):
@@ -38,10 +44,22 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
 
     
 
+    """
+    
+    Queries of stuff being used in the DB
+
+    """
+
 
     @property
     def site_ids(self):
         return Site.objects.order_by('id').values_list('id', flat=True)
+
+    @property
+    def site_names(self):
+        site_names = Site.objects.order_by('id').values_list('name', flat=True)
+        site_names = list(map(lambda name: name.split('-')[1], site_names))
+        return site_names
 
     @property
     def ae_statistics(self):
@@ -129,6 +147,13 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation	
         """
         return [0, 0, 0, 0, 0, 0]
+
+
+    """ 
+    
+    Context
+    
+    """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
