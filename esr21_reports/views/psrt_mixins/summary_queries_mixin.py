@@ -1,12 +1,43 @@
 import imp
 from edc_base.view_mixins import EdcBaseViewMixin
 from django.contrib.sites.models import Site
+from django.apps import apps as django_apps
+
 
 class SummaryQueriesMixin(EdcBaseViewMixin):
 
     """
     Data Anomalies in the EDC
     """
+
+    vaccination_details_model = 'esr21_subject.vaccinationdetails'
+    eligibility_confirmation_model = 'esr21_subject.eligibilityconfirmation'
+    medical_history_model = 'esr21_subject.medicalhistory'
+    screening_eligibility_model = 'esr21_subject.screeningeligibility'
+    informed_consent_model = 'esr21_subject.informedconsent'
+    
+    @property
+    def vaccination_details_cls(self):
+        return django_apps.get_model(self.vaccination_details_model)
+
+    @property
+    def eligibility_confirmation_cls(self):
+        return django_apps.get_model(self.eligibility_confirmation_model)
+
+    @property
+    def medical_history_cls(self):
+        return django_apps.get_model(self.medical_history_model)
+
+    @property
+    def screening_eligibility_cls(self):
+        return django_apps.get_model(self.screening_eligibility_model)
+
+    @property
+    def informed_consent_cls(self):
+        return django_apps.get_model(self.informed_consent_model)
+
+    
+
 
     @property
     def site_ids(self):
