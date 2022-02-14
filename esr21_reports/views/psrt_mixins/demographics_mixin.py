@@ -30,7 +30,7 @@ class DemographicsMixin(EdcBaseViewMixin):
         return enrolled
 
     @property
-    def enrolled_statistics(self) -> list[int]:
+    def enrolled_statistics(self):
         """
         Total Enrolled, should be vaccinated
         """
@@ -49,7 +49,7 @@ class DemographicsMixin(EdcBaseViewMixin):
         return total_enrolled
 
     @property
-    def males_statistics(self) -> list[int]:
+    def males_statistics(self):
         """
         Males enrolled in the study 
         """
@@ -66,7 +66,7 @@ class DemographicsMixin(EdcBaseViewMixin):
         return ['Males', *males]
 
     @property
-    def females_statistics(self) -> list[int]:
+    def females_statistics(self):
         """
         Females enrolled in the study
         """
