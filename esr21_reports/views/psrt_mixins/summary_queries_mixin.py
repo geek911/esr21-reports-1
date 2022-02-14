@@ -2,7 +2,7 @@ import imp
 from edc_base.view_mixins import EdcBaseViewMixin
 from django.contrib.sites.models import Site
 from django.apps import apps as django_apps
-
+from django.db.models import Q
 
 class SummaryQueriesMixin(EdcBaseViewMixin):
 
@@ -55,7 +55,17 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         Eligible from eligibility confirmation but no ICF form	
         """
-        return [0, 0, 0, 0, 0, 0]
+
+        screening_identifiers = self.eligibility_confirmation_cls.objects.values_list('screening_identifier')
+
+        eligible_no_crfs = []
+
+        for site_id in self.site_ids:
+            no_consents = self.informed_consent_cls.objects.filter(Q(site_id=site_id) & ~Q(
+                screening_identifier__in=screening_identifiers)).count()
+            eligible_no_crfs.append(no_consents)
+
+        return [*eligible_no_crfs, sum(eligible_no_crfs)]
 
     @property
     def first_dose_second_dose_missing_statistics(self):
