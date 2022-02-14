@@ -62,6 +62,19 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         return site_names
 
     @property
+    def enrolled(self):
+        """
+        Enrolled subject identifiers 
+
+        NB: Received the first dose, that is the criteria
+        """
+        enrolled = self.vaccination_details_cls.objects.filter(received_dose_before='first_dose').values_list(
+            'subject_visit__subject_identifier').distinct()
+        return enrolled
+
+
+
+    @property
     def ae_statistics(self):
         """
         AE start date is before first dose	
@@ -111,7 +124,15 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         No medical history form	
         """
-        return [0, 0, 0, 0, 0, 0]
+        # enrolled with no medical histories
+        no_medical_histories = []
+
+        for site_id in self.site_ids:
+            medical_histories = self.medical_history_cls.objects.filter(Q(site_id=site_id) & ~Q(
+                subject_visit__subject_identifier__in=self.enrolled)).count()
+            no_medical_histories.append(medical_histories)
+
+        return [*no_medical_histories, sum(medical_histories)]
 
     @property
     def no_preg_results_statistics(self):
