@@ -7,27 +7,78 @@
             <table class="table table-bordered table-sm ">
                 <thead class="thead-dark">
                 <tr>
-                    <th></th>
-                    <th>Gaborone</th>
-                    <th>Maun</th>
-                    <th>Serowe</th>
-                    <th>Francistown</th>
-                    <th>Selibe Phikwe</th>
+                    <th>Description</th>
+                    {% for site_name in site_names %}
+                        <th>{{ site_name }}</th>
+                    {% endfor %}
                     <th>Sum</th>
                 </tr>
                 </thead>
                 <tbody>
-                    {% for sae_data in all_sae_records %}
                     <tr>
-                        <td>{{ sae_data.0 }}</td>
-                        <td>{{ sae_data.1.ae_number }}</td>
-                        <td>{{ sae_data.1.sae_details }}</td>
-                        <td>{{ sae_data.2.pt_name }}</td>
-                        <td>{{ sae_data.2.hlt_name }}</td>
-                        <td>{{ sae_data.2.soc_name }}</td>
-                        <td>{{ sae_data.1.start_date }}</td>
-                    </tr>
+                    {% for stat in ae_stats %}
+                        <td>{{ stat }}</td>
                     {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in eligible_no_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in first_dose_second_dose_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in ineligible_vaccinated_participants_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in male_child_bearing_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for stat in no_hiv_results_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_medical_history_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_preg_results_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_screening_for_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_demographics %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in vaccinated_no_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
                 </tbody>
             </table>
         </div>
