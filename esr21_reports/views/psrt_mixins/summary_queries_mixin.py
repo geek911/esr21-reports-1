@@ -187,7 +187,19 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         Screening identifier found in informed consent but not in eligibility criteria	
         """
-        return [0, 0, 0, 0, 0, 0]
+
+        # ineligible but fount in ICF
+        ineligible_consents = []
+
+        screening_identifiers = self.informed_consent_cls.objects.values_list(
+            'screening_identifier', flat=True).distinct()
+
+        for site_id in self.site_ids:
+            consents = self.eligibility_confirmation_cls.objects.filter(Q(site_id=site_id) & Q(
+                is_eligible=False) & Q(screening_identifier__in=screening_identifiers)).count()
+            ineligible_consents.append(consents)
+            
+        return [*ineligible_consents, sum(ineligible_consents)]
 
     @property
     def vaccinated_no_icf_statistics(self):
