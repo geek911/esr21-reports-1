@@ -140,7 +140,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 subject_visit__subject_identifier__in=self.enrolled)).count()
             no_medical_histories.append(medical_histories)
 
-        return ["No HIV result", *no_medical_histories, sum(no_medical_histories)]
+        return ["No medical history form", *no_medical_histories, sum(no_medical_histories)]
 
     @property
     def no_preg_results_statistics(self):
