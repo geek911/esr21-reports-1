@@ -88,10 +88,10 @@
                         type: 'pie',
                         name: 'Total',
                         data: [
-                            ['Males', {{ overall_screened.0 }}],
+                            ['Males', {{ missed_second_dose_by_gender.males }}],
                             {
                                 name: 'Females',
-                                y: {{ overall_screened.1 }},
+                                y: {{ missed_second_dose_by_gender.females }},
                                 sliced: true,
                                 selected: true
                             },
@@ -124,7 +124,6 @@
                         },
                         yAxis: {
                             min: 0,
-                            max: 40,
                             title: {
                                 text: 'Percentage of participants who received the vaccine (%)',
                                 align: 'high'
@@ -148,7 +147,8 @@
                         },
                         series: [{
                             name: 'Proportion of participants',
-                            data: {{vac_details_first_dose}}
+                            {#data: [{% for label in missed_second_dose_by_site %}  '{{ label.1 }}',  {% endfor %}],#}
+                            data: {{ missed_second_dose_by_site }},
                         },]
                     });
             </script>

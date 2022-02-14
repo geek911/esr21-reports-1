@@ -1,13 +1,17 @@
 from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
-from .graphs_mixins import ScreeningGraphView, AgeDistributionGraphMixin, EnrollmentGraphMixin, VacAdministeredMixin
+
+from .graphs_mixins import ScreeningGraphView, AgeDistributionGraphMixin, \
+    EnrollmentGraphMixin, VacAdministeredMixin, Missed2ndDoseGraphMixin
+
 
 class GraphsView(ScreeningGraphView,
                  AgeDistributionGraphMixin,
                  EnrollmentGraphMixin,
                  VacAdministeredMixin,
                  NavbarViewMixin,
+                 Missed2ndDoseGraphMixin,
                  EdcBaseViewMixin,
                  TemplateView):
     template_name = 'esr21_reports/graphs_report.html'
