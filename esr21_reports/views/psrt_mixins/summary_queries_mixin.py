@@ -9,6 +9,9 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
 
     """
     Data Anomalies in the EDC
+
+    TODO:   Change method comments to descriptions to save as both
+            comments as well as description
     """
 
     vaccination_details_model = 'esr21_subject.vaccinationdetails'
@@ -84,7 +87,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
         """
         AE start date is before first dose	
         """
-        return [0,0,0,0,0, 0]
+        return ["AE start date is before first dose", 0, 0, 0, 0, 0, 0]
 
     @property
     def eligible_no_icf_statistics(self):
@@ -101,28 +104,28 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 screening_identifier__in=screening_identifiers)).count()
             eligible_no_crfs.append(no_consents)
 
-        return [*eligible_no_crfs, sum(eligible_no_crfs)]
+        return ["Eligible from eligibility confirmation but no ICF form", * eligible_no_crfs, sum(eligible_no_crfs)]
 
     @property
     def first_dose_second_dose_missing_statistics(self):
         """
         First dose missing and second dose not missing	
         """
-        return [0, 0, 0, 0, 0, 0]
+        return ["First dose missing and second dose not missing", 0, 0, 0, 0, 0, 0]
 
     @property
     def male_child_bearing_potential_statistics(self):
         """
         Male and child bearing potential is Yes	
         """
-        return [0, 0, 0, 0, 0, 0]
+        return ["First dose missing and second dose not missing", 0, 0, 0, 0, 0, 0]
 
     @property
     def no_hiv_results_statistics(self):
         """
         No HIV result	
         """
-        return [0, 0, 0, 0, 0, 0]
+        return ["No HIV result", 0, 0, 0, 0, 0, 0]
 
     @property
     def no_medical_history_statistics(self):
@@ -137,14 +140,14 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 subject_visit__subject_identifier__in=self.enrolled)).count()
             no_medical_histories.append(medical_histories)
 
-        return [*no_medical_histories, sum(no_medical_histories)]
+        return ["No HIV result", *no_medical_histories, sum(no_medical_histories)]
 
     @property
     def no_preg_results_statistics(self):
         """
         No pregnancy result and F and child bearing potential	
         """
-        return [0, 0, 0, 0, 0, 0]
+        return ["No pregnancy result and F and child bearing potential", 0, 0, 0, 0, 0, 0]
 
     @property
     def not_on_demograpics_statistics(self):
@@ -160,7 +163,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
 
             no_demographics.append(demographics)
 
-        return [*no_demographics, sum(no_demographics)]
+        return ["Not on demographic data", *no_demographics, sum(no_demographics)]
 
     @property
     def ineligible_vaccinated_participant_statistics(self):
@@ -180,7 +183,7 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 site_id=site_id, subject_visit__subject_identifier__in=ineligible_pids).count()
             not_eligible.append(vaccinated_count)
 
-        return [*not_eligible, sum(not_eligible)]
+        return ["Participant vaccinated but ineligible", *not_eligible, sum(not_eligible)]
 
     @property
     def no_screening_for_icf_statistics(self):
@@ -199,14 +202,14 @@ class SummaryQueriesMixin(EdcBaseViewMixin):
                 is_eligible=False) & Q(screening_identifier__in=screening_identifiers)).count()
             ineligible_consents.append(consents)
             
-        return [*ineligible_consents, sum(ineligible_consents)]
+        return ["Screening identifier found in informed consent but not in eligibility criteria", *ineligible_consents, sum(ineligible_consents)]
 
     @property
     def vaccinated_no_icf_statistics(self):
         """
         subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation	
         """
-        return [0, 0, 0, 0, 0, 0]
+        return ["subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation", 0, 0, 0, 0, 0, 0]
 
 
     """ 
