@@ -11,7 +11,7 @@ class GraphsView(ScreeningGraphView,
                  EnrollmentGraphMixin,
                  VacAdministeredMixin,
                  NavbarViewMixin,
-                 Missed2ndDoseGraphMixin,
+                 # Missed2ndDoseGraphMixin,
                  EdcBaseViewMixin,
                  TemplateView):
     template_name = 'esr21_reports/graphs_report.html'
