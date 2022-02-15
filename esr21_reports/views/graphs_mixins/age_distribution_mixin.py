@@ -35,6 +35,9 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             name =  site.name.split('-')[1]
             site_lists.append(name)
         return site_lists
+
+    def site_index_mapping(self,site_name):
+        return self.sites_names.index(site_name)
     
     @property
     def site_age_dist(self):
@@ -43,17 +46,14 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             age_dist.append([site,self.get_distribution_site(site_name_postfix=site)])
         return age_dist
     
-    def site_index_mapping(self,site_name):
-        return self.sites_names.index(site_name)
-    
     def age(self, enrolment_date=None, dob=None):
         age = enrolment_date.year - dob.year - ((enrolment_date.month, enrolment_date.day) < (dob.month, dob.day))
         return age
     
     def get_distribution_site(self, site_name_postfix):
         site_id = self.get_site_id(site_name_postfix)
+
         if site_id:
-            
             vaccination_qs = self.vaccination_model_cls.objects.filter(
                 Q(received_dose_before='first_dose') 
                 )
@@ -81,12 +81,16 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
             lowerquartile = np.quantile(site_ages, .25)
             median = statistics.median(site_ages)
             upperquartile = np.quantile(site_ages, .75)
-            max = np.max(site_ages)
-            min = np.min(site_ages)
+           
 
             IQR = upperquartile - lowerquartile
             max_outlier = upperquartile+(1.5 * IQR)
             min_outlier = lowerquartile-(1.5 * IQR)
+
+            # # outliers
+            # IQR = upperquartile - lowerquartile
+            # upper_outlier = upperquartile+(1.5 * IQR)
+            # lower_outlier = lowerquartile-(1.5 * IQR)
 
             min_ages = []
             max_ages = []

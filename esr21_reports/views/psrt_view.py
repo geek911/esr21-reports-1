@@ -7,9 +7,13 @@ from ..views.adverse_events import (
     AdverseEventRecordViewMixin, SeriousAdverseEventRecordViewMixin)
 from .screening_reports_view_mixin import ScreeningReportsViewMixin
 from .psrt_mixins import DemographicsMixin, SummaryQueriesMixin
+from .psrt_mixins import StatsPerWeekMixin,DemographicsMixin
+from .site_helper_mixin import SiteHelperMixin
 
-
-class PSRTView(DemographicsMixin, AdverseEventRecordViewMixin,
+class PSRTView(SiteHelperMixin,
+               AdverseEventRecordViewMixin,
+               StatsPerWeekMixin,
+               DemographicsMixin,
                SeriousAdverseEventRecordViewMixin,
                ScreeningReportsViewMixin, SummaryQueriesMixin,
                NavbarViewMixin, EdcBaseViewMixin, TemplateView):

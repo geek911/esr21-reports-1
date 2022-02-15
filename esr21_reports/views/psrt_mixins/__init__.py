@@ -1,2 +1,3 @@
 from .demographics_mixin import DemographicsMixin
 from .summary_queries_mixin import SummaryQueriesMixin
+from .stats_per_week_mixin import StatsPerWeekMixin

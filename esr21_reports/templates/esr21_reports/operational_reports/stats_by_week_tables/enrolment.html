@@ -1,0 +1,39 @@
+{% block main %}
+<div class="container">
+    <div class="tab-content py-3">
+        <div class="tab-pane active" id="plwh_sae1">
+            <div
+                style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:auto; overflow-x: scroll; width:100%; ">
+                <table class="table table-bordered table-sm ">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Week</th>
+                            <th>Overall</th>
+                            {% for site in sites %}
+                                <th>{{site}}</th>
+
+                            {% endfor%}
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for data in weekly_stats_by_filters.weekly_enrollments_stats %}
+                            <tr>
+                                <td>{{data.0}}</td>
+                                <td>{{data.1}}</td>
+                                <td>{{data.2}}</td>
+                                <td>{{data.3}}</td>
+                                <td>{{data.4}}</td>
+                                <td>{{data.5}}</td>
+                                <td>{{data.6}}</td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+   
+    </div>
+</div>
+
+{% endblock main %}
