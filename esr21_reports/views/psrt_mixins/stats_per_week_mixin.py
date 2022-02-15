@@ -1,60 +1,164 @@
 from django.apps import apps as django_apps
 from edc_base.view_mixins import EdcBaseViewMixin
-from django.contrib.sites.models import Site
-from datetime import datetime,date,timedelta
-from dateutil.tz import gettz
-from itertools import compress
+from datetime import datetime,timedelta
+from django.db.models import Q
+from edc_constants.constants import POS
 
 
 class StatsPerWeekMixin(EdcBaseViewMixin):
-
+    
+    vaccination_model =  'esr21_subject.vaccinationdetails'
+    pregnancy_model =  'esr21_subject.pregnancytest'
+    
     @property
-    def sites_names(self):
-        site_lists = []
-        sites = Site.objects.all()
-        for site in sites:
-            name = site.name.split('-')[1]
-            site_lists.append(name)
-        return site_lists
+    def vaccination_model_cls(self):
+        return django_apps.get_model(self.vaccination_model)
     
+    @property
+    def pregnancy_modell_cls(self):
+        return django_apps.get_model(self.pregnancy_model)
     
-    study_open_datetime = date(
-            2021, 4, 15)
-    study_close_datetime = date(
-            2025, 12, 1)
-    
-    day = timedelta(days=1)
-    list_of_sundays = []
-    while study_open_datetime != study_close_datetime:
-        study_open_datetime += day
-        if study_open_datetime.weekday() == 6:
-            list_of_sundays.append(study_open_datetime)
+    @property
+    def weekly_dates(self):
+        vaccination = self.vaccination_model_cls.objects.filter(
+            received_dose_before='first_dose').earliest('created')
+        vaccination_date = vaccination.vaccination_date
+        
+        study_close_datetime = datetime.now().date()
             
-    res = list(zip(list_of_sundays, list_of_sundays[1:] + list_of_sundays[:1]))   
-    week_list = []
-    for value in res:
-        res.index(value)+1
-        week = [f'Week {res.index(value)+1}',value]
+        study_open_datetime = vaccination_date.date()        
         
-        week_list.append(week)
+        week_pair_dates = []
+        while study_open_datetime != study_close_datetime:
+            study_open_datetime += timedelta(days=1)
+            if study_open_datetime.weekday() == 6:
+                start_week = study_open_datetime - timedelta(days=6)
+                end_week = study_open_datetime
+                week_pair_dates.append((start_week,end_week))
+                
+        return week_pair_dates
+    
+    @property
+    def weekly_stats_by_filters(self):
+        weekly_stats = {}
+        filters = ['weekly_enrollments_stats',
+                   'weekly_pregnancy_stats',
+                   'weekly_second_dose_stats',
+                    'weekly_aes_stats',
+                   # 'weekly_saes_stats',
+                   # 'weekly_aesi_stats',
+                   ]
+    
+        for filter in filters:
+            cls_attrib = getattr(self, filter)
+            filter_stats = []
+            for week_date in self.weekly_dates:
+                start_week_date =week_date[0]
+                end_week_date = week_date[1]
+                filter_stats.append(cls_attrib(start_week_date,end_week_date))
+            weekly_stats[filter]=filter_stats
+        return weekly_stats
         
+
+    
+    def weekly_enrollments_stats(self, start_week_date,end_week_date):
+        stats = [f'{start_week_date} to {end_week_date}']
+        overall_stats = self.count_overall_enrollments_stats_by_week(start_week_date, end_week_date)
+        stats.append(overall_stats)
+        for site_name in self.sites_names:
+                site_stats = self.count_enrollment_stats_by_site(site_name, start_week_date, end_week_date)
+                stats.append(site_stats)
+        return stats
+            
+    
+    def weekly_pregnancy_stats(self, start_week_date, end_week_date):
+        stats = [f'{start_week_date} to {end_week_date}']
+        overall_stats = self.count_overall_pregnancy_stats_by_week(start_week_date, end_week_date)
+        stats.append(overall_stats)
+        for site_name in self.sites_names:
+                site_stats = self.count_pregnancy_stats_by_week(site_name, start_week_date, end_week_date)
+                stats.append(site_stats)
+        return stats
+    
+    def weekly_second_dose_stats(self, start_week_date, end_week_date):
+        stats = [f'{start_week_date} to {end_week_date}']
+        overall_stats = self.count_overall_second_dose_stats_by_week(start_week_date, end_week_date)
+        stats.append(overall_stats)
+        
+        for site_name in self.sites_names:
+                site_stats = self.count_second_dose_stats_by_week(site_name, start_week_date, end_week_date)
+                stats.append(site_stats)
+        return stats
+            
+    
+    
+    def weekly_aes_stats(self, start_week_date, end_week_date):
+        stats = [f'{start_week_date} to {end_week_date}']
+        overall_stats = self.count_overall_second_dose_stats_by_week(start_week_date, end_week_date)
+        stats.append(overall_stats)
+        
+        for site_name in self.sites_names:
+                site_stats = self.count_second_dose_stats_by_week(site_name, start_week_date, end_week_date)
+                stats.append(site_stats)
+        return stats
+    
+    def weekly_saes_stats(self,start_date, end_week_date):
+        weekly_site_stats = []
+        return weekly_site_stats
+            
+    
+    
+    def weekly_aesi_stats(self,start_week_date, end_week_date):
+        weekly_site_stats = []
+        return weekly_site_stats
+    
+    def count_enrollment_stats_by_site(self,site_name_postfix, start_date, end_date):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            vaccination = self.vaccination_model_cls.objects.filter(
+                Q(vaccination_date__lte=end_date) & Q(vaccination_date__gte=start_date)
+                & Q(site_id=site_id))
+            return vaccination.count()
+        return None
+    
+    def count_overall_enrollments_stats_by_week(self, start_date, end_date):
+        vaccination = self.vaccination_model_cls.objects.filter(
+                Q(vaccination_date__lte=end_date) & Q(vaccination_date__gte=start_date))
+        return vaccination.count()
+    
+    def count_second_dose_stats_by_week(self, site_name_postfix, start_date, end_date):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            vaccination = self.vaccination_model_cls.objects.filter(
+                    Q(vaccination_date__lte=end_date) & Q(vaccination_date__gte=start_date)
+                    & Q(received_dose_before='second_dose') & Q(site_id=site_id))
+        return vaccination.count()
+    
+    def count_overall_second_dose_stats_by_week(self, start_date, end_date):
+        vaccination = self.vaccination_model_cls.objects.filter(
+                Q(vaccination_date__lte=end_date) & Q(vaccination_date__gte=start_date)
+                & Q(received_dose_before='second_dose'))
+        return vaccination.count()
+    
+    def count_pregnancy_stats_by_week(self, site_name_postfix, start_date, end_date):
+        site_id = self.get_site_id(site_name_postfix)
+        if site_id:
+            pregnancy = self.pregnancy_modell_cls.objects.filter(
+                 Q(preg_date__lte=end_date) & Q(preg_date__gte=start_date)
+                &Q(result=POS) & Q(site_id=site_id))
+        return pregnancy.count()
+    
+    def count_overall_pregnancy_stats_by_week(self, start_date, end_date):
+        pregnancy = self.pregnancy_modell_cls.objects.filter(
+                Q(preg_date__lte=end_date) & Q(preg_date__gte=start_date)
+                & Q(result=POS))
+        return pregnancy.count()
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        dummy_stats_per_week = [
-            ['2021-11-08 to 2021-11-14', '1', '1', '0', '0', '0',   '0'],
-            ['2021-12-06 to 2021-12-12', '86', '212', '5', '24', '45', '0'],
-            ['2021-12-13 to 2021-12-19', '86', '212', '5', '24', '45', '0'],
-            ['Total', '86', '212', '5', '24', '45', '0'],
-        ]
-
         context.update(
             sites=self.sites_names,
-            dummy_stats_per_week=dummy_stats_per_week,
-            sundays=self.list_of_sundays,
-            pairs_dates = self.res,
-            pairs_dates_weeks = self.week_list
-
+            weekly_stats_by_filters=self.weekly_stats_by_filters,
         )
         return context
