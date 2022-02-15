@@ -1,0 +1,88 @@
+{% block main %}
+    <div class="container">
+        <h1>Summary of queries</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Description</th>
+                    {% for site_name in site_names %}
+                        <th>{{ site_name }}</th>
+                    {% endfor %}
+                    <th>Sum</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    {% for stat in ae_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in eligible_no_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in first_dose_second_dose_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in ineligible_vaccinated_participants_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in male_child_bearing_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for stat in no_hiv_results_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_medical_history_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_preg_results_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_screening_for_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in no_demographics %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                    {% for stat in vaccinated_no_icf_stats %}
+                        <td>{{ stat }}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+{% endblock main %}

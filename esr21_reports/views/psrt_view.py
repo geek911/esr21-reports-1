@@ -4,8 +4,9 @@ from django.views.generic import TemplateView
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from ..views.adverse_events import (
-    AdverseEventRecordViewMixin,SeriousAdverseEventRecordViewMixin)
+    AdverseEventRecordViewMixin, SeriousAdverseEventRecordViewMixin)
 from .screening_reports_view_mixin import ScreeningReportsViewMixin
+from .psrt_mixins import DemographicsMixin, SummaryQueriesMixin
 from .psrt_mixins import StatsPerWeekMixin,DemographicsMixin
 from .site_helper_mixin import SiteHelperMixin
 
@@ -14,7 +15,7 @@ class PSRTView(SiteHelperMixin,
                StatsPerWeekMixin,
                DemographicsMixin,
                SeriousAdverseEventRecordViewMixin,
-               ScreeningReportsViewMixin,
+               ScreeningReportsViewMixin, SummaryQueriesMixin,
                NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     template_name = 'esr21_reports/psrt_report.html'
     navbar_selected_item = 'PSRT Reports'
