@@ -23,12 +23,12 @@ class StatsPerWeekMixin(EnrollmentStatsMixin,
             received_dose_before='first_dose').earliest('created')
         vaccination_date = vaccination.vaccination_date
         
-        study_close_datetime = datetime.now().date()
+        study_current_datetime = datetime.now().date()
             
         study_open_datetime = vaccination_date.date()        
         
         week_pair_dates = []
-        while study_open_datetime != study_close_datetime:
+        while study_open_datetime != study_current_datetime:
             study_open_datetime += timedelta(days=1)
             if study_open_datetime.weekday() == 6:
                 start_week = study_open_datetime - timedelta(days=6)
