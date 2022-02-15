@@ -34,3 +34,15 @@ class PregnancyStatsMixin:
                 Q(preg_date__lte=end_date) & Q(preg_date__gte=start_date)
                 & Q(result=POS))
         return pregnancy.count()
+    
+    @property
+    def overall_pregnancy_stats(self):
+        overall_stats = []
+        for week_date in self.weekly_dates:
+            start_week_date =week_date[0]
+            end_week_date = week_date[1]
+            weekly_site_stats = self.weekly_pregnancy_stats(start_week_date,end_week_date)
+            if weekly_site_stats:
+                overall_stats.append(weekly_site_stats)
+                
+        return overall_stats

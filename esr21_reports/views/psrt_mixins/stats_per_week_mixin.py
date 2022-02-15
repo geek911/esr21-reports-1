@@ -6,6 +6,7 @@ from .stats_per_week_mixins import (EnrollmentStatsMixin,
                                     PregnancyStatsMixin,
                                     SecondDoseStatsMixins,
                                     SeriousAdverseEventStatsMixin,
+                                    AESpecialInterestStatsMixin,
                                     AdverseEventStatsMixin)
 
 
@@ -14,6 +15,7 @@ class StatsPerWeekMixin(EnrollmentStatsMixin,
                         AdverseEventStatsMixin,
                         SecondDoseStatsMixins,
                         SeriousAdverseEventStatsMixin,
+                        AESpecialInterestStatsMixin,
                         EdcBaseViewMixin):
     @property
     def weekly_dates(self):
@@ -33,31 +35,6 @@ class StatsPerWeekMixin(EnrollmentStatsMixin,
                 end_week = study_open_datetime
                 week_pair_dates.append((start_week,end_week))      
         return week_pair_dates
-    
-    @property
-    def weekly_stats_by_filters(self):
-        weekly_stats = {}
-        filters = ['weekly_enrollments_stats',
-                   'weekly_pregnancy_stats',
-                   'weekly_second_dose_stats',
-                   'weekly_aes_stats',
-                   'weekly_saes_stats',
-                   'weekly_aesi_stats',
-                   ]
-    
-        for filter in filters:
-            cls_attrib = getattr(self, filter)
-            filter_stats = []
-            for week_date in self.weekly_dates:
-                start_week_date =week_date[0]
-                end_week_date = week_date[1]
-                weekly_site_stats = cls_attrib(start_week_date,end_week_date)
-                if weekly_site_stats:
-                    filter_stats.append(weekly_site_stats)
-                    
-            if len(filter_stats) > 0:
-                weekly_stats[filter]=filter_stats
-        return weekly_stats
     
     
     def count_stats_by_week(self, model_cls, site_name_postfix, start_date, end_date):
@@ -80,6 +57,11 @@ class StatsPerWeekMixin(EnrollmentStatsMixin,
         context = super().get_context_data(**kwargs)
         context.update(
             sites=self.sites_names,
-            weekly_stats_by_filters=self.weekly_stats_by_filters,
+            overall_enrollment_stats=self.overall_enrollment_stats,
+            overall_pregnancy_stats=self.overall_pregnancy_stats,
+            overall_ae_stats=self.overall_ae_stats,
+            overall_sae_stats=self.overall_sae_stats,
+            overall_aesi_stats=self.overall_aesi_stats,
+            overall_second_dose_stats=self.overall_second_dose_stats
         )
         return context
