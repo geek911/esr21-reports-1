@@ -6,28 +6,8 @@ from django.db.models import Q
 
 class DemographicsReportViewMixin(EdcBaseViewMixin):
     
-    eligibility_model = 'esr21_subject.eligibilityconfirmation'
-    consent_model = 'esr21_subject.informedconsent'
-    vaccination_model =  'esr21_subject.vaccinationdetails'
-    screening_eligibility_model = 'esr21_subject.screeningeligibility'
     pregnancy_test_model = 'esr21_subject.pregnancytest'
     
-    
-    @property
-    def eligibility_model_cls(self):
-        return django_apps.get_model(self.eligibility_model)
-    
-    @property
-    def consent_model_cls(self):
-        return django_apps.get_model(self.consent_model)
-    
-    @property
-    def vaccination_model_cls(self):
-        return django_apps.get_model(self.vaccination_model)
-    
-    @property
-    def screening_eligibility_cls(self):
-        return django_apps.get_model(self.screening_eligibility_model)
     
     @property
     def pregnancy_test_cls(self):

@@ -39,20 +39,19 @@ class VaccinationSummaryMixin(EdcBaseViewMixin):
         participant vaccinated but ineligible    
         """
         not_eligible = []
-        # screening_identifiers = self.screening_eligibility_cls.objects.filter(
-        #     is_eligible=False).values_list('screening_identifier', flat=True)
-        #
-        # consented_ineligible = self.consent_model_cls.objects.filter(
-        #     screening_identifier__in=screening_identifiers).values_list('subject_identifier', flat=True)
-        #
-        # # failed_second_screening = 
-        #
-        # for site_id in self.site_ids:
-        #     vaccinated_count = self.vaccination_details_cls.objects.filter(
-        #         site_id=site_id, subject_visit__subject_identifier__in=consents).count()
-        #     not_eligible.append(vaccinated_count)
+        screening_identifiers = self.eligibility_confirmation_cls.objects.filter(
+            is_eligible=False).values_list('screening_identifier', flat=True)
+        
+        consented_ineligible = self.consent_model_cls.objects.filter(
+            screening_identifier__in=screening_identifiers).values_list('subject_identifier', flat=True)
+                
+        for site_id in self.site_ids:
+            vaccinated_count = self.vaccination_details_cls.objects.filter(
+                Q(site_id=site_id) & 
+                Q(subject_visit__subject_identifier__in=consented_ineligible)).count()
+            not_eligible.append(vaccinated_count)
 
-        return ["Participant vaccinated but ineligible", *not_eligible, sum(not_eligible)]
+        return ['Participant vaccinated but ineligible', *not_eligible, sum(not_eligible)]
     
     
     @property

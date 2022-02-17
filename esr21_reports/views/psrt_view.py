@@ -4,35 +4,23 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 from .adverse_events import (
     AdverseEventRecordViewMixin, SeriousAdverseEventRecordViewMixin)
-from .psrt_mixins import  SummaryQueriesMixin
 from .site_helper_mixin import SiteHelperMixin
 
 class PSRTView(SiteHelperMixin,
                AdverseEventRecordViewMixin,
                SeriousAdverseEventRecordViewMixin,
-               SummaryQueriesMixin,
                NavbarViewMixin, EdcBaseViewMixin, TemplateView):
     template_name = 'esr21_reports/psrt_report.html'
     navbar_selected_item = 'PSRT Reports'
     navbar_name = 'esr21_reports'
 
    
-    subject_consent_model = 'esr21_subject.informedconsent'
-    vaccine_model = 'esr21_subject.vaccinationdetails'
     ae_model = 'esr21_subject.adverseeventrecord'
     sae_model = 'esr21_subject.seriousadverseeventrecord'
     siae_model = 'esr21_subject.specialinterestadverseeventrecord'
     offstudy_model = 'esr21_prn.subjectoffstudy'
 
-   
 
-    @property
-    def subject_consent_cls(self):
-        return django_apps.get_model(self.subject_consent_model)
-
-    @property
-    def vaccine_model_cls(self):
-        return django_apps.get_model(self.vaccine_model)
 
     @property
     def ae_cls(self):

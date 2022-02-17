@@ -1,7 +1,10 @@
 from django.apps import apps as django_apps
 from django.db.models import Q
+from edc_constants.constants import YES
+from edc_base.view_mixins import EdcBaseViewMixin
 
-class MedicalHistorySummaryMixin:
+
+class MedicalHistorySummaryMixin(EdcBaseViewMixin):
     medical_history_model = 'esr21_subject.medicalhistory'
     
 
@@ -14,13 +17,25 @@ class MedicalHistorySummaryMixin:
         """
         Male and child bearing potential is Yes    
         """
-        return ["First dose missing and second dose not missing", 0, 0, 0, 0, 0, 0]
+        
+        child_bearing_potential = []
+        male_consents = self.consent_model_cls.objects.filter(
+            gender='M').values_list('subject_identifier', flat=True)
+        for site_id in self.site_ids:
+            screening_eligibility = self.screening_eligibility_cls.objects.filter(
+                Q(subject_identifier__in=male_consents) &
+                Q(childbearing_potential=YES) &
+                Q(site_id=site_id)).count()
+            child_bearing_potential.append(screening_eligibility)
+        return ['Male and child bearing potential is Yes', 
+                *child_bearing_potential, sum(child_bearing_potential)]
 
     @property
     def no_hiv_results_statistics(self):
         """
         No HIV result    
         """
+        
         return ["No HIV result", 0, 0, 0, 0, 0, 0]
 
     @property

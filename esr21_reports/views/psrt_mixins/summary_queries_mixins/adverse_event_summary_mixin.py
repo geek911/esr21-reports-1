@@ -1,8 +1,9 @@
 from django.apps import apps as django_apps
 from django.db.models import Q
+from edc_base.view_mixins import EdcBaseViewMixin
 
 
-class AdverseEventSummaryMixin:
+class AdverseEventSummaryMixin(EdcBaseViewMixin):
     
     ae_model = 'esr21_subject.adverseeventrecord'
     

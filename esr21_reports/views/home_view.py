@@ -5,10 +5,12 @@ from .site_helper_mixin import SiteHelperMixin
 from .psrt_mixins import (
     DemographicsMixin,
     ScreeningReportsViewMixin,
+    SummaryQueriesMixin,
     StatsPerWeekMixin)
 
 class HomeView(SiteHelperMixin,
                ScreeningReportsViewMixin,
+               SummaryQueriesMixin,
                StatsPerWeekMixin,
                DemographicsMixin,
                NavbarViewMixin,
@@ -20,5 +22,4 @@ class HomeView(SiteHelperMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
         return context

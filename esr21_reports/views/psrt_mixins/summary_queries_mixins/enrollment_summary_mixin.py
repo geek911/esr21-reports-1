@@ -30,7 +30,7 @@ class EnrollmentSummaryMixin(EdcBaseViewMixin):
         NB: Received the first dose, that is the criteria
         """
         enrolled = self.vaccination_details_cls.objects.filter(received_dose_before='first_dose').values_list(
-            'subject_visit__subject_identifier').distinct()
+            'subject_visit__subject_identifier',flat=True).distinct()
         return enrolled
 
 
@@ -57,7 +57,6 @@ class EnrollmentSummaryMixin(EdcBaseViewMixin):
         Screening identifier found in informed consent but not in eligibility criteria    
         """
 
-        # ineligible but fount in ICF
         ineligible_consents = []
 
         screening_identifiers = self.consent_model_cls.objects.values_list(
