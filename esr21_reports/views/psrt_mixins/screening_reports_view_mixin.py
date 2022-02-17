@@ -57,8 +57,7 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
     @property
     def enrolled_participants(self):
         overall = self.vaccination_model_cls.objects.filter(
-            Q(received_dose_before='first_dose') |
-            Q(received_dose_before='second_dose')).count()
+            Q(received_dose_before='first_dose')).count()
         gaborone = self.get_enrolled_by_site('Gaborone')
         maun = self.get_enrolled_by_site('Maun')
         serowe = self.get_enrolled_by_site('Serowe')

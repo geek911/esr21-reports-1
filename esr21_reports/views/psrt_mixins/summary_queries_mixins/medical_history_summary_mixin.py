@@ -40,6 +40,7 @@ class MedicalHistorySummaryMixin(EdcBaseViewMixin):
         """
         No HIV result    
         """
+        
        
         hiv_results = []
         for site_id in self.site_ids:
@@ -52,7 +53,10 @@ class MedicalHistorySummaryMixin(EdcBaseViewMixin):
                 subject_visit__subject_identifier__in=site_enrollment_pids)).values_list(
                     'subject_visit__subject_identifier',flat=True)
                 
-            no_hiv_results = list(set(site_enrollment_pids) - set(existing_hiv_results))   
+            no_hiv_results = list(set(site_enrollment_pids) - set(existing_hiv_results))  
+            
+            if len(no_hiv_results) > 0:
+                print(no_hiv_results[0]) 
             hiv_results.append(len(no_hiv_results))
         
         return ['No HIV result', *hiv_results, sum(hiv_results)]

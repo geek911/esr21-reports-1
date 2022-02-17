@@ -54,18 +54,18 @@ class VaccinationSummaryMixin(EdcBaseViewMixin):
         return ['Participant vaccinated but ineligible', *not_eligible, sum(not_eligible)]
     
     
-    @property
-    def vaccinated_no_icf_statistics(self):
-        """
-        subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation    
-        """
-        return ["subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation", 0, 0, 0, 0, 0, 0]
-    
+    # @property
+    # def vaccinated_no_icf_statistics(self):
+    #     """
+    #     subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation    
+    #     """
+    #     return ["subject_identifier is found in vaccination form but all of the following are missing: eligibility confirmation, informed consent and screening confirmation", 0, 0, 0, 0, 0, 0]
+    #
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update(
             first_dose_second_dose_stats = self.first_dose_second_dose_missing_statistics,
-            ineligible_vaccinated_participants_stats = self.ineligible_vaccinated_participant_statistics,
-            vaccinated_no_icf_stats = self.vaccinated_no_icf_statistics)
+            ineligible_vaccinated_participants_stats = self.ineligible_vaccinated_participant_statistics)
         return context
