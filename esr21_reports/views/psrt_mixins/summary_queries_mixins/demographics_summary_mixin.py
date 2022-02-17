@@ -15,15 +15,29 @@ class DemographicsSummaryMixin(EdcBaseViewMixin):
         """
         Not on demographic data    
         """
+        
+        
+        
+        
         # enrolled but no demographics
         no_demographics = []
 
         for site_id in self.site_ids:
-            demographics = self.demographics_data_cls.objects.filter(
-                ~Q(subject_visit__subject_identifier__in=self.enrolled) &
-                Q(site=site_id)).count()
+            
+            site_enrollment_pids = self.vaccination_details_cls.objects.filter(
+                received_dose_before='first_dose',
+                site_id=site_id).values_list(
+            'subject_visit__subject_identifier',flat=True)
+            
+            
+            demographics_pids = self.demographics_data_cls.objects.filter(
+                Q(subject_visit__subject_identifier__in=site_enrollment_pids) &
+                Q(site=site_id)).values_list(
+            'subject_visit__subject_identifier',flat=True)
+                
+            no_demographics_data = list(set(site_enrollment_pids) - set(demographics_pids))
 
-            no_demographics.append(demographics)
+            no_demographics.append(len(no_demographics_data))
 
         return ["Not on demographic data", *no_demographics, sum(no_demographics)]
     
