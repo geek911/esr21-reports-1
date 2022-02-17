@@ -46,7 +46,18 @@
 
 <div class="container">
 
- 
+ <section id="screening_table">
+	{% include './operational_reports/screening_table.html' %}
+</section>
+
+<section id="demographics_table">
+	{% include './operational_reports/demographics_table.html' %}
+</section>
+
+<section id="stats_per_week_table">
+	{% include './operational_reports/stats_per_week.html' %}
+</section>
+
 </div>
 
 {% endblock main %}

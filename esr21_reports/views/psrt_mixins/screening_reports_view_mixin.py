@@ -8,12 +8,22 @@ from edc_base.view_mixins import EdcBaseViewMixin
 
 class ScreeningReportsViewMixin(EdcBaseViewMixin):
     
+    subject_screening_model = 'esr21_subject.eligibilityconfirmation'
+    screening_eligibility_model = 'esr21_subject.screeningeligibility'
     eligibility_model = 'esr21_subject.eligibilityconfirmation'
     consent_model = 'esr21_subject.informedconsent'
     vaccination_model =  'esr21_subject.vaccinationdetails'
     screening_eligibility_model = 'esr21_subject.screeningeligibility'
     pregnancy_test_model = 'esr21_subject.pregnancytest'
     
+    
+    @property
+    def subject_screening_cls(self):
+        return django_apps.get_model(self.subject_screening_model)
+
+    @property
+    def screening_eligibility_cls(self):
+        return django_apps.get_model(self.screening_eligibility_model)
     
     @property
     def eligibility_model_cls(self):
@@ -26,10 +36,6 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
     @property
     def vaccination_model_cls(self):
         return django_apps.get_model(self.vaccination_model)
-    
-    @property
-    def screening_eligibility_cls(self):
-        return django_apps.get_model(self.screening_eligibility_model)
     
     @property
     def pregnancy_test_cls(self):
@@ -66,7 +72,7 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
         eligible_identifier = self.eligibility_model_cls.objects.filter(is_eligible=True).values_list('screening_identifier', flat=True)
         eligible_identifier = list(set(eligible_identifier))
         
-        consent_screening_ids = self.eligibility_model_cls.objects.all().values_list('screening_identifier', flat=True)
+        consent_screening_ids = self.consent_model_cls.objects.all().values_list('screening_identifier', flat=True)
         consent_screening_ids = list(set(consent_screening_ids))
         no_consent_screenigs = list(set(eligible_identifier) - set(consent_screening_ids))
         

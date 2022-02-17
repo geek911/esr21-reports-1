@@ -13,3 +13,7 @@ class SiteHelperMixin:
             return Site.objects.get(name__endswith=site_name_postfix).id
         except Site.DoesNotExist:
             pass
+        
+    @property
+    def site_ids(self):
+        return Site.objects.order_by('id').values_list('id', flat=True)
