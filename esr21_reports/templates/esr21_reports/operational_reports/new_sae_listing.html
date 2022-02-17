@@ -1,0 +1,225 @@
+{% load static %}
+
+{% block main %}
+    <div class="container">
+        <h1>New serious adverse events</h1>
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>MedDRA preferred term name</th>
+                    <th>Thermal burn</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for nsae_data in new_sae_listing %}
+                <tr class="clickable" data-toggle="collapse"
+                    data-target="#group-of-rows-{{ nsae_data.3 }}" aria-expanded="false"
+                    aria-controls="group-of-rows-1">
+                    <td><i class="fa fa-folder"></i> Subject Identifier</td>
+                    <td>{{ nsae_data.0 }}</td>
+                </tr>
+                </tbody>
+                <tbody id="group-of-rows-{{ nsae_data.3 }}" class="collapse">
+                <tr class="table-warning">
+                    <td>AE number</td>
+                    <td>{{ nsae_data.1.ae_number }}</td>
+                </tr>
+                <tr class="table-warning">
+                    <td>SAE Description</td>
+                    <td>
+                        {{ nsae_data.1.sae_details }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>MedDRA preferred term name</td>
+                    <td>
+                        {{ nsae_data.2.pt_name }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>MedDRA high level term name</td>
+                    <td>
+                        {{ nsae_data.2.hlt_name }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>MedDRA system organ class name</td>
+                    <td>
+                        {{ nsae_data.2.soc_name }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>SAE start date</td>
+                    <td>
+                        {{ nsae_data.1.start_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>SAE end date</td>
+                    <td>
+                        {{ nsae_data.1.resolution_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Date investigator became aware of SAE</td>
+                    <td>
+                        {{ nsae_data.1.date_aware_of}}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>SAE timing</td>
+                    <td>
+                        
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Results in death</td>
+                    <td>
+                        {{ nsae_data.1.ae_sdth }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Was it a congenital anomaly or birth defect?</td>
+                    <td>
+                        {{ nsae_data.1.ae_scong }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Was it life-threatening</td>
+                    <td>
+                        {{ nsae_data.1.ae_slife}}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Did it result in significant disability/incapacity?</td>
+                    <td>
+                        {{ nsae_data.1.ae_sdisab }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Other medically important serious event</td>
+                    <td>
+                        {{ nsae_data.1.ae_smie }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Primary cause of death</td>
+                    <td>
+                         {{ nsae_data.1.dthcaus_1}}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Secondary cause of death</td>
+                    <td>
+                         {{ nsae_data.1.dthcaus_2 }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>SAE caused by study procedure(s)?</td>
+                    <td>
+                         {{ nsae_data.1.ae_caussp }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>AE reported term</td>
+                    <td>
+                        {{ nsae_data.2.ae_term }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>AE start date</td>
+                    <td>
+                        {{ nsae_data.2.start_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>AE stop date</td>
+                    <td>
+                        {{ nsae_data.2.stop_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Reasonable possibility AE caused by IP?</td>
+                    <td>
+                         {{ nsae_data.2.ae_rel }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Outcome</td>
+                    <td>
+                        {{ nsae_data.2.outcome}}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Was this considered to be a serious adverse event?</td>
+                    <td>
+                        {{ nsae_data.2.serious_event }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Maximum CTCAE Grade</td>
+                    <td>
+                        {{ nsae_data.2.max_ctcae_grade }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Was the event an AE of special interest?</td>
+                    <td>
+                         {{ nsae_data.2.special_interest_ae}}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Age</td>
+                    <td>
+                        {{ nsae_data.4.dob }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Age (category)</td>
+                    <td>
+                        {{ nsae_data.4.dob }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Gender</td>
+                    <td>
+                        {{ nsae_data.4.gender }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Date of first dose</td>
+                    <td>
+                        {{ nsae_data.5.vaccination_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Date of second dose</td>
+                    <td>
+                        {{ nsae_data.6.vaccination_date }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Ethnicity</td>
+                    <td>
+                        {{ nsae_data.7.ethnicity }}
+                    </td>
+                </tr>
+                <tr class="table-warning">
+                    <td>HIV result</td>
+                    <td>
+                        {% if nsae_data.8.hiv_result %}
+                        		 {{ nsae_data.8.hiv_result }} 
+                        {% else %}
+                    		{{ nsae_data.8.rapid_test_result }} 
+                    	{% endif %}
+                    </td>
+                </tr>
+                </tbody>
+                      
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+{% endblock main %}

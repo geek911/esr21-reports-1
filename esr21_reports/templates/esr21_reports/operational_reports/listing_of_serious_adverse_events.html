@@ -1,0 +1,97 @@
+{% block main %}
+    <div class="container">
+        <h1>Line listing of serious adverse events</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>AE Number</th>
+                    <th>SAE Description</th>
+                    <th>MedDRA preferred term name</th>
+                    <th>MedDRA high level term name</th>
+                    <th>MedDRA system organ class name</th>
+                    <th>SAE start date</th>
+                    <th>SAE end date</th>
+                    <th>Date investigator became aware of SAE</th>
+                    <th>SAE timing</th>
+                    <th>Results in death</th>
+                    <th>Was it a congenital anomaly or birth defect?</th>
+                    <th>Was it life-threatening</th>
+                    <th>Did it result in significant disability/incapacity?</th>
+                    <th>Other medically important serious event</th>
+                    <th>Primary cause of death</th>
+                    <th>Secondary cause of death</th>
+                    <th>SAE caused by study procedure(s)?</th>
+                    <th>AE reported term</th>
+                    <th>AE start date</th>
+                    <th>AE stop date</th>
+                    <th>Reasonable possibility AE caused by IP?</th>
+                    <th>Outcome</th>
+                    <th>Was this considered to be a serious adverse event?</th>
+                    <th>Maximum CTCAE Grade</th>
+                    <th>Was the event an AE of special interest?</th>
+                    <th>Age</th>
+                    <th>Age (category)</th>
+                    <th>Gender</th>
+                    <th>Date of first dose</th>
+                    <th>Date of second dose</th>
+                    <th>Ethnicity</th>
+                    <th>HIV result</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for sae_data in all_sae_records %}
+                    <tr>
+                        <td>{{ sae_data.0 }}</td>
+                        <td>{{ sae_data.1.ae_number }}</td>
+                        <td>{{ sae_data.1.sae_details }}</td>
+                        <td>{{ sae_data.2.pt_name }}</td>
+                        <td>{{ sae_data.2.hlt_name }}</td>
+                        <td>{{ sae_data.2.soc_name }}</td>
+                        <td>{{ sae_data.1.start_date }}</td>
+                        <td>{{ sae_data.1.resolution_date }}</td>
+                        <td>{{ sae_data.1.date_aware_of }}</td>
+                        <td>{{ sae_data.1.timing }}</td>
+                        <td>{{ sae_data.1.ae_sdth }}</td>
+                        <td>{{ sae_data.1.ae_scong }}</td>
+                        <td>{{ sae_data.1.ae_slife }}</td>
+                        <td>{{ sae_data.1.ae_sdisab }} </td>
+                        <td>{{ sae_data.1.ae_smie  }}</td>
+                        <td>{{ sae_data.1.dthcaus_1 }}</td>
+                        <td>{{ sae_data.1.dthcaus_2 }}</td>
+                        <td>{{ sae_data.1.ae_caussp }}</td>
+                        <td>{{ sae_data.2.ae_term }}</td>
+                        <td>{{ sae_data.2.start_date }}</td>
+                        <td>{{ sae_data.2.stop_date }}</td>
+                        <td>{{ sae_data.2.ae_rel }}</td>
+                        <td>{{ sae_data.2.outcome }}</td>
+                        <td>{{ sae_data.2.serious_event }}</td>
+                        <td>{{ sae_data.2.max_ctcae_grade }}</td>
+                        <td>{{ sae_data.2.special_interest_ae }}</td>
+                        <td>{{ sae_data.3.dob }}</td>
+                        <td>{{ sae_data.3.dob }}</td>
+                        <td>{{ sae_data.3.gender }}</td>
+                        <td>{{ sae_data.4.vaccination_date }}</td>
+                        <td>{{ sae_data.5.vaccination_date }}</td>
+                        <td>{{ sae_data.6.ethnicity }}</td>
+                        <td> 
+                        	{% if sae_data.7.hiv_result %}
+                        		 {{ sae_data.7.hiv_result }} 
+                            {% else %}
+                        		{{ sae_data.7.rapid_test_result }} 
+                        	{% endif %}
+                        </td>
+                       
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+{% endblock main %}

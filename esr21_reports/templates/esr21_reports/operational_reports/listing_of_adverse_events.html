@@ -1,0 +1,73 @@
+{% block main %}
+    <div class="container">
+        <h1>Line listing of adverse events</h1>
+        <div
+        style="border: 1px solid #ddd; padding: 0px; overflow: scroll; overflow-x: scroll; width:100%; ">
+        <div class="panel-body">
+            <table class="table table-bordered table-sm ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>AE Number</th>
+                    <th>AE reported term</th>
+                    <th>MedDRA preferred term name</th>
+                    <th>MedDRA high level term name</th>
+                    <th>MedDRA system organ class name</th>
+                    <th>Reasonable possibility AE caused by IP?</th>
+                    <th>AE Start Date</th>
+                    <th>AE Stop Date</th>
+                    <th>Outcome</th>
+                    <th>Maximum CTCAE Grade</th>
+                    <th>Was this considered to be a serious adverse event?</th>
+                    <th>Was the event an AE of special interest?</th>
+                    <th>Timing of AE</th>
+                    <th>Age</th>
+                    <th>Age (category)</th>
+                    <th>Gender</th>
+                    <th>Date of first dose</th>
+                    <th>Date of second dose</th>
+                    <th>Ethnicity</th>
+                    <th>HIV result</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for ae_data in all_ae %}
+                    <tr>
+                        <td>{{ ae_data.0 }}</td>
+                        <td>{{ ae_data.1.ae_number }}</td>
+                        <td>{{ ae_data.1.ae_term }}</td>
+                        <td>{{ ae_data.1.pt_name }}</td>
+                        <td>{{ ae_data.1.hlt_name }}</td>
+                        <td>{{ ae_data.1.soc_name }}</td>
+                        <td>{{ ae_data.1.ae_rel }}</td>
+                        <td>{{ ae_data.1.start_date }}</td>
+                        <td>{{ ae_data.1.stop_date }}</td>
+                        <td>{{ ae_data.1.outcome }}</td>
+                        <td>{{ ae_data.1.max_ctcae_grade }}</td>
+                        <td>{{ ae_data.1.serious_event }}</td>
+                        <td>{{ ae_data.1.special_interest_ae }}</td>
+                        <td>{{ ae_data.13 }}</td>
+                        <td>{{ ae_data.3.dob }}</td>
+                        <td>{{ ae_data.3.dob }}</td>
+                        <td>{{ ae_data.3.gender }}</td>
+                        <td>{{ ae_data.4.vaccination_date }}</td>
+                        <td>{{ ae_data.5.vaccination_date }}</td>
+                        <td>{{ ae_data.6.ethnicity }}</td>
+                        <td>
+                        {% if ae_data.7.hiv_result %}
+                        		 {{ ae_data.7.hiv_result }} 
+                        {% else %}
+                    		{{ ae_data.7.rapid_test_result }} 
+                    	{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+    
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+{% endblock main %}

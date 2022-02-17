@@ -1,0 +1,79 @@
+{% extends 'edc_base/base.html' %}
+{% load static %}
+{% block extra-styles %}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <style>
+        .row {
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        .panel-heading span {
+            margin-top: -20px;
+            font-size: 15px;
+        }
+
+    </style>
+{% endblock extra-styles %}
+
+{% block extra-scripts %}
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+
+
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+    <div class="container">
+    	  <div class="panel-group">
+		
+		    <div class="panel panel-info">
+		      <div class="panel-heading">Screening</div>
+		      <div class="panel-body">
+		      	<section id="screening_graphs">
+		            {% include './graphs/screening_graphs.html' %}
+		        </section>
+		      </div>
+		    </div>
+		    
+		    <hr>
+		    
+		    <div class="panel panel-success">
+		      <div class="panel-heading">Enrollment</div>
+		      <div class="panel-body">
+		      	
+		      	<section id="enrollments_graphs">
+		            {% include './graphs/enrollments_graphs.html' %}
+		        </section>
+		        <hr>
+		        <section id="vac_administered">
+		            {% include './graphs/vac_administered.html' %}
+		        </section>
+		        <hr>
+		        <section id="vac_administered">
+		            {% include './graphs/missed_2nd_dose_bar_graph.html' %}
+		        </section>
+		        <hr>
+		        <section id="age_dist_boxplot">
+		            {% include './graphs/age_distribution_boxplot.html' %}
+		        </section>
+		        
+		      </div>
+		    </div>
+		
+		  </div>
+
+    </div>
+
+{% endblock main %}

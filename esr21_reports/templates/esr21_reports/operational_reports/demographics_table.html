@@ -1,0 +1,247 @@
+{% block extra-styles %}
+
+<!-- Style -->
+<style>
+	.column_head {
+		text-align: left;
+		position: sticky;
+		top: 0;
+		background-color: #FFFFFF;
+	}
+
+	.row_tag {
+		text-align: left;
+		width: 30em;
+		font-weight: bold;
+		padding-left: 2em;
+	}
+
+	.row_tag2 {
+		text-align: left;
+		padding-left: 2em;
+		width: 30em;
+
+	}
+
+	.table_style {
+		font-size: 16px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-left: auto;
+		margin-right: auto;
+		font-family:
+			"Arial Narrow", arial, helvetica, sans-serif;
+		margin-left: auto;
+		margin-right: auto;
+	}
+</style>
+
+{% endblock extra-styles %}
+
+
+
+{% block extra-scripts %}
+<!-- Script -->
+{% endblock extra-scripts %}
+
+
+{% block main %}
+
+<div class="row">
+	<div class="col-md-12">
+		<h1><b>Demographics</b> </h1>
+	</div>
+</div>
+<div class='row'>
+	<div class="col-md-12">
+		<div
+			style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:110%; ">
+			<table class="table table table-striped table-hover table-condensed lightable-paper table_style">
+				<thead>
+					<tr>
+						<th class="column_head">
+							Variable
+						</th>
+						<th class="column_head">
+							Overall
+						</th>
+
+						{% for site_name in site_names %}
+
+						<th class="column_head">
+							{{ site_name}}
+						</th>
+						
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+
+					<!-- Gender -->
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							<b>Gender</b>
+						</td>
+					</tr>
+
+					<tr>
+						{% for female_stat in females_stats %}
+							<td>{{ female_stat }}</td>
+						{% endfor %}
+					</tr>
+
+					<tr>
+
+						{% for male_stat in males_stats %}
+							<td>{{ male_stat }}</td>
+						{% endfor %}
+					</tr>
+
+
+					<!-- Ethinicity -->
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							<b>Ethinicity</b> 
+						</td>
+					</tr>
+					{% for race_stat in race_stats %}
+					<tr>
+						{% for stat in race_stat %}
+							<td>{{ stat }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							<b>HIV</b> 
+						</td>
+					</tr>
+					{% for hiv_stat in hiv_stats %}
+					<tr>
+						{% for stat in hiv_stat %}
+							<td>{{ stat }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+
+					<tr>
+						
+						{% for pregnencies_stat in pregnency_stats %}
+							<td style="border-bottom: 1px solid; border-top: 1px solid;"> {% if forloop.first %} <b>{{pregnencies_stat}}</b> {% else %} {{pregnencies_stat}} {% endif %} </td>
+						{% endfor %}
+					</tr>
+
+					<tr>
+						{% for diabates_stat in diabates_stats %}
+							<td style="border-bottom: 1px solid;">{% if forloop.first %} <b>{{diabates_stat}}</b> {% else %} {{diabates_stat}} {% endif %}</td>
+						{% endfor %}
+					</tr>
+
+
+					<!-- Prior COVID infection -->
+					{% for d_data in demographics_data_prior_covid_inf %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							<b>Alcohol status</b>
+						</td>
+					</tr>
+
+					{% for alcohol_stat in alcohol_stats %}
+						<tr>
+							{% for stat in alcohol_stat %}
+								<td>{{ stat}}</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+
+					<tr grouplength="10">
+						<td colspan="7" style="border-bottom: 1px solid;">
+							<b>Smoking status</b>
+						</td>
+					</tr>
+					{% for smoking_stat in smoking_stats %}
+						<tr>
+							{% for stat in smoking_stat %}
+								<td>{{ stat}}</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+
+
+					{% for d_data in demographics_data_totalfollowuptimeyears %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_total_ae_100 %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+
+					{% for d_data in demographics_data_participants_with_ae %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %}
+
+					{% for d_data in demographics_data_prior_total_ae %}
+					<tr>
+						<td>{{d_data.0}}</td>
+						<td>{{ d_data.1 }}</td>
+						<td>{{ d_data.2 }}</td>
+						<td>{{ d_data.3 }}</td>
+						<td>{{ d_data.4 }}</td>
+						<td>{{ d_data.5 }}</td>
+						<td>{{ d_data.6 }}</td>
+
+					</tr>
+					{% endfor %} 
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock main %}
