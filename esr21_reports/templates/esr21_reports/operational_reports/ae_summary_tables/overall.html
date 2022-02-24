@@ -20,7 +20,7 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>SOC</th>
-                            <th>HLT</th>
+                            <th>PT</th>
                             <th>Total</th>
                             <th>Mild</th>
                             <th>Moderate</th>
@@ -38,7 +38,7 @@
                             {% if k == 'total' %}
                             <td></td>
                             <td>{{ v }}</td>
-                            {% elif k != 'hlt' %}
+                            {% elif k != 'pt' %}
                             <td>{{ v }}</td>
 
                             {% endif %}
@@ -48,11 +48,11 @@
                         </tr>
 
                         {% for k,v in item.items %}
-                        {% if k == 'hlt' %}
+                        {% if k == 'pt' %}
                         {% for item in v %}
                         <tr>
                             {% for k,v in item.items %}
-                            {% if k == 'hlt_name' %}
+                            {% if k == 'pt_name' %}
                             <td></td>
                             {% endif %}
                             <td>{{v }}</td>

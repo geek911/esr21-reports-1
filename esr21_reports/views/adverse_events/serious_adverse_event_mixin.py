@@ -54,8 +54,8 @@ class SeriousAdverseEventRecordMixin:
 
         )
 
-        overral_hlt = self.ae_record_cls.objects.filter(q).values('soc_name', 'hlt_name').annotate(
-            total=Count('hlt_name', filter=Q(soc_name__isnull=False)),
+        pt_name_list = self.ae_record_cls.objects.filter(q).values('soc_name', 'pt_name').annotate(
+            total=Count('pt_name', filter=Q(soc_name__isnull=False)),
             mild=Count('ctcae_grade', filter=Q(ctcae_grade='mild')),
             moderate=Count('ctcae_grade', filter=Q(ctcae_grade='moderate')),
             severe=Count('ctcae_grade', filter=Q(ctcae_grade='severe')),
@@ -65,15 +65,15 @@ class SeriousAdverseEventRecordMixin:
 
         overall = []
         unique_soc = []
-        for hlt in overral_hlt:
-            soc_name = hlt.get('soc_name')
+        for pt in pt_name_list:
+            soc_name = pt.get('soc_name')
             soc_stats = next((sub for sub in overral_soc if sub['soc_name'] == soc_name), None)
-            if soc_stats and soc_stats.get('hlt') is not None:
-                del hlt['soc_name']
-                soc_stats['hlt'].append(hlt)
+            if soc_stats and soc_stats.get('pt') is not None:
+                del pt['soc_name']
+                soc_stats['pt'].append(pt)
             elif soc_stats:
-                del hlt['soc_name']
-                soc_stats['hlt'] = [hlt]
+                del pt['soc_name']
+                soc_stats['pt'] = [pt]
             if soc_name not in unique_soc:
                 overall.append(soc_stats)
                 unique_soc.append(soc_name)
