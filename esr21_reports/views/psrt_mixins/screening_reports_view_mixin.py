@@ -70,18 +70,42 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
                 serowe, f_town, phikwe]
 
     @property
-    def sub_cohort_participants(self):
+    def cohort_participants(self, cohort=None):
         on_schedule = self.onschedule_model_cls.objects.filter(
-            schedule_name='esr21_sub_enrol_schedule').values_list(
+            schedule_name= cohort).values_list(
                 'subject_identifier', flat=True).distinct()
-        return on_schedule
+
+        overall = self.vaccination_model_cls.objects.filter(
+            Q(received_dose_before='first_dose'))
+        overall = [pid for pid in overall if pid in on_schedule]
+
+        gaborone = self.get_enrolled_by_site('Gaborone')
+        gaborone = [pid for pid in gaborone if pid in on_schedule]
+
+        maun = self.get_enrolled_by_site('Maun')
+        maun = [pid for pid in maun if pid in on_schedule]
+
+        serowe = self.get_enrolled_by_site('Serowe')
+        serowe = [pid for pid in serowe if pid in on_schedule]
+
+        f_town = self.get_enrolled_by_site('Francistown')
+        f_town = [pid for pid in f_town if pid in on_schedule]
+
+        phikwe = self.get_enrolled_by_site('Phikwe')
+        phikwe = [pid for pid in phikwe if pid in on_schedule]
+
+        return [overall, gaborone, maun,
+                serowe, f_town, phikwe]
 
     @property
     def main_cohort_participants(self):
-        on_schedule = self.onschedule_model_cls.objects.filter(
-            schedule_name='esr21_enrol_schedule').values_list(
-                'subject_identifier', flat=True).distinct()
-        return on_schedule
+        totals = self.cohort_participants('esr21_enrol_schedule')
+        return ['Main cohort', *totals]
+
+    @property
+    def sub_cohort_participants(self):
+        totals = self.cohort_participants('esr21_sub_enrol_schedule')
+        return ['Sub cohort', *totals]
 
     @property
     def total_screened(self):
@@ -202,6 +226,7 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
             ]
         context.update(
            screening_data=screening_data,
+           # main_cohort=self.main_cohort_participants,
            # screening_failure_reasons=self.screening_failure_reasons,
         )
         return context

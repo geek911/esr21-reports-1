@@ -8,6 +8,7 @@ from .psrt_mixins import (
     SummaryQueriesMixin,
     StatsPerWeekMixin)
 
+
 class HomeView(SiteHelperMixin,
                ScreeningReportsViewMixin,
                SummaryQueriesMixin,
