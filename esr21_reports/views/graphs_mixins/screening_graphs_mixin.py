@@ -128,10 +128,7 @@ class ScreeningGraphView(EdcBaseViewMixin):
         failed = round(failed/total * 100,1)
 
         return [passed_screening,failed]
-            
-           
-        
-        
+
     def get_site_id(self, site_name_postfix):
         try:
             return Site.objects.get(name__endswith=site_name_postfix).id

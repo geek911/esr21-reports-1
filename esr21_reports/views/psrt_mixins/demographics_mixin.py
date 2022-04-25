@@ -262,7 +262,7 @@ class DemographicsMixin(EdcBaseViewMixin):
 
         pregnancies.insert(0, sum(pregnancies))
 
-        return ['Pregnencies', *pregnancies]
+        return ['Pregnancies', *pregnancies]
 
     @property
     def diabates_statistics(self):
@@ -340,6 +340,7 @@ class DemographicsMixin(EdcBaseViewMixin):
             pregnency_stats=self.pregnancy_statistics,
             race_stats=self.race_statistics,
             smoking_stats=self.smoking_statistics,
+            enrolled_pids=len(self.enrolled_pids)
         )
 
         return context
