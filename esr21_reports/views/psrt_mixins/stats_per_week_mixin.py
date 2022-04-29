@@ -75,5 +75,8 @@ class StatsPerWeekMixin(EnrollmentStatsMixin,
             overall_aesi_stats=self.overall_aesi_stats,
             overall_second_dose_stats=self.overall_second_dose_stats,
             monthly_dates=self.monthly_dates,
+            all_ae=self.all_ae,
+            all_sae=self.all_sae,
+            all_aesi=self.all_aesi,
         )
         return context

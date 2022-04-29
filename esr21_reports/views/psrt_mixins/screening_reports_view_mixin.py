@@ -1,4 +1,5 @@
 
+from operator import le
 from django.apps import apps as django_apps
 from django.db.models import Q
 from django.contrib.sites.models import Site
@@ -53,30 +54,34 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
         f_town = self.get_screened_by_site('Francistown')
         phikwe = self.get_screened_by_site('Phikwe')
 
-        return ['Total screened', overall, gaborone, maun,
-                serowe, f_town, phikwe]
+        return [
+            'Total screened',overall, gaborone, maun, serowe, f_town, phikwe]
 
     @property
     def enrolled_participants(self):
         overall = self.vaccination_model_cls.objects.filter(
             Q(received_dose_before='first_dose')).count()
-        gaborone = self.get_enrolled_by_site('Gaborone')
-        maun = self.get_enrolled_by_site('Maun')
-        serowe = self.get_enrolled_by_site('Serowe')
-        f_town = self.get_enrolled_by_site('Francistown')
-        phikwe = self.get_enrolled_by_site('Phikwe')
+        gaborone = self.get_enrolled_by_site('Gaborone').count()
+        maun = self.get_enrolled_by_site('Maun').count()
+        serowe = self.get_enrolled_by_site('Serowe').count()
+        f_town = self.get_enrolled_by_site('Francistown').count()
+        phikwe = self.get_enrolled_by_site('Phikwe').count()
 
-        return ['Enrolled', overall, gaborone, maun,
-                serowe, f_town, phikwe]
+        return ['Enrolled', [
+            overall, gaborone, maun,
+                serowe, f_town, phikwe],
+                self.main_cohort_participants,
+                self.sub_cohort_participants
+                ]
 
-    @property
     def cohort_participants(self, cohort=None):
         on_schedule = self.onschedule_model_cls.objects.filter(
-            schedule_name= cohort).values_list(
+            schedule_name=cohort).values_list(
                 'subject_identifier', flat=True).distinct()
 
         overall = self.vaccination_model_cls.objects.filter(
-            Q(received_dose_before='first_dose'))
+            Q(received_dose_before='first_dose')).values_list(
+                'subject_visit__subject_identifier', flat=True)
         overall = [pid for pid in overall if pid in on_schedule]
 
         gaborone = self.get_enrolled_by_site('Gaborone')
@@ -94,8 +99,8 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
         phikwe = self.get_enrolled_by_site('Phikwe')
         phikwe = [pid for pid in phikwe if pid in on_schedule]
 
-        return [overall, gaborone, maun,
-                serowe, f_town, phikwe]
+        return [len(overall), len(gaborone), len(maun),
+                len(serowe), len(f_town), len(phikwe)]
 
     @property
     def main_cohort_participants(self):
@@ -220,9 +225,8 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         screening_data = [
-            self.total_screened_participants,
             self.enrolled_participants,
-            self.screening_failure,
+            self.total_screened_participants,
             ]
         context.update(
            screening_data=screening_data,
@@ -247,4 +251,5 @@ class ScreeningReportsViewMixin(EdcBaseViewMixin):
         if site_id:
             return self.vaccination_model_cls.objects.filter(
                 received_dose_before='first_dose',
-                site_id=site_id).count()
+                site_id=site_id).values_list(
+                'subject_visit__subject_identifier', flat=True)
