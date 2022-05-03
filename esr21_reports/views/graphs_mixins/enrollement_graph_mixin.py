@@ -103,7 +103,6 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
             males=json.dumps(gender_by_site['males']),
             overall=json.dumps(overall_participant),
             overall_percentages=json.dumps(overall_percentages),
-
         )
 
         return context
