@@ -16,6 +16,7 @@ class AdverseEventRecordViewMixin(EdcBaseViewMixin, AdverseEventRecordMixin):
             received_second_dose=self.received_second_dose,
             related_ip=self.related_ip,
             not_related_ip=self.not_related_ip,
-            received_first_dose_plus_28=self.received_first_dose_plus_28
+            received_first_dose_plus_28=self.received_first_dose_plus_28,
+            ae_overall_count=self.ae_overall
         )
         return context

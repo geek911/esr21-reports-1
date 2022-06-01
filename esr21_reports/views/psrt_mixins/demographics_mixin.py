@@ -1,6 +1,5 @@
 from __future__ import with_statement
 from datetime import date
-from operator import sub
 from edc_base.view_mixins import EdcBaseViewMixin
 from esr21_subject.models import *
 from dateutil.relativedelta import relativedelta

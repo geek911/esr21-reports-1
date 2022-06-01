@@ -18,7 +18,9 @@ class SeriousAdverseEventRecordViewMixin(EdcBaseViewMixin,
             sae_received_second_dose=self.sae_received_second_dose,
             sae_related_ip=self.sae_related_ip,
             sae_not_related_ip=self.sae_not_related_ip,
-            sae_received_first_dose_plus_28=self.sae_received_first_dose_plus_28
+            sae_received_first_dose_plus_28=self.sae_received_first_dose_plus_28,
+            sae_overall_count=self.sae_overall,
+            aei_overall=self.aei_overall
             )
         return context
 
