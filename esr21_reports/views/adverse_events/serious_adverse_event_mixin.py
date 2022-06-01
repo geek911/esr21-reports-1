@@ -244,7 +244,9 @@ class SeriousAdverseEventRecordMixin:
 
     def consent(self, subject_identifier):
         try:
-            return self.consent_cls.objects.get(subject_identifier=subject_identifier)
+            return self.consent_cls.objects.filter(
+                subject_identifier=subject_identifier
+                ).latest('consent_datetime')
         except self.consent_cls.DoesNotExist:
             pass
         return None
