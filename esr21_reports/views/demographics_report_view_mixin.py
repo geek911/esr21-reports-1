@@ -50,7 +50,7 @@ class DemographicsReportViewMixin(EdcBaseViewMixin):
         phikwe = self.get_gender_by_site('Phikwe')
 
         return [
-            ['Males', overall_female]
+            ['Males', overall_female, gaborone, maun, serowe, f_town, phikwe]
         ]
 
     def get_vaccination_by_site(self, site_name_postfix):
