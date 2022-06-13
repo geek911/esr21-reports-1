@@ -26,10 +26,9 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
         site_ids = Site.objects.order_by('id').values_list('id', flat=True)
         return site_ids
 
-    def get_vaccinated_by_site(self, site_name_postfix):
+    def get_vaccinated_by_site(self, site_id):
         """Return a dictionary of site first dose vaccinations by gender.
         """
-        site_id = self.get_site_id(site_name_postfix)
         statistics = {
             'females': [],
             'males': []}
@@ -42,19 +41,18 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
             'subject_identifier', flat=True)
         male_pids = list(set(male_pids))
 
-        enrolled = VaccinationDetails.objects.filter(
-            received_dose_before='first_dose').count()
+        enrolled = VaccinationDetails.objects.distinct().count()
         males = VaccinationDetails.objects.filter(
             subject_visit__subject_identifier__in=male_pids,
-            received_dose_before='first_dose', site_id=site_id).count()
+            site_id=site_id).distinct().count()
         male_percentage = (males / enrolled) * 100
-        statistics['males'].append(round(percentage, 1))
+        statistics['males'].append(round(male_percentage, 1))
 
         females = VaccinationDetails.objects.filter(
             subject_visit__subject_identifier__in=female_pids,
-            received_dose_before='first_dose', site_id=site_id).count()
+            site_id=site_id).distinct().count()
         female_percentage = (females / enrolled) * 100
-        statistics['females'].append(round(percentage, 1))
+        statistics['females'].append(round(female_percentage, 1))
 
         return male_percentage, female_percentage
 

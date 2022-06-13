@@ -3,13 +3,13 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 
 from .graphs_mixins import ScreeningGraphMixin, AgeDistributionGraphMixin, \
-    EnrollmentGraphMixin, VacAdministeredMixin, Missed2ndDoseGraphMixin
+    EnrollmentGraphMixin, VaccinationGraphMixin, Missed2ndDoseGraphMixin
 
 
 class GraphsView(ScreeningGraphMixin,
                  AgeDistributionGraphMixin,
                  EnrollmentGraphMixin,
-                 VacAdministeredMixin,
+                 VaccinationGraphMixin,
                  NavbarViewMixin,
                  # Missed2ndDoseGraphMixin,
                  EdcBaseViewMixin,

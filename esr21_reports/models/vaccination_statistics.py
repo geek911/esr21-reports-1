@@ -18,17 +18,17 @@ class VaccinationStatistics(BaseUuidModel):
         max_length=150,
     )
 
-    dose_1 = models.PositiveIntegerField(
-        verbose_name='First Dose',
+    dose_1_percent = models.FloatField(
+        verbose_name='First Dose Percentage',
         default=0
     )
 
-    dose_2 = models.PositiveIntegerField(
-        verbose_name='Second Dose',
+    dose_2_percent = models.FloatField(
+        verbose_name='Second Dose Percentage',
         default=0
     )
 
-    dose_2 = models.PositiveIntegerField(
-        verbose_name='Booster Dose',
+    dose_3_percent = models.FloatField(
+        verbose_name='Booster Dose Percentage',
         default=0
     )
