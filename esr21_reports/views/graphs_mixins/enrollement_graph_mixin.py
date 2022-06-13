@@ -26,10 +26,10 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
         site_ids = Site.objects.order_by('id').values_list('id', flat=True)
         return site_ids
 
-    def get_vaccinated_by_site(self):
+    def get_vaccinated_by_site(self, site_name_postfix):
         """Return a dictionary of site first dose vaccinations by gender.
         """
-
+        site_id = self.get_site_id(site_name_postfix)
         statistics = {
             'females': [],
             'males': []}
@@ -44,22 +44,19 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
         enrolled = VaccinationDetails.objects.filter(
             received_dose_before='first_dose').count()
+        males = VaccinationDetails.objects.filter(
+            subject_visit__subject_identifier__in=male_pids,
+            received_dose_before='first_dose', site_id=site_id).count()
+        male_percentage = (males / enrolled) * 100
+        statistics['males'].append(round(percentage, 1))
 
-        for site_id in self.site_ids:
+        females = VaccinationDetails.objects.filter(
+            subject_visit__subject_identifier__in=female_pids,
+            received_dose_before='first_dose', site_id=site_id).count()
+        female_percentage = (females / enrolled) * 100
+        statistics['females'].append(round(percentage, 1))
 
-            males = VaccinationDetails.objects.filter(
-                subject_visit__subject_identifier__in=male_pids,
-                received_dose_before='first_dose', site_id=site_id).count()
-            percentage = (males / enrolled) * 100
-            statistics['males'].append(round(percentage, 1))
-
-            females = VaccinationDetails.objects.filter(
-                subject_visit__subject_identifier__in=female_pids,
-                received_dose_before='first_dose', site_id=site_id).count()
-            percentage = (females / enrolled) * 100
-            statistics['females'].append(round(percentage, 1))
-
-        return statistics
+        return male_percentage, female_percentage
 
     def get_overall_participant(self):
         """Returns a list of total enrolled participants per site and overall sites.
@@ -104,5 +101,4 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
             overall=json.dumps(overall_participant),
             overall_percentages=json.dumps(overall_percentages),
         )
-
         return context

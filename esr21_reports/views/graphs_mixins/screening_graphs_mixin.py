@@ -5,10 +5,10 @@ from django.contrib.sites.models import Site
 from django.db.models import Q
 
 
-class ScreeningGraphView(EdcBaseViewMixin):
+class ScreeningGraphMixin(EdcBaseViewMixin):
 
     subject_screening_model = 'esr21_subject.eligibilityconfirmation'
-    vaccination_model =  'esr21_subject.vaccinationdetails'
+    vaccination_model = 'esr21_subject.vaccinationdetails'
     consent_model = 'esr21_subject.informedconsent'
 
     @property
@@ -18,7 +18,7 @@ class ScreeningGraphView(EdcBaseViewMixin):
     @property
     def vaccination_model_cls(self):
         return django_apps.get_model(self.vaccination_model)
-    
+
     @property
     def consent_model_cls(self):
         return django_apps.get_model(self.consent_model)
@@ -28,7 +28,7 @@ class ScreeningGraphView(EdcBaseViewMixin):
         site_lists = []
         sites = Site.objects.all()
         for site in sites:
-            name =  site.name.split('-')[1]
+            name = site.name.split('-')[1]
             site_lists.append(name)
         return site_lists
 
@@ -83,8 +83,8 @@ class ScreeningGraphView(EdcBaseViewMixin):
                 ~Q(screening_identifier__in=passed_screening), site_id=site_id).count()
 
             total = len(passed_screening)+failed
-            passed_screening = round(len(passed_screening)/total * 100,1)
-            failed = round(failed/total * 100,1)
+            passed_screening = round(len(passed_screening)/total * 100, 1)
+            failed = round(failed/total * 100, 1)
 
             return [passed_screening, failed]
 
@@ -118,12 +118,13 @@ class ScreeningGraphView(EdcBaseViewMixin):
 
         passed_screening = list(set(passed_screening))
 
-        failed = total_screened.filter(~Q(screening_identifier__in=passed_screening)).count()
+        failed = total_screened.filter(
+            ~Q(screening_identifier__in=passed_screening)).count()
 
         total = len(passed_screening)+failed
 
-        passed_screening = round(len(passed_screening)/total * 100,1)
-        failed = round(failed/total * 100,1)
+        passed_screening = round(len(passed_screening)/total * 100, 1)
+        failed = round(failed/total * 100, 1)
 
         return [passed_screening, failed]
 
