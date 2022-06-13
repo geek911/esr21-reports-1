@@ -112,7 +112,7 @@ class AgeDistributionGraphMixin(EdcBaseViewMixin):
 
             min = np.min(max_ages)
             max = np.max(min_ages)
-            return [min, lowerquartile, median, upperquartile, max]
+            return min, lowerquartile, median, upperquartile, max
 
     def get_site_id(self, site_name_postfix):
         try:

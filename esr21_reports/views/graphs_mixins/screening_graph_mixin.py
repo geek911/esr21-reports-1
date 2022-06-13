@@ -24,15 +24,6 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
         return django_apps.get_model(self.consent_model)
 
     @property
-    def sites_names(self):
-        site_lists = []
-        sites = Site.objects.all()
-        for site in sites:
-            name = site.name.split('-')[1]
-            site_lists.append(name)
-        return site_lists
-
-    @property
     def site_age_dist(self):
         age_dist = []
         for site in self.sites_names:
@@ -48,11 +39,10 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
                 site, self.get_screened_by_site(site_name_postfix=site)])
         return site_screenings
 
-    def get_screened_by_site(self, site_name_postfix):
+    def get_screened_by_site(self, site_id):
         """Returns a list of a total participants who passed screening and those who
         failed in percentages.
         """
-        site_id = self.get_site_id(site_name_postfix)
         if site_id:
             eligible_identifiers = self.subject_screening_cls.objects.filter(
                 is_eligible=True).values_list('screening_identifier', flat=True)
@@ -66,11 +56,14 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
             total_screened = self.subject_screening_cls.objects.filter(
                 ~Q(screening_identifier__in=no_consent_screenigs))
 
-            all_screening_ids = total_screened.values_list('screening_identifier', flat=True)
+            all_screening_ids = total_screened.values_list(
+                'screening_identifier', flat=True)
             all_screening_ids = list(set(all_screening_ids))
 
             vaccination = self.vaccination_model_cls.objects.filter(
-                Q(received_dose_before='first_dose') | Q(received_dose_before='second_dose')
+                Q(received_dose_before='first_dose') |
+                Q(received_dose_before='second_dose') |
+                Q(received_dose_before='booster_dose')
                 ).values_list('subject_visit__subject_identifier', flat=True)
             vaccination = list(set(vaccination))
 
@@ -86,7 +79,7 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
             passed_screening = round(len(passed_screening)/total * 100, 1)
             failed = round(failed/total * 100, 1)
 
-            return [passed_screening, failed]
+            return passed_screening, failed
 
     @property
     def overall_screened(self):
@@ -127,12 +120,6 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
         failed = round(failed/total * 100, 1)
 
         return [passed_screening, failed]
-
-    def get_site_id(self, site_name_postfix):
-        try:
-            return Site.objects.get(name__endswith=site_name_postfix).id
-        except Site.DoesNotExist:
-            pass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
