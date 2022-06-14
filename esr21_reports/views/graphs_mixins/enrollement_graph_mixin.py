@@ -7,9 +7,9 @@ from edc_constants.constants import FEMALE, MALE
 
 
 class EnrollmentGraphMixin(EdcBaseViewMixin):
-    
+
     enrollment_stats_model = 'esr21_reports.enrollmentstatistics'
-    
+
     @property
     def enrollment_stats_cls(self):
         return django_apps.get_model(self.enrollment_stats_model)
@@ -57,56 +57,31 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
         return male_percentage, female_percentage
 
-    def get_overall_participant(self):
-        """Returns a list of total enrolled participants per site and overall sites.
-        """
-        overall_statistics = []
-
-        for site_id in self.site_ids:
-
-            enrolled = VaccinationDetails.objects.filter(
-                received_dose_before='first_dose',
-                site_id=site_id).values_list('subject_visit__subject_identifier').count()
-            overall_statistics.append(enrolled)
-
-        all_enrolled = VaccinationDetails.objects.filter(
-            received_dose_before='first_dose').values_list('subject_visit__subject_identifier').count()
-
-        overall_statistics.append(all_enrolled)
-
-        return overall_statistics
-
-    def get_overall_percentage(self):
-        """Returns a list of total enrollments in perccentages.
-        """
-        percentages = []
-        total_participants = self.get_overall_participant()[-1]
-
-        for participants in self.get_overall_participant():
-            perc = (participants / total_participants) * 100
-            percentages.append(round(perc, 1))
-        return percentages
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         all_enrollments = self.enrollment_stats_cls.objects.all()
         females = []
         males = []
-        overall = []
+        overalls = []
         sites = []
+        totals = 0
+        percentages = []
         for enrollment in all_enrollments:
             sites.append(enrollment.site)
             females.append(enrollment.female)
             males.append(enrollment.male)
-            overall.append(enrollment.total)
-        overall_participant = self.get_overall_participant()
-        overall_percentages = self.get_overall_percentage()
-
+            overalls.append(enrollment.total)
+            totals += enrollment.total
+        for overal in overalls:
+            percentage = (overal / totals) * 100
+            percentages.append(percentage)
+        overalls.append(totals)
+        sites.append('All Sites')
         context.update(
             site_names=sites,
             females=json.dumps(females),
             males=json.dumps(males),
-            overall=json.dumps(overall_participant),
-            # overall_percentages=json.dumps(overall_percentages),
+            overall=json.dumps(overalls),
+            overall_percentages=json.dumps(percentages),
         )
         return context

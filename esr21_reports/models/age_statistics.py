@@ -16,6 +16,7 @@ class AgeStatistics(BaseUuidModel):
     site = models.CharField(
         verbose_name='Site',
         max_length=150,
+        unique=True
     )
 
     min = models.PositiveIntegerField(
@@ -40,5 +41,10 @@ class AgeStatistics(BaseUuidModel):
 
     max = models.PositiveIntegerField(
         verbose_name='Max',
+        default=0
+    )
+
+    outlier = models.PositiveIntegerField(
+        verbose_name='Outliers',
         default=0
     )
