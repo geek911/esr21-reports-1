@@ -136,18 +136,6 @@ class EnrollmentReportMixin(EdcBaseViewMixin):
                 Q(site_id=site_id)).count()
             
             
-    def cache_preprocessor(self, key):
-        statistics = []
-        
-        try:
-            dashboard_statistics = DashboardStatistics.objects.get(key=key)
-        except DashboardStatistics.DoesNotExist:
-            pass
-        else:
-            statistics =  json.loads(dashboard_statistics.value)
-        
-        return statistics
-            
     @property        
     def vaccination_details_preprocessor(self):
         return self.cache_preprocessor('vaccinated_statistics')
