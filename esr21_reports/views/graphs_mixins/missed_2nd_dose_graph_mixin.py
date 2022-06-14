@@ -1,9 +1,11 @@
 import pytz
+from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
 from django_pandas.io import read_frame
 
 from edc_base import get_utcnow
 from edc_base.view_mixins import EdcBaseViewMixin
+from esr21_metadata_rules.tests.models import InformedConsent
 
 
 class Missed2ndDoseGraphMixin(EdcBaseViewMixin):
@@ -23,6 +25,12 @@ class Missed2ndDoseGraphMixin(EdcBaseViewMixin):
     @property
     def vaccination_details_cls(self):
         return django_apps.get_model(self.vaccination_details_model)
+
+    def missed_second_dose(appointment_date=None):
+        window_last_date = (appointment_date + relativedelta(days=14)).astimezone(pytz.timezone('Africa/Gaborone'))
+        if window_last_date.date() < get_utcnow().date():
+            return True
+        return False
 
     @property
     def missed_second_dose(self):
@@ -47,22 +55,39 @@ class Missed2ndDoseGraphMixin(EdcBaseViewMixin):
                     subject_visit__visit_code='1070',
                     received_dose_before='second_dose').values_list('subject_visit__subject_identifier', flat=True)
         second_dose = list(set(second_dose))
-        for appt in self.appointment_cls.objects.filter(visit_code='1070').exclude(subject_identifier__in=second_dose):
-            latest_start = (appt.timepoint_datetime + appt.visits.get(
-                appt.visit_code).rupper).astimezone(pytz.timezone('Africa/Gaborone'))
-            if latest_start.date() < get_utcnow().date():
-                site_statistics[appt.site_id] += 1
-                consent = self.consent_cls.objects.filter(
-                    subject_identifier=appt.subject_identifier).last()
-                if consent:
-                    if consent.gender == 'F':
-                        missed_second_dose_by_gender['females'] += 1
-                    elif consent.gender == 'M':
-                        missed_second_dose_by_gender['males'] += 1
-                    elif consent.gender == 'OTHER':
-                        missed_second_dose_by_gender['others'] += 1
-                else:
-                    print(appt.subject_identifier, '**************')
+        qs = self.appointment_cls.objects.filter(visit_code='1070').exclude(subject_identifier__in=second_dose)
+        df = read_frame(qs, fieldnames=['subject_identifier', 'site_id', 'timepoint_datetime'])
+
+        df['missed_second_dose'] = df['timepoint_datetime'].apply(self.missed_second_dose)
+        # selecting rows based on condition 
+        rslt_df = df[(df['missed_second_dose'] == True)]
+        rslt_df.drop_duplicates(subset ="subject_identifier",
+                             keep = False, inplace = True)
+
+        subject_identifiers_missed_dose = rslt_df["Name"].tolist()
+        
+        consent_qs = InformedConsent.objects.filter(subject_identifier__in=subject_identifiers_missed_dose)
+        df2 = read_frame(consent_qs, fieldnames=['subject_identifier', 'gender'])
+        # dropping ALL duplicate values
+        df2.drop_duplicates(subset ="subject_identifier",
+                             keep = False, inplace = True)
+        df_data = df.merge(df2, on='subject_identifier', how='outer')
+        df_data.drop_duplicates(subset ="subject_identifier",
+                             keep = False, inplace = True)
+
+        for site_id in sites:
+            df_prev = df_data[df_data['site_id'] == site_id]
+            site_statistics[appt.site_id] = df_prev[df_prev.columns[0]].count()
+    
+        male_df = df_data[df_data['gender'] == 'M']
+        missed_second_dose_by_gender['males'] = male_df[male_df.columns[0]].count()
+        
+        female_df = df_data[df_data['gender'] == 'F']
+        missed_second_dose_by_gender['females'] = female_df[female_df.columns[0]].count()
+    
+        others_df = df_data[df_data['gender'] == 'OTHER']
+        missed_second_dose_by_gender['others'] = others_df[others_df.columns[0]].count()
+
         site_statistics_list = list(map(list, site_statistics.items()))
         return [site_statistics_list, missed_second_dose_by_gender]
 
