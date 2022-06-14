@@ -268,7 +268,12 @@ class DemographicsMixin(EdcBaseViewMixin):
     
     @property
     def demographics_statistics_preprocessor(self):
-        return self.cache_preprocessor('demographics_statistics')
+        statistics =  self.cache_preprocessor('demographics_statistics')
+        
+        if statistics:
+            return statistics
+        else:
+            return dict()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
