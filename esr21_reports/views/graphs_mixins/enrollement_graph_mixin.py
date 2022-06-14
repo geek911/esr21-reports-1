@@ -1,4 +1,5 @@
 import json
+from django.apps import apps as django_apps
 from django.contrib.sites.models import Site
 from edc_base.view_mixins import EdcBaseViewMixin
 from esr21_subject.models import VaccinationDetails, InformedConsent
@@ -6,12 +7,12 @@ from edc_constants.constants import FEMALE, MALE
 
 
 class EnrollmentGraphMixin(EdcBaseViewMixin):
-
+    
+    enrollment_stats_model = 'esr21_reports.enrollmentstatistics'
+    
     @property
-    def sites_names(self):
-        site_names = Site.objects.values_list('name', flat=True)
-        site_names = list(map(lambda name: name.split('-')[1], site_names))
-        return site_names
+    def enrollment_stats_cls(self):
+        return django_apps.get_model(self.enrollment_stats_model)
 
     @property
     def site_age_dist(self):
@@ -88,15 +89,24 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        gender_by_site = self.get_vaccinated_by_site()
+        all_enrollments = self.enrollment_stats_cls.objects.all()
+        females = []
+        males = []
+        overall = []
+        sites = []
+        for enrollment in all_enrollments:
+            sites.append(enrollment.site)
+            females.append(enrollment.female)
+            males.append(enrollment.male)
+            overall.append(enrollment.total)
         overall_participant = self.get_overall_participant()
         overall_percentages = self.get_overall_percentage()
 
         context.update(
-            site_names=self.sites_names,
-            females=json.dumps(gender_by_site['females']),
-            males=json.dumps(gender_by_site['males']),
+            site_names=sites,
+            females=json.dumps(females),
+            males=json.dumps(males),
             overall=json.dumps(overall_participant),
-            overall_percentages=json.dumps(overall_percentages),
+            # overall_percentages=json.dumps(overall_percentages),
         )
         return context

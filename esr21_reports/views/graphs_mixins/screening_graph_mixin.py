@@ -124,9 +124,9 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            site_screenings=self.site_screenings,
-            overall_screened=self.overall_screened,
-            all_screened_participants=self.all_screened_participants
+            # site_screenings=self.site_screenings,
+            # overall_screened=self.overall_screened,
+            # all_screened_participants=self.all_screened_participants
         )
         return context
 

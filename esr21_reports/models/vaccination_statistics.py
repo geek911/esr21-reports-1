@@ -32,3 +32,8 @@ class VaccinationStatistics(BaseUuidModel):
         verbose_name='Booster Dose Percentage',
         default=0
     )
+
+    overall_percent = models.FloatField(
+        verbose_name='Overall Percentage',
+        default=0
+    )
