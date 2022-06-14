@@ -10,6 +10,7 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
     subject_screening_model = 'esr21_subject.eligibilityconfirmation'
     vaccination_model = 'esr21_subject.vaccinationdetails'
     consent_model = 'esr21_subject.informedconsent'
+    screening_stats_model = 'esr21_reports.screeningstatistics'
 
     @property
     def subject_screening_cls(self):
@@ -20,16 +21,12 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
         return django_apps.get_model(self.vaccination_model)
 
     @property
-    def consent_model_cls(self):
-        return django_apps.get_model(self.consent_model)
+    def screening_stats_model_cls(self):
+        return django_apps.get_model(self.screening_stats_model)
 
     @property
-    def site_age_dist(self):
-        age_dist = []
-        for site in self.sites_names:
-            age_dist.append([site, self.get_distribution_site(
-                site_name_postfix=site)])
-        return age_dist
+    def consent_model_cls(self):
+        return django_apps.get_model(self.consent_model)
 
     @property
     def site_screenings(self):
@@ -123,10 +120,16 @@ class ScreeningGraphMixin(EdcBaseViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        screening_stats = self.screening_stats_model_cls.objects.all()
+        passed = 0
+        failed = 0
+        for stats in screening_stats:
+            passed += stats.passed
+            failed += stats.failed
+        overall_site_screenings = [passed, failed]
         context.update(
-            # site_screenings=self.site_screenings,
-            # overall_screened=self.overall_screened,
-            # all_screened_participants=self.all_screened_participants
+            site_screenings=screening_stats,
+            overall_screened=overall_site_screenings,
         )
         return context
 

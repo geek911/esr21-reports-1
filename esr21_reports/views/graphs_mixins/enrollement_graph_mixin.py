@@ -75,7 +75,8 @@ class EnrollmentGraphMixin(EdcBaseViewMixin):
         for overal in overalls:
             percentage = (overal / totals) * 100
             percentages.append(percentage)
-
+        overalls.append(totals)
+        sites.append('All Sites')
         context.update(
             site_names=sites,
             females=json.dumps(females),

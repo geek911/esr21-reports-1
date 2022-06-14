@@ -16,6 +16,7 @@ class VaccinationStatistics(BaseUuidModel):
     site = models.CharField(
         verbose_name='Site',
         max_length=150,
+        unique=True
     )
 
     dose_1_percent = models.FloatField(

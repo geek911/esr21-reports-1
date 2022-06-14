@@ -16,13 +16,20 @@ class VaccinationGraphMixin(EdcBaseViewMixin):
 
     def site_dose_vaccination(self, site_id=None,  dose=None):
         site_vaccination = self.vaccination_details_cls.objects.filter(
-            received_dose_before=dose, site_id=site_id).count()
-        return self.get_percentage(site_id, site_vaccination)
+            site_id=site_id,
+            received_dose_before=dose,
+            ).values_list(
+                'subject_visit__subject_identifier',
+                flat=True).distinct().count()
+        return self.get_percentage(site_vaccination)
 
-    def overal_site_dose_vaccination(self, site_id=None,  dose=None):
+    def overal_site_dose_vaccination(self, site_id=None):
         site_vaccination = self.vaccination_details_cls.objects.filter(
-            site_id=site_id).count()
-        return self.get_percentage(site_id, site_vaccination)
+            site_id=site_id,
+            ).values_list(
+                'subject_visit__subject_identifier',
+                flat=True).distinct().count()
+        return self.get_percentage(site_vaccination)
 
     @property
     def vaccines(self):
@@ -38,21 +45,28 @@ class VaccinationGraphMixin(EdcBaseViewMixin):
             second_dose.append(vaccine.dose_2_percent)
             booster_dose.append(vaccine.dose_3_percent)
             overall.append(vaccine.overall_percent)
-            return site_names, first_dose, second_dose, booster_dose, overall
+        return site_names, first_dose, second_dose, booster_dose, overall
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         site_names, first_dose, second_dose, booster_dose, overall = self.vaccines
+        sites_first_doses = sum(first_dose)
+        sites_second_doses = sum(second_dose)
+        sites_booster_doses = sum(booster_dose)
         context.update(
             vac_details_labels=site_names,
-            vac_details_first_dose=first_dose,
-            vac_details_second_dose=second_dose,
-            all_sites_dose=overall,
+            vac_details_first=first_dose,
+            vac_details_second=second_dose,
+            booster_dose_count=booster_dose,
+            all_sites_dose=[sites_first_doses,
+                            sites_second_doses,
+                            sites_booster_doses],
         )
         return context
 
-    def get_percentage(self, site_id, dose):
-        site_vaccines = self.vaccination_details_cls.objects.filter(
-            site_id=site_id).count()
-        percentage = dose / (site_vaccines * 100)
-        return percentage
+    def get_percentage(self, dose_count):
+        site_vaccines = self.vaccination_details_cls.objects.values_list(
+                'subject_visit__subject_identifier',
+                flat=True).distinct().count()
+        percentage = dose_count / site_vaccines * 100
+        return round(percentage, 1)

@@ -16,6 +16,7 @@ class EnrollmentStatistics(BaseUuidModel):
     site = models.CharField(
         verbose_name='Site',
         max_length=150,
+        unique=True
     )
 
     total = models.PositiveIntegerField(

@@ -138,6 +138,5 @@ class EnrollmentReportMixin(EdcBaseViewMixin):
         context.update(
             enrolled_participants=self.enrolled_participants,
             vaccinated_participants=vaccinated_participants
-
         )
         return context
